@@ -5,6 +5,8 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera();
 var renderer = new THREE.WebGLRenderer();
 
+var canvasWidth, canvasHeight;
+
 // blocks
 var blockGeometry = new THREE.BoxGeometry(2, 2, 0);
 var material = new THREE.MeshBasicMaterial({
@@ -40,14 +42,16 @@ var colorArray = [
 var texture = new THREE.ImageUtils.loadTexture('../images/ic_account_circle_white_24dp_2x.png');
 
 function initRenderer() {
+    canvasWidth = $('#canvas-container').width();
+    canvasHeight = $('#canvas-container').height();
     renderer.setClearColor(0xFFFFFF, 1);
-    renderer.setSize($('#canvas-container').width(), $('#canvas-container').height());
+    renderer.setSize(canvasWidth, canvasHeight);
     $('#canvas-container').append(renderer.domElement);
 }
 
 function initCamera() {
     camera.fov = 75;
-    camera.aspect = $('#canvas-container').width() / $('#canvas-container').height();
+    camera.aspect = canvasWidth / canvasHeight;
     camera.near = 0.1;
     camera.far = 1000;
     camera.position.z = 50;
@@ -60,7 +64,7 @@ function initScene() {
     // cube.position.x = 10;
     // scene.add(cube);
 
-    transactionArray.forEach(function(transaction, index) {
+    transactionArray.forEach(function (transaction, index) {
         transaction.position.x = 80;
         transaction.position.y = -30 + index * 5;
         scene.add(transaction);
@@ -97,6 +101,20 @@ function initTransaction() {
     }
 }
 
+function initEvent() {
+    window.addEventListener('resize', onWindowResize, false);
+}
+
+function onWindowResize() {
+    // windowHalfX = window.innerWidth / 2;
+    // windowHalfY = window.innerHeight / 2;
+    canvasWidth = $('#canvas-container').width();
+    canvasHeight = $('#canvas-container').height();
+    camera.aspect = canvasWidth / canvasHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(canvasWidth, canvasHeight);
+}
+
 function update() {
 
 }
@@ -112,6 +130,7 @@ $(document).ready(function () {
     initCamera();
     initUser();
     initTransaction();
-    initScene();    
+    initScene();
+    initEvent();
     animate();
 });
