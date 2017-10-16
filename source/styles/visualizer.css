@@ -9,13 +9,22 @@ body {
     height: 100%;
 }
 
-body > div {
+body>div {
     height: 100%;
 }
 
 #user-area {
-    overflow: auto;
+    overflow-y: scroll;
+    border-right: 2px solid #F5F5F5;
 }
 
-#canvas-container {
+#user-area>.row {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
+
+#user-area>.row>div>img {
+    border-radius: 50%;
+}
+
+#canvas-container {}
