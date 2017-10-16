@@ -83,8 +83,8 @@ function initUser() {
     userArray.forEach(function (user) {
         $('#user-area').append(
             '<div class="row">' +
-            '<div class="col-sm-4"><img class="img-fluid" style="background-color: ' + user.color + '" src="../images/ic_account_circle_white_24dp_2x.png"></div>' +
-            '<div class="col-sm-8">' + user.address + '</div>' +
+            '<div class="col-sm-4 d-flex justify-content-center"><img class="img-fluid" style="background-color: ' + user.color + '" src="../images/ic_account_circle_white_24dp_2x.png"></div>' +
+            '<div class="col-sm-8 d-flex align-items-center">' + user.address + '</div>' +
             '</div>'
         );
     }, this);
