@@ -10,11 +10,13 @@ body {
 }
 
 body>div {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
     height: 100%;
 }
 
 #user-area {
-    overflow-y: scroll;
+    overflow-y: auto;
     border-right: 2px solid #F5F5F5;
 }
 
@@ -27,4 +29,6 @@ body>div {
     border-radius: 50%;
 }
 
-#canvas-container {}
+#canvas-container {
+    overflow-y: hidden;
+}
