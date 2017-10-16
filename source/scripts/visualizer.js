@@ -2,10 +2,11 @@
 
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var camera = new THREE.PerspectiveCamera();
+var camera = new THREE.OrthographicCamera();
 var renderer = new THREE.WebGLRenderer();
 
 var canvasWidth, canvasHeight;
+var canvasWidthHalf, canvasHeightHalf;
 
 // blocks
 var blockGeometry = new THREE.BoxGeometry(2, 2, 0);
@@ -21,7 +22,7 @@ var blockNumber = 5;
 // transactions
 var transactionNumber = 7;
 var transactionArray = [];
-var transactionGeometry = new THREE.BoxGeometry(15, 2.5, 0);
+var transactionGeometry = new THREE.BoxGeometry(90, 15, 0);
 var transactionMaterial = new THREE.MeshBasicMaterial({
     color: 0xc3bfb5,
     transparent: true,
@@ -44,14 +45,18 @@ var texture = new THREE.ImageUtils.loadTexture('../images/ic_account_circle_whit
 function initRenderer() {
     canvasWidth = $('#canvas-container').width();
     canvasHeight = $('#canvas-container').height();
+    canvasWidthHalf = canvasWidth / 2;
+    canvasHeightHalf = canvasHeight / 2;
     renderer.setClearColor(0xFFFFFF, 1);
     renderer.setSize(canvasWidth, canvasHeight);
     $('#canvas-container').append(renderer.domElement);
 }
 
 function initCamera() {
-    camera.fov = 75;
-    camera.aspect = canvasWidth / canvasHeight;
+    camera.left = -canvasWidth / 2;
+    camera.right = canvasWidth / 2;
+    camera.top = canvasHeight / 2;
+    camera.bottom = -canvasHeight / 2;
     camera.near = 0.1;
     camera.far = 1000;
     camera.position.z = 50;
@@ -65,8 +70,7 @@ function initScene() {
     // scene.add(cube);
 
     transactionArray.forEach(function (transaction, index) {
-        transaction.position.x = 80;
-        transaction.position.y = -30 + index * 5;
+        transaction.position.set(canvasWidthHalf - 20, -canvasHeightHalf + 20 + index * 40, 1);
         scene.add(transaction);
     }, this);
 }
@@ -106,12 +110,18 @@ function initEvent() {
 }
 
 function onWindowResize() {
-    // windowHalfX = window.innerWidth / 2;
-    // windowHalfY = window.innerHeight / 2;
     canvasWidth = $('#canvas-container').width();
     canvasHeight = $('#canvas-container').height();
-    camera.aspect = canvasWidth / canvasHeight;
+    canvasWidthHalf = canvasWidth / 2;
+    canvasHeightHalf = canvasHeight / 2;
+
+    // camera.aspect = canvasWidth / canvasHeight;
+    camera.left = -canvasWidth / 2;
+    camera.right = canvasWidth / 2;
+    camera.top = canvasHeight / 2;
+    camera.bottom = -canvasHeight / 2;
     camera.updateProjectionMatrix();
+
     renderer.setSize(canvasWidth, canvasHeight);
 }
 
