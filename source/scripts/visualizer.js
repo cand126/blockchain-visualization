@@ -1,23 +1,29 @@
 'use strict';
 
 var scene = new THREE.Scene();
-// var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 var camera = new THREE.OrthographicCamera();
 var renderer = new THREE.WebGLRenderer();
 
+// canvas size
 var canvasWidth, canvasHeight;
 var canvasWidthHalf, canvasHeightHalf;
 
 // blocks
-var blockGeometry = new THREE.BoxGeometry(2, 2, 0);
-var material = new THREE.MeshBasicMaterial({
-    color: 0xc3bfb5,
-    transparent: true,
-    opacity: 0.5
-});
-// var cube = new THREE.Mesh(geometry, material);
-
 var blockNumber = 5;
+var blockArray = [];
+var blockGeometry = new THREE.BoxGeometry(90, 90, 0);
+// var blockMaterial = new THREE.MeshBasicMaterial({
+//     color: 0xFFFFFF,
+//     transparent: true,
+//     opacity: 0.5
+// });
+var blockColorArray = [
+    0xFF3030,
+    0xADFF2F,
+    0xBF3EFF,
+    0x008B8B,
+    0xCDC1C5
+];
 
 // transactions
 var transactionNumber = 7;
@@ -61,17 +67,16 @@ function initCamera() {
     camera.far = 1000;
     camera.position.z = 50;
     camera.updateProjectionMatrix();
-    // camera.position.set(0, 0, 100);
-    // camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
 function initScene() {
-    // cube.position.x = 10;
-    // scene.add(cube);
-
     transactionArray.forEach(function (transaction, index) {
-        transaction.position.set(canvasWidthHalf - 20, -canvasHeightHalf + 20 + index * 40, 1);
+        transaction.position.set(canvasWidthHalf - 60, -canvasHeightHalf + 30 + index * 40, 1);
         scene.add(transaction);
+    }, this);
+    blockArray.forEach(function (block, index) {
+        block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
+        scene.add(block);
     }, this);
 }
 
@@ -101,12 +106,23 @@ function initUser() {
 function initTransaction() {
     for (var i = 0; i < transactionNumber; i++) {
         var transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
+        transaction.name = 'transaction' + i;
+        // console.log(transaction)
         transactionArray.push(transaction);
+    }
+}
+
+function initBlock() {
+    for (var i = 0; i < blockNumber; i++) {
+        var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: blockColorArray[i] }));
+        block.name = 'block' + i;
+        blockArray.push(block);
     }
 }
 
 function initEvent() {
     window.addEventListener('resize', onWindowResize, false);
+    document.addEventListener('keydown', onDocumentKeyDown, false);
 }
 
 function onWindowResize() {
@@ -115,7 +131,6 @@ function onWindowResize() {
     canvasWidthHalf = canvasWidth / 2;
     canvasHeightHalf = canvasHeight / 2;
 
-    // camera.aspect = canvasWidth / canvasHeight;
     camera.left = -canvasWidth / 2;
     camera.right = canvasWidth / 2;
     camera.top = canvasHeight / 2;
@@ -123,10 +138,25 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize(canvasWidth, canvasHeight);
+
+    // update mesh
 }
 
-function update() {
+function onDocumentKeyDown(event) {
+    var keyCode = event.which;
+    if (keyCode == 37) {
+        // left
+        console.log('left')
+    } else if (keyCode == 39) {
+        // right
+        console.log('right')
+    }
+};
 
+function update() {
+    var object = scene.getObjectByName('transaction0');
+    // object.position.x -= 1;
+    // console.log(object)
 }
 
 function animate() {
@@ -140,6 +170,7 @@ $(document).ready(function () {
     initCamera();
     initUser();
     initTransaction();
+    initBlock();
     initScene();
     initEvent();
     animate();
