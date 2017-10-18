@@ -17,13 +17,58 @@ var blockGeometry = new THREE.BoxGeometry(90, 90, 0);
 //     transparent: true,
 //     opacity: 0.5
 // });
-var blockColorArray = [
-    0xFF3030,
-    0xADFF2F,
-    0xBF3EFF,
-    0x008B8B,
-    0xCDC1C5
+// var blockColorArray = [
+//     0xFF3030,
+//     0xADFF2F,
+//     0xBF3EFF,
+//     0x008B8B,
+//     0xCDC1C5
+// ];
+var blockData = [
+    {
+        color: 0xFF3030,
+        position: [0, 0]
+    },
+    {
+        color: 0xADFF2F,
+        position: [-80, 120]
+    },
+    {
+        color: 0xBF3EFF,
+        position: [80, 120]
+    },
+    {
+        color: 0x008B8B,
+        position: [80, 240]
+    },
+    {
+        color: 0xCDC1C5,
+        position: [80, 360]
+    }
 ];
+
+var lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+
+var lineNumber = 4;
+var lineData = [
+    [
+        [0, 45, 0],
+        [-80, 75, 0]
+    ],
+    [
+        [0, 45, 0],
+        [80, 75, 0]
+    ],
+    [
+        [80, 165, 0],
+        [80, 195, 0]
+    ],
+    [
+        [80, 285, 0],
+        [80, 315, 0]
+    ]
+];
+var lineArray = [];
 
 // transactions
 var transactionNumber = 7;
@@ -75,8 +120,11 @@ function initScene() {
         scene.add(transaction);
     }, this);
     blockArray.forEach(function (block, index) {
-        block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
+        // block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
         scene.add(block);
+    }, this);
+    lineArray.forEach(function (line, index) {
+        scene.add(line);
     }, this);
 }
 
@@ -114,9 +162,24 @@ function initTransaction() {
 
 function initBlock() {
     for (var i = 0; i < blockNumber; i++) {
-        var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: blockColorArray[i] }));
+        var data = blockData[i];
+        var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: data.color }));
         block.name = 'block' + i;
+        block.position.set(data.position[0], -canvasHeightHalf + 60 + data.position[1], 1);
         blockArray.push(block);
+    }
+}
+
+function initLine() {
+    for (var i = 0; i < lineNumber; i++) {
+        var data = lineData[i];
+        var lineGeometry = new THREE.Geometry();
+        data.forEach(function (v) {
+            lineGeometry.vertices.push(new THREE.Vector3(v[0], -canvasHeightHalf + 60 + v[1], v[2]));
+        }, this);
+        var line = new THREE.Line(lineGeometry, lineMaterial);
+        line.name = 'line' + i;
+        lineArray.push(line);
     }
 }
 
@@ -171,6 +234,7 @@ $(document).ready(function () {
     initUser();
     initTransaction();
     initBlock();
+    initLine();
     initScene();
     initEvent();
     animate();
