@@ -91,8 +91,6 @@ var colorArray = [
     '#CDC1C5'
 ];
 
-var texture = new THREE.ImageUtils.loadTexture('../images/ic_account_circle_white_24dp_2x.png');
-
 function initRenderer() {
     canvasWidth = $('#canvas-container').width();
     canvasHeight = $('#canvas-container').height();

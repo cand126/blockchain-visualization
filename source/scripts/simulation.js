@@ -9,4 +9,16 @@ if (typeof web3 !== 'undefined') {
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-console.log(web3);
+if (!web3.isConnected()) {
+    console.log('not connect');
+} else {
+    console.log('connect');
+    var accounts = web3.eth.accounts;
+    console.log(accounts);
+    var mining = web3.eth.mining;
+    console.log(mining);
+    // var info = web3.eth.getBlock('latest');
+    // console.log(info);
+    var coinbase = web3.eth.coinbase;
+    console.log(coinbase);
+}
