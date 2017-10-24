@@ -21,8 +21,12 @@ body>div {
 }
 
 #user-area>.row {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#user-area>.row:hover {
+    background-color: #e9e7f1;
 }
 
 #user-area>.row>div>img {
