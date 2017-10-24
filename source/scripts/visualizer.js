@@ -184,6 +184,9 @@ function initLine() {
 function initEvent() {
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('keydown', onDocumentKeyDown, false);
+    document.getElementsByTagName('canvas')[0].addEventListener('mousedown', onDocumentMouseDown, false);
+    document.getElementsByTagName('canvas')[0].addEventListener('mouseup', onDocumentMouseUp, false);
+    document.getElementsByTagName('canvas')[0].addEventListener('mouseleave', onDocumentMouseLeave, false);
 }
 
 function onWindowResize() {
@@ -212,6 +215,42 @@ function onDocumentKeyDown(event) {
         // right
         console.log('right')
     }
+};
+
+
+function onDocumentMouseDown(event) {
+    $(this).mousemove(onDocumentMouseMove);
+};
+
+function onDocumentMouseUp(event) {
+    $(this).unbind('mousemove');
+    mousePosition.set(-1, -1);
+};
+
+function onDocumentMouseLeave(event) {
+    $(this).unbind('mousemove');
+    mousePosition.set(-1, -1);
+};
+
+var mousePosition = new THREE.Vector2(-1, -1);
+function onDocumentMouseMove(event) {
+    event.preventDefault();
+    var rect = renderer.domElement.getBoundingClientRect();
+    // console.log(rect)
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    if (mousePosition.x !== -1 && mousePosition.y !== -1) {
+        // console.log(x - mousePosition.x)
+        // console.log(y - mousePosition.y)
+        let distanceX = -(x - mousePosition.x);
+        let distanceY = y - mousePosition.y;
+        console.log(camera.position)
+        camera.position.set(camera.position.x + distanceX, camera.position.y + distanceY, camera.position.z);
+        camera.updateProjectionMatrix();
+    }
+    mousePosition.x = x;
+    mousePosition.y = y;
+    // console.log(mousePosition)
 };
 
 function update() {
