@@ -39,23 +39,33 @@ var blockNumber = 5;
 var blockData = [
     {
         color: 0xFF3030,
-        position: [0, 0]
+        name: 'block0',
+        prev: null,
+        child: 2
     },
     {
         color: 0xADFF2F,
-        position: [-80, 120]
+        name: 'block1',
+        prev: 'block0',
+        child: 0
     },
     {
         color: 0xBF3EFF,
-        position: [80, 120]
+        name: 'block2',
+        prev: 'block0',
+        child: 1
     },
     {
         color: 0x008B8B,
-        position: [80, 240]
+        name: 'block3',
+        prev: 'block2',
+        child: 1
     },
     {
         color: 0xCDC1C5,
-        position: [80, 360]
+        name: 'block4',
+        prev: 'block3',
+        child: 0
     }
 ];
 
@@ -139,9 +149,9 @@ function initScene() {
     //     // block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
     //     scene.add(block);
     // }, this);
-    blockManager.list.forEach(function (block) {
-        scene.add(block);
-    }, this);
+    // blockManager.list.forEach(function (block) {
+    //     scene.add(block);
+    // }, this);
     lineArray.forEach(function (line, index) {
         scene.add(line);
     }, this);
@@ -207,9 +217,9 @@ function initBlock() {
         blockDistance
     );
 
-    for (var i = 0; i < blockNumber; i++) {
-        blockManager.addBlock(blockData[i].color);
-    }
+    // for (var i = 0; i < blockNumber; i++) {
+    // blockManager.addBlock(blockData);
+    // }
 }
 
 function initLine() {
@@ -224,6 +234,12 @@ function initLine() {
         lineArray.push(line);
     }
 }
+
+/**********************************************************************
+ *
+ * Events 
+ * 
+ **********************************************************************/
 
 function initEvent() {
     window.addEventListener('resize', onWindowResize, false);
@@ -250,14 +266,58 @@ function onWindowResize() {
     // update mesh
 }
 
+var keyCount = 0;
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
     if (keyCode == 37) {
         // left
-        console.log('left')
     } else if (keyCode == 39) {
         // right
-        console.log('right')
+        if (keyCount === 0) {
+            let d = {
+                color: 0xFF3030,
+                name: 'block0',
+                prev: null
+            };
+            scene.add(blockManager.addBlock(d));
+        } else if (keyCount === 1) {
+            let d = {
+                color: 0xADFF2F,
+                name: 'block1',
+                prev: 'block0'
+            };
+            scene.add(blockManager.addBlock(d));
+        } else if (keyCount === 2) {
+            let d = {
+                color: 0xBF3EFF,
+                name: 'block2',
+                prev: 'block0'
+            };
+            scene.add(blockManager.addBlock(d));
+        } else if (keyCount === 3) {
+            let d = {
+                color: 0x008B8B,
+                name: 'block3',
+                prev: 'block2'
+            };
+            scene.add(blockManager.addBlock(d));
+        } else if (keyCount === 4) {
+            let d = {
+                color: 0xCDC1C5,
+                name: 'block4',
+                prev: 'block3'
+            };
+            scene.add(blockManager.addBlock(d));
+        } else if (keyCount === 5) {
+            let d = {
+                color: 0xCDC1C5,
+                name: 'block5',
+                prev: 'block0'
+            };
+            scene.add(blockManager.addBlock(d));
+        }
+
+        keyCount++;
     }
 };
 
