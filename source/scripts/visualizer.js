@@ -11,99 +11,21 @@ var canvasWidthHalf, canvasHeightHalf;
 // canvas margin
 var canvasMargin = 20;
 
+// store previous mouse position
+var previousMousePosition = new THREE.Vector2(-1, -1);
+
 // blocka and transaction parameters
+var blockManager, transactionManager;
 var blockSize = new THREE.Vector3(80, 80, 0);
 var blockDistance = 30;
+var lineColor = 0x000000;
 var transactionSize = new THREE.Vector3(60, 10, 0);
 var transactionDistance = 20;
 var transactionPendingColor = 0xc3bfb5;
 var transactionMinedColor = 0xc3bfb5;
 
-
-// blocks
-var blockNumber = 5;
-// var blockArray = [];
-// var blockGeometry = new THREE.BoxGeometry(90, 90, 0);
-// var blockMaterial = new THREE.MeshBasicMaterial({
-//     color: 0xFFFFFF,
-//     transparent: true,
-//     opacity: 0.5
-// });
-// var blockColorArray = [
-//     0xFF3030,
-//     0xADFF2F,
-//     0xBF3EFF,
-//     0x008B8B,
-//     0xCDC1C5
-// ];
-var blockData = [
-    {
-        color: 0xFF3030,
-        name: 'block0',
-        prev: null,
-        child: 2
-    },
-    {
-        color: 0xADFF2F,
-        name: 'block1',
-        prev: 'block0',
-        child: 0
-    },
-    {
-        color: 0xBF3EFF,
-        name: 'block2',
-        prev: 'block0',
-        child: 1
-    },
-    {
-        color: 0x008B8B,
-        name: 'block3',
-        prev: 'block2',
-        child: 1
-    },
-    {
-        color: 0xCDC1C5,
-        name: 'block4',
-        prev: 'block3',
-        child: 0
-    }
-];
-
-var lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-
-var lineNumber = 4;
-var lineData = [
-    [
-        [0, 45, 0],
-        [-80, 75, 0]
-    ],
-    [
-        [0, 45, 0],
-        [80, 75, 0]
-    ],
-    [
-        [80, 165, 0],
-        [80, 195, 0]
-    ],
-    [
-        [80, 285, 0],
-        [80, 315, 0]
-    ]
-];
-var lineArray = [];
-
-var blockManager;
-var transactionManager;
-
-// transactions
+// TODO: delete
 var transactionNumber = 7;
-// var transactionArray = [];
-// var transactionGeometry = new THREE.BoxGeometry(60, 10, 0);
-// var transactionMaterial = new THREE.MeshBasicMaterial({
-//     color: 0xc3bfb5,
-//     transparent: true,
-//     opacity: 0.5
-// });
 
 // users
 var userNumber = 20;
@@ -138,22 +60,8 @@ function initCamera() {
 }
 
 function initScene() {
-    // transactionArray.forEach(function (transaction, index) {
-    //     transaction.position.set(canvasWidthHalf - 60, -canvasHeightHalf + 30 + index * 40, 1);
-    //     scene.add(transaction);
-    // }, this);
     transactionManager.list.forEach(function (transaction) {
         scene.add(transaction);
-    }, this);
-    // blockArray.forEach(function (block, index) {
-    //     // block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
-    //     scene.add(block);
-    // }, this);
-    // blockManager.list.forEach(function (block) {
-    //     scene.add(block);
-    // }, this);
-    lineArray.forEach(function (line, index) {
-        scene.add(line);
     }, this);
 }
 
@@ -181,12 +89,6 @@ function initUser() {
 }
 
 function initTransaction() {
-    // for (var i = 0; i < transactionNumber; i++) {
-    //     var transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
-    //     transaction.name = 'transaction' + i;
-    //     // console.log(transaction)
-    //     transactionArray.push(transaction);
-    // }
     transactionManager = new TransactionManager(
         canvasWidthHalf - canvasMargin - (transactionSize.x / 2),
         - canvasHeightHalf + canvasMargin + (transactionSize.y / 2),
@@ -202,37 +104,13 @@ function initTransaction() {
 }
 
 function initBlock() {
-    // for (var i = 0; i < blockNumber; i++) {
-    //     var data = blockData[i];
-    //     var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: data.color }));
-    //     block.name = 'block' + i;
-    //     block.position.set(data.position[0], -canvasHeightHalf + 60 + data.position[1], 1);
-    //     blockArray.push(block);
-    // }
-
     blockManager = new BlockManager(
         0,
         - canvasHeightHalf + canvasMargin + (blockSize.y / 2),
         blockSize,
-        blockDistance
+        blockDistance,
+        lineColor
     );
-
-    // for (var i = 0; i < blockNumber; i++) {
-    // blockManager.addBlock(blockData);
-    // }
-}
-
-function initLine() {
-    for (var i = 0; i < lineNumber; i++) {
-        var data = lineData[i];
-        var lineGeometry = new THREE.Geometry();
-        data.forEach(function (v) {
-            lineGeometry.vertices.push(new THREE.Vector3(v[0], -canvasHeightHalf + 60 + v[1], v[2]));
-        }, this);
-        var line = new THREE.Line(lineGeometry, lineMaterial);
-        line.name = 'line' + i;
-        lineArray.push(line);
-    }
 }
 
 /**********************************************************************
@@ -268,7 +146,9 @@ function onWindowResize() {
 
 var keyCount = 0;
 function onDocumentKeyDown(event) {
-    var keyCode = event.which;
+    let keyCode = event.which;
+    let block;
+    let line;
     if (keyCode == 37) {
         // left
     } else if (keyCode == 39) {
@@ -279,42 +159,54 @@ function onDocumentKeyDown(event) {
                 name: 'block0',
                 prev: null
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         } else if (keyCount === 1) {
             let d = {
                 color: 0xADFF2F,
                 name: 'block1',
                 prev: 'block0'
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         } else if (keyCount === 2) {
             let d = {
                 color: 0xBF3EFF,
                 name: 'block2',
                 prev: 'block0'
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         } else if (keyCount === 3) {
             let d = {
                 color: 0x008B8B,
                 name: 'block3',
                 prev: 'block2'
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         } else if (keyCount === 4) {
             let d = {
                 color: 0xCDC1C5,
                 name: 'block4',
                 prev: 'block3'
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         } else if (keyCount === 5) {
             let d = {
                 color: 0xCDC1C5,
                 name: 'block5',
                 prev: 'block0'
             };
-            scene.add(blockManager.addBlock(d));
+            [block, line] = blockManager.addBlock(d);
+            scene.add(block);
+            scene.add(line);
         }
 
         keyCount++;
@@ -328,39 +220,31 @@ function onDocumentMouseDown(event) {
 
 function onDocumentMouseUp(event) {
     $(this).unbind('mousemove');
-    mousePosition.set(-1, -1);
+    previousMousePosition.set(-1, -1);
 };
 
 function onDocumentMouseLeave(event) {
     $(this).unbind('mousemove');
-    mousePosition.set(-1, -1);
+    previousMousePosition.set(-1, -1);
 };
 
-var mousePosition = new THREE.Vector2(-1, -1);
 function onDocumentMouseMove(event) {
     event.preventDefault();
     var rect = renderer.domElement.getBoundingClientRect();
-    // console.log(rect)
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
-    if (mousePosition.x !== -1 && mousePosition.y !== -1) {
-        // console.log(x - mousePosition.x)
-        // console.log(y - mousePosition.y)
-        let distanceX = -(x - mousePosition.x);
-        let distanceY = y - mousePosition.y;
-        // console.log(camera.position)
+    if (previousMousePosition.x !== -1 && previousMousePosition.y !== -1) {
+        let distanceX = -(x - previousMousePosition.x);
+        let distanceY = y - previousMousePosition.y;
         camera.position.set(camera.position.x + distanceX, camera.position.y + distanceY, camera.position.z);
         camera.updateProjectionMatrix();
     }
-    mousePosition.x = x;
-    mousePosition.y = y;
-    // console.log(mousePosition)
+    previousMousePosition.x = x;
+    previousMousePosition.y = y;
 };
 
 function update() {
-    var object = scene.getObjectByName('transaction0');
-    // object.position.x -= 1;
-    // console.log(object)
+    // var object = scene.getObjectByName('transaction0');
 }
 
 function animate() {
@@ -375,7 +259,6 @@ $(document).ready(function () {
     initUser();
     initTransaction();
     initBlock();
-    initLine();
     initScene();
     initEvent();
     animate();

@@ -25,7 +25,7 @@ if (!web3.isConnected()) {
     // console.log(defaultAccount);
     // var coinbase = web3.eth.coinbase;
     // console.log(coinbase);
-    
+
     // console.log('==============')
     // web3.eth.defaultAccount = '0x0f6d65c2b2f98f8b86e18cea6f5fddcb5a10bbbd';
     // defaultAccount = web3.eth.defaultAccount;
