@@ -3,6 +3,7 @@
 class TransactionManager {
     constructor(positionX, positionY, size, distance, pColor, mColor) {
         this.list = [];
+        // TODO: get last transaction position, to initialPosition
         this.lastPosition = { x: positionX, y: positionY };
         this.size = size; // THREE.Vector3
         this.distance = distance;

@@ -12,6 +12,8 @@ var canvasWidthHalf, canvasHeightHalf;
 var canvasMargin = 20;
 
 // blocka and transaction parameters
+var blockSize = new THREE.Vector3(80, 80, 0);
+var blockDistance = 30;
 var transactionSize = new THREE.Vector3(60, 10, 0);
 var transactionDistance = 20;
 var transactionPendingColor = 0xc3bfb5;
@@ -20,8 +22,8 @@ var transactionMinedColor = 0xc3bfb5;
 
 // blocks
 var blockNumber = 5;
-var blockArray = [];
-var blockGeometry = new THREE.BoxGeometry(90, 90, 0);
+// var blockArray = [];
+// var blockGeometry = new THREE.BoxGeometry(90, 90, 0);
 // var blockMaterial = new THREE.MeshBasicMaterial({
 //     color: 0xFFFFFF,
 //     transparent: true,
@@ -80,7 +82,7 @@ var lineData = [
 ];
 var lineArray = [];
 
-
+var blockManager;
 var transactionManager;
 
 // transactions
@@ -130,13 +132,14 @@ function initScene() {
     //     transaction.position.set(canvasWidthHalf - 60, -canvasHeightHalf + 30 + index * 40, 1);
     //     scene.add(transaction);
     // }, this);
-    console.log(transactionManager)
     transactionManager.list.forEach(function (transaction) {
-        console.log(transaction)
         scene.add(transaction);
     }, this);
-    blockArray.forEach(function (block, index) {
-        // block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
+    // blockArray.forEach(function (block, index) {
+    //     // block.position.set(0, -canvasHeightHalf + 60 + index * 120, 1);
+    //     scene.add(block);
+    // }, this);
+    blockManager.list.forEach(function (block) {
         scene.add(block);
     }, this);
     lineArray.forEach(function (line, index) {
@@ -176,7 +179,7 @@ function initTransaction() {
     // }
     transactionManager = new TransactionManager(
         canvasWidthHalf - canvasMargin - (transactionSize.x / 2),
-        - canvasHeightHalf + canvasMargin + (transactionSize.y/ 2),
+        - canvasHeightHalf + canvasMargin + (transactionSize.y / 2),
         transactionSize,
         transactionDistance,
         transactionPendingColor,
@@ -189,12 +192,23 @@ function initTransaction() {
 }
 
 function initBlock() {
+    // for (var i = 0; i < blockNumber; i++) {
+    //     var data = blockData[i];
+    //     var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: data.color }));
+    //     block.name = 'block' + i;
+    //     block.position.set(data.position[0], -canvasHeightHalf + 60 + data.position[1], 1);
+    //     blockArray.push(block);
+    // }
+
+    blockManager = new BlockManager(
+        0,
+        - canvasHeightHalf + canvasMargin + (blockSize.y / 2),
+        blockSize,
+        blockDistance
+    );
+
     for (var i = 0; i < blockNumber; i++) {
-        var data = blockData[i];
-        var block = new THREE.Mesh(blockGeometry, new THREE.MeshBasicMaterial({ color: data.color }));
-        block.name = 'block' + i;
-        block.position.set(data.position[0], -canvasHeightHalf + 60 + data.position[1], 1);
-        blockArray.push(block);
+        blockManager.addBlock(blockData[i].color);
     }
 }
 
