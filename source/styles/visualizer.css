@@ -37,4 +37,5 @@ body>div {
 
 #canvas-container {
     overflow-y: hidden;
+    padding: 0;
 }

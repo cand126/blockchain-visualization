@@ -8,6 +8,16 @@ var renderer = new THREE.WebGLRenderer();
 var canvasWidth, canvasHeight;
 var canvasWidthHalf, canvasHeightHalf;
 
+// canvas margin
+var canvasMargin = 20;
+
+// blocka and transaction parameters
+var transactionSize = new THREE.Vector3(60, 10, 0);
+var transactionDistance = 20;
+var transactionPendingColor = 0xc3bfb5;
+var transactionMinedColor = 0xc3bfb5;
+
+
 // blocks
 var blockNumber = 5;
 var blockArray = [];
@@ -70,15 +80,18 @@ var lineData = [
 ];
 var lineArray = [];
 
+
+var transactionManager;
+
 // transactions
 var transactionNumber = 7;
-var transactionArray = [];
-var transactionGeometry = new THREE.BoxGeometry(90, 15, 0);
-var transactionMaterial = new THREE.MeshBasicMaterial({
-    color: 0xc3bfb5,
-    transparent: true,
-    opacity: 0.5
-});
+// var transactionArray = [];
+// var transactionGeometry = new THREE.BoxGeometry(60, 10, 0);
+// var transactionMaterial = new THREE.MeshBasicMaterial({
+//     color: 0xc3bfb5,
+//     transparent: true,
+//     opacity: 0.5
+// });
 
 // users
 var userNumber = 20;
@@ -113,8 +126,13 @@ function initCamera() {
 }
 
 function initScene() {
-    transactionArray.forEach(function (transaction, index) {
-        transaction.position.set(canvasWidthHalf - 60, -canvasHeightHalf + 30 + index * 40, 1);
+    // transactionArray.forEach(function (transaction, index) {
+    //     transaction.position.set(canvasWidthHalf - 60, -canvasHeightHalf + 30 + index * 40, 1);
+    //     scene.add(transaction);
+    // }, this);
+    console.log(transactionManager)
+    transactionManager.list.forEach(function (transaction) {
+        console.log(transaction)
         scene.add(transaction);
     }, this);
     blockArray.forEach(function (block, index) {
@@ -150,11 +168,23 @@ function initUser() {
 }
 
 function initTransaction() {
+    // for (var i = 0; i < transactionNumber; i++) {
+    //     var transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
+    //     transaction.name = 'transaction' + i;
+    //     // console.log(transaction)
+    //     transactionArray.push(transaction);
+    // }
+    transactionManager = new TransactionManager(
+        canvasWidthHalf - canvasMargin - (transactionSize.x / 2),
+        - canvasHeightHalf + canvasMargin + (transactionSize.y/ 2),
+        transactionSize,
+        transactionDistance,
+        transactionPendingColor,
+        transactionMinedColor
+    );
+
     for (var i = 0; i < transactionNumber; i++) {
-        var transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
-        transaction.name = 'transaction' + i;
-        // console.log(transaction)
-        transactionArray.push(transaction);
+        transactionManager.addPendingTransaction();
     }
 }
 
@@ -244,7 +274,7 @@ function onDocumentMouseMove(event) {
         // console.log(y - mousePosition.y)
         let distanceX = -(x - mousePosition.x);
         let distanceY = y - mousePosition.y;
-        console.log(camera.position)
+        // console.log(camera.position)
         camera.position.set(camera.position.x + distanceX, camera.position.y + distanceY, camera.position.z);
         camera.updateProjectionMatrix();
     }
