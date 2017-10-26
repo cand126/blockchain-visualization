@@ -1,8 +1,12 @@
 'use strict';
 
+// TODO: Documentation
+
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera();
 var renderer = new THREE.WebGLRenderer();
+
+var FPS = 60;
 
 // canvas size
 var canvasWidth, canvasHeight;
@@ -16,8 +20,9 @@ var previousMousePosition = new THREE.Vector2(-1, -1);
 
 // blocka and transaction parameters
 var blockManager, transactionManager;
-var blockSize = new THREE.Vector3(80, 80, 0);
+var blockSize = new THREE.Vector3(90, 90, 0);
 var blockDistance = 30;
+var blockPadding = 10;
 var lineColor = 0x000000;
 var transactionSize = new THREE.Vector3(60, 10, 0);
 var transactionDistance = 20;
@@ -25,7 +30,7 @@ var transactionPendingColor = 0xc3bfb5;
 var transactionMinedColor = 0xc3bfb5;
 
 // TODO: delete
-var transactionNumber = 7;
+// var transactionNumber = 7;
 
 // users
 var userNumber = 20;
@@ -66,9 +71,9 @@ function initCamera() {
 }
 
 function initScene() {
-    transactionManager.list.forEach(function (transaction) {
-        scene.add(transaction);
-    }, this);
+    // transactionManager.list.forEach(function (transaction) {
+    //     scene.add(transaction);
+    // }, this);
 }
 
 function initUser() {
@@ -96,6 +101,7 @@ function initUser() {
 
 function initTransaction() {
     transactionManager = new TransactionManager(
+        scene,
         canvasWidthHalf - canvasMargin - (transactionSize.x / 2),
         - canvasHeightHalf + canvasMargin + (transactionSize.y / 2),
         transactionSize,
@@ -104,18 +110,21 @@ function initTransaction() {
         transactionMinedColor
     );
 
-    for (var i = 0; i < transactionNumber; i++) {
-        transactionManager.addPendingTransaction();
-    }
+    // for (var i = 0; i < transactionNumber; i++) {
+    //     transactionManager.addPendingTransaction();
+    // }
 }
 
 function initBlock() {
     blockManager = new BlockManager(
+        scene,
         0,
         - canvasHeightHalf + canvasMargin + (blockSize.y / 2),
         blockSize,
         blockDistance,
-        lineColor
+        lineColor,
+        blockPadding,
+        transactionDistance
     );
 }
 
@@ -166,54 +175,52 @@ function onDocumentKeyDown(event) {
                 name: 'block0',
                 prev: null
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            let t = {
+                name: 'transaction0'
+            };
+            transactionManager.add(t.name);
+            blockManager.add(d);
         } else if (keyCount === 1) {
             let d = {
                 color: 0xADFF2F,
                 name: 'block1',
                 prev: 'block0'
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            let t = {
+                name: 'transaction1'
+            };
+            transactionManager.add(t.name);
+            blockManager.add(d);
+            transactionManager.setBlockHash('transaction0', 'block1');
+            transactionManager.setPosition('transaction0', blockManager.getTransactionPosition('block1'));
         } else if (keyCount === 2) {
             let d = {
                 color: 0xBF3EFF,
                 name: 'block2',
                 prev: 'block0'
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            blockManager.add(d);
         } else if (keyCount === 3) {
             let d = {
                 color: 0x008B8B,
                 name: 'block3',
                 prev: 'block2'
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            blockManager.add(d);
         } else if (keyCount === 4) {
             let d = {
                 color: 0xCDC1C5,
                 name: 'block4',
                 prev: 'block3'
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            blockManager.add(d);
         } else if (keyCount === 5) {
             let d = {
                 color: 0xCDC1C5,
                 name: 'block5',
                 prev: 'block0'
             };
-            [block, line] = blockManager.addBlock(d);
-            scene.add(block);
-            scene.add(line);
+            blockManager.add(d);
         }
 
         keyCount++;
@@ -256,8 +263,18 @@ function onDocumentMouseMove(event) {
  * 
  **********************************************************************/
 
+var clockCounter = 0;
 function update() {
+    // console.log(g / 60)
+    // g++;
     // var object = scene.getObjectByName('transaction0');
+
+    // transactionManager.list.forEach(function (newTransaction) {
+    //     let oldTransaction = transactionManager.flindTransaction(newTransaction.name);
+    //     if (oldTransaction.position !== newTransaction.position) {
+    //         console.log('fdsfas')
+    //     }
+    // });
 }
 
 function animate() {
@@ -274,5 +291,6 @@ $(document).ready(function () {
     initBlock();
     initScene();
     initEvent();
+
     animate();
 });

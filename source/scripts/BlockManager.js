@@ -1,15 +1,19 @@
 'use strict';
 
+// TODO: Documentation
 class BlockManager {
-    constructor(positionX, positionY, size, distance, lineColor) {
+    constructor(scene, positionX, positionY, size, distance, lineColor, padding, transactionDistance) {
+        this.scene = scene;
         this.list = [];
         this.initialPosition = { x: positionX, y: positionY };
         this.size = size; // THREE.Vector3
         this.distance = distance;
         this.lineColor = lineColor;
+        this.padding = padding;
+        this.transactionDistance = transactionDistance;
     }
 
-    addBlock(data) {
+    add(data) {
         let blockGeometry = new THREE.BoxGeometry(this.size.x, this.size.y, this.size.z);
         let blockMaterial = new THREE.MeshBasicMaterial({
             color: data.color
@@ -22,6 +26,8 @@ class BlockManager {
         block.topPoint = true;
         block.rightPoint = true;
         block.leftPoint = true;
+        // the number of transactions that is held by now
+        block.transactionNumber = 0;
 
         let lineGeometry = new THREE.Geometry();
         let lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
@@ -30,38 +36,40 @@ class BlockManager {
             block.position.set(this.initialPosition.x, this.initialPosition.y, 0);
             this.list.push(block);
         } else {
-            let previousBlockPosition = this.getBlockPosition(data.prev);
-            switch (this.getBlockFreePoint(data.prev)) {
+            let previousBlockPosition = this.getPosition(data.prev);
+            switch (this.getFreePoint(data.prev)) {
                 case 'top':
                     block.position.set(previousBlockPosition.x, previousBlockPosition.y + this.distance + this.size.y, 0);
                     this.list.push(block);
-                    lineGeometry.vertices.push(this.getBlockTop(data.prev));
-                    lineGeometry.vertices.push(this.getBlockBottom(data.name));
+                    lineGeometry.vertices.push(this.getTop(data.prev));
+                    lineGeometry.vertices.push(this.getBottom(data.name));
                     break;
 
                 case 'right':
                     block.position.set(previousBlockPosition.x + this.distance + this.size.x, previousBlockPosition.y + this.distance + this.size.y, 0);
                     this.list.push(block);
-                    lineGeometry.vertices.push(this.getBlockRight(data.prev));
-                    lineGeometry.vertices.push(new THREE.Vector3(this.getBlockBottom(data.name).x, this.getBlockRight(data.prev).y, 0));
-                    lineGeometry.vertices.push(this.getBlockBottom(data.name));
+                    lineGeometry.vertices.push(this.getRight(data.prev));
+                    lineGeometry.vertices.push(new THREE.Vector3(this.getBottom(data.name).x, this.getRight(data.prev).y, 0));
+                    lineGeometry.vertices.push(this.getBottom(data.name));
                     break;
 
                 case 'left':
                     block.position.set(previousBlockPosition.x - this.distance - this.size.x, previousBlockPosition.y + this.distance + this.size.y, 0);
                     this.list.push(block);
-                    lineGeometry.vertices.push(this.getBlockLeft(data.prev));
-                    lineGeometry.vertices.push(new THREE.Vector3(this.getBlockBottom(data.name).x, this.getBlockLeft(data.prev).y, 0));
-                    lineGeometry.vertices.push(this.getBlockBottom(data.name));
+                    lineGeometry.vertices.push(this.getLeft(data.prev));
+                    lineGeometry.vertices.push(new THREE.Vector3(this.getBottom(data.name).x, this.getLeft(data.prev).y, 0));
+                    lineGeometry.vertices.push(this.getBottom(data.name));
                     break;
 
                 default:
+                    // error
                     break;
             }
         }
 
         let line = new THREE.Line(lineGeometry, lineMaterial);
-        return [block, line];
+        this.scene.add(block);
+        this.scene.add(line);
     }
 
     get number() {
@@ -77,7 +85,7 @@ class BlockManager {
         return block;
     }
 
-    getBlockFreePoint(blockName) {
+    getFreePoint(blockName) {
         let block = this.flindBlock(blockName);
         if (block.topPoint === true) {
             block.topPoint = false;
@@ -93,28 +101,76 @@ class BlockManager {
         }
     }
 
-    getBlockPosition(blockName) {
+    getPosition(blockName) {
         let block = this.flindBlock(blockName);
         return block.position;
     }
 
-    getBlockTop(blockName) {
+    getTop(blockName) {
         let block = this.flindBlock(blockName);
         return new THREE.Vector3(block.position.x, block.position.y + (this.size.y / 2), 0);
     }
 
-    getBlockBottom(blockName) {
+    getBottom(blockName) {
         let block = this.flindBlock(blockName);
         return new THREE.Vector3(block.position.x, block.position.y - (this.size.y / 2), 0);
     }
 
-    getBlockRight(blockName) {
+    getRight(blockName) {
         let block = this.flindBlock(blockName);
         return new THREE.Vector3(block.position.x + (this.size.x / 2), block.position.y, 0);
     }
 
-    getBlockLeft(blockName) {
+    getLeft(blockName) {
         let block = this.flindBlock(blockName);
         return new THREE.Vector3(block.position.x - (this.size.x / 2), block.position.y, 0);
+    }
+
+    getTransactionPosition(blockName) {
+        let block = this.flindBlock(blockName);
+        let transactionPosition;
+        switch (block.transactionNumber) {
+            case 0:
+                block.transactionNumber++;
+                transactionPosition = {
+                    x: block.position.x,
+                    y: this.getTop(blockName).y - this.padding - (this.transactionDistance * 0.5),
+                    z: 0
+                }
+                break;
+
+            case 1:
+                block.transactionNumber++;
+                transactionPosition = {
+                    x: block.position.x,
+                    y: this.getTop(blockName).y - (this.padding * 2) - (this.transactionDistance * 1.5),
+                    z: 0
+                }
+                break;
+
+            case 2:
+                block.transactionNumber++;
+                transactionPosition = {
+                    x: block.position.x,
+                    y: this.getTop(blockName).y - (this.padding * 3) - (this.transactionDistance * 2.5),
+                    z: 0
+                }
+                break;
+
+            case 3:
+                block.transactionNumber++;
+                transactionPosition = {
+                    x: block.position.x,
+                    y: this.getTop(blockName).y - (this.padding * 4) - (this.transactionDistance * 3.5),
+                    z: 0
+                }
+                break;
+
+            default:
+                // error
+                break;
+        }
+
+        return transactionPosition;
     }
 }
