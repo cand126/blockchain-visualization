@@ -6,7 +6,8 @@ var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera();
 var renderer = new THREE.WebGLRenderer();
 
-var FPS = 60;
+// var FPS = 60;
+var moveSpeed = 30;
 
 // canvas size
 var canvasWidth, canvasHeight;
@@ -107,7 +108,8 @@ function initTransaction() {
         transactionSize,
         transactionDistance,
         transactionPendingColor,
-        transactionMinedColor
+        transactionMinedColor,
+        moveSpeed
     );
 
     // for (var i = 0; i < transactionNumber; i++) {
@@ -124,7 +126,7 @@ function initBlock() {
         blockDistance,
         lineColor,
         blockPadding,
-        transactionDistance
+        transactionSize
     );
 }
 
@@ -186,20 +188,39 @@ function onDocumentKeyDown(event) {
                 name: 'block1',
                 prev: 'block0'
             };
-            let t = {
+            let t1 = {
                 name: 'transaction1'
             };
-            transactionManager.add(t.name);
+            let t2 = {
+                name: 'transaction2'
+            };
+            let t3 = {
+                name: 'transaction3'
+            };
+            let t4 = {
+                name: 'transaction4'
+            };
             blockManager.add(d);
-            transactionManager.setBlockHash('transaction0', 'block1');
-            transactionManager.setPosition('transaction0', blockManager.getTransactionPosition('block1'));
+            transactionManager.setBlockHash('transaction0', 'block1', blockManager.getTransactionPosition('block1'));
+            transactionManager.add(t1.name);
+            transactionManager.add(t2.name);
+            transactionManager.add(t3.name);
+            transactionManager.add(t4.name);
         } else if (keyCount === 2) {
             let d = {
                 color: 0xBF3EFF,
                 name: 'block2',
                 prev: 'block0'
             };
+            let t = {
+                name: 'transaction5'
+            };
             blockManager.add(d);
+            transactionManager.setBlockHash('transaction1', 'block2', blockManager.getTransactionPosition('block2'));
+            transactionManager.setBlockHash('transaction2', 'block2', blockManager.getTransactionPosition('block2'));
+            transactionManager.setBlockHash('transaction3', 'block2', blockManager.getTransactionPosition('block2'));
+            transactionManager.setBlockHash('transaction4', 'block2', blockManager.getTransactionPosition('block2'));
+            transactionManager.add(t.name);
         } else if (keyCount === 3) {
             let d = {
                 color: 0x008B8B,
@@ -275,6 +296,8 @@ function update() {
     //         console.log('fdsfas')
     //     }
     // });
+
+    transactionManager.move();
 }
 
 function animate() {

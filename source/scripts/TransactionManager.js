@@ -2,14 +2,19 @@
 
 // TODO: Documentation
 class TransactionManager {
-    constructor(scene, positionX, positionY, size, distance, pColor, mColor) {
-        this.scene= scene;
+    constructor(scene, positionX, positionY, size, distance, pColor, mColor, speed) {
+        this.scene = scene;
+        this.moveList = [];
         this.list = [];
-        this.initialPosition = { x: positionX, y: positionY };
+        this.lastPosition = {
+            x: positionX,
+            y: positionY
+        };
         this.size = size; // THREE.Vector3
         this.distance = distance;
         this.pendingColor = pColor;
         this.minedColor = mColor;
+        this.speed = speed;
     }
 
     add(transactionName) {
@@ -22,25 +27,33 @@ class TransactionManager {
         let transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
         transaction.name = transactionName; // hash
         transaction.blockHash = null;
-        if (this.number == 0) {
-            transaction.position.set(this.initialPosition.x, this.initialPosition.y, 1);
-        } else {
-            let lastPosition = this.getLastPosition();
-            transaction.position.set(lastPosition.x, lastPosition.y + this.size.y + this.distance, 1);
-        }
+        // if (this.number == 0) {
+            transaction.position.set(this.lastPosition.x, this.lastPosition.y, 1);
+        // } else {
+            // let lastPosition = this.getLastPosition();
+            // transaction.position.set(lastPosition.x, lastPosition.y + this.size.y + this.distance, 1);
+        // }
+        this.lastPosition.y += this.size.y + this.distance;
         this.list.push(transaction);
         this.scene.add(transaction);
     }
 
-    setBlockHash(transactionName, parentName) {
+    setBlockHash(transactionName, blockName, blockPosition) {
         let transaction = this.flindTransaction(transactionName);
-        transaction.blockHash = parentName;
+        transaction.blockHash = blockName;
+
+        let data = {
+            name: transactionName,
+            position: blockPosition
+        };
+        this.moveList.push(data);
+
+        this.lastPosition.y -= this.size.y + this.distance;
     }
 
-    setPosition(transactionName, position) {
-        let transaction = this.flindTransaction(transactionName);
-        transaction.position.set(position.x, position.y, 1);
-    }
+    // setPosition(transactionName, position) {
+        
+    // }
 
     flindTransaction(transactionName) {
         let transaction = this.list.find(function (element) {
@@ -58,5 +71,36 @@ class TransactionManager {
     getLastPosition() {
         let transaction = this.list[this.list.length - 1];
         return transaction.position;
+    }
+
+    move() {
+        for (let i = 0; i < this.moveList.length; i++) {
+            let newTransaction = this.moveList[i];
+            let oldTransaction = this.flindTransaction(newTransaction.name);
+            
+            if (oldTransaction.position.x !== newTransaction.position.x || oldTransaction.position.y !== newTransaction.position.y) {
+                if (Math.abs(oldTransaction.position.x - newTransaction.position.x) > this.speed) {
+                    if (oldTransaction.position.x < newTransaction.position.x) {
+                        oldTransaction.position.x += this.speed;
+                    } else if (oldTransaction.position.x > newTransaction.position.x) {
+                        oldTransaction.position.x -= this.speed;
+                    }
+                } else {
+                    oldTransaction.position.set(newTransaction.position.x, oldTransaction.position.y, 1);
+                }
+                
+                if (Math.abs(oldTransaction.position.y - newTransaction.position.y) > this.speed) {
+                    if (oldTransaction.position.y < newTransaction.position.y) {
+                        oldTransaction.position.y += this.speed;
+                    } else if (oldTransaction.position.x > newTransaction.position.y) {
+                        oldTransaction.position.y -= this.speed;
+                    }
+                } else {
+                    oldTransaction.position.set(oldTransaction.position.x, newTransaction.position.y, 1);
+                }
+            } else {
+                this.moveList.splice(i, 1);
+            }
+        }
     }
 }

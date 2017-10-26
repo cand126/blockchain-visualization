@@ -2,7 +2,7 @@
 
 // TODO: Documentation
 class BlockManager {
-    constructor(scene, positionX, positionY, size, distance, lineColor, padding, transactionDistance) {
+    constructor(scene, positionX, positionY, size, distance, lineColor, padding, transactionSize) {
         this.scene = scene;
         this.list = [];
         this.initialPosition = { x: positionX, y: positionY };
@@ -10,7 +10,7 @@ class BlockManager {
         this.distance = distance;
         this.lineColor = lineColor;
         this.padding = padding;
-        this.transactionDistance = transactionDistance;
+        this.transactionSize = transactionSize;
     }
 
     add(data) {
@@ -132,38 +132,38 @@ class BlockManager {
         switch (block.transactionNumber) {
             case 0:
                 block.transactionNumber++;
-                transactionPosition = {
-                    x: block.position.x,
-                    y: this.getTop(blockName).y - this.padding - (this.transactionDistance * 0.5),
-                    z: 0
-                }
+                transactionPosition = new THREE.Vector3 (
+                    block.position.x,
+                    this.getTop(blockName).y - this.padding - (this.transactionSize.y * 0.5),
+                    1
+                );
                 break;
 
             case 1:
                 block.transactionNumber++;
-                transactionPosition = {
-                    x: block.position.x,
-                    y: this.getTop(blockName).y - (this.padding * 2) - (this.transactionDistance * 1.5),
-                    z: 0
-                }
+                transactionPosition = new THREE.Vector3 (
+                    block.position.x,
+                    this.getTop(blockName).y - (this.padding * 2) - (this.transactionSize.y * 1.5),
+                    1
+                );
                 break;
 
             case 2:
                 block.transactionNumber++;
-                transactionPosition = {
-                    x: block.position.x,
-                    y: this.getTop(blockName).y - (this.padding * 3) - (this.transactionDistance * 2.5),
-                    z: 0
-                }
+                transactionPosition = new THREE.Vector3 (
+                    block.position.x,
+                    this.getTop(blockName).y - (this.padding * 3) - (this.transactionSize.y * 2.5),
+                    1
+                );
                 break;
 
             case 3:
                 block.transactionNumber++;
-                transactionPosition = {
-                    x: block.position.x,
-                    y: this.getTop(blockName).y - (this.padding * 4) - (this.transactionDistance * 3.5),
-                    z: 0
-                }
+                transactionPosition = new THREE.Vector3 (
+                    block.position.x,
+                    this.getTop(blockName).y - (this.padding * 4) - (this.transactionSize.y * 3.5),
+                    1
+                );
                 break;
 
             default:
