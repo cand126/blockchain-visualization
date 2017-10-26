@@ -227,7 +227,11 @@ function onDocumentKeyDown(event) {
                 name: 'block3',
                 prev: 'block2'
             };
+            let t = {
+                name: 'transaction6'
+            };
             blockManager.add(d);
+            transactionManager.add(t.name);
         } else if (keyCount === 4) {
             let d = {
                 color: 0xCDC1C5,
