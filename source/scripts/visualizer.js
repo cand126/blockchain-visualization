@@ -38,6 +38,12 @@ var colorArray = [
     '#CDC1C5'
 ];
 
+/**********************************************************************
+ *
+ * Initialization
+ * 
+ **********************************************************************/
+
 function initRenderer() {
     canvasWidth = $('#canvas-container').width();
     canvasHeight = $('#canvas-container').height();
@@ -115,7 +121,7 @@ function initBlock() {
 
 /**********************************************************************
  *
- * Events 
+ * Events
  * 
  **********************************************************************/
 
@@ -144,6 +150,7 @@ function onWindowResize() {
     // update mesh
 }
 
+// just for demo
 var keyCount = 0;
 function onDocumentKeyDown(event) {
     let keyCode = event.which;
@@ -242,6 +249,12 @@ function onDocumentMouseMove(event) {
     previousMousePosition.x = x;
     previousMousePosition.y = y;
 };
+
+/**********************************************************************
+ *
+ * Update the scene
+ * 
+ **********************************************************************/
 
 function update() {
     // var object = scene.getObjectByName('transaction0');

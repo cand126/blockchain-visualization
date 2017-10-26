@@ -3,8 +3,7 @@
 class TransactionManager {
     constructor(positionX, positionY, size, distance, pColor, mColor) {
         this.list = [];
-        // TODO: get last transaction position, to initialPosition
-        this.lastPosition = { x: positionX, y: positionY };
+        this.initialPosition = { x: positionX, y: positionY };
         this.size = size; // THREE.Vector3
         this.distance = distance;
         this.pendingColor = pColor;
@@ -20,12 +19,21 @@ class TransactionManager {
         });
         let transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
         transaction.name = 'transaction' + this.number; // hash
-        transaction.position.set(this.lastPosition.x, this.lastPosition.y, 0);
-        this.lastPosition.y += this.size.y + this.distance;
+        if (this.number == 0) {
+            transaction.position.set(this.initialPosition.x, this.initialPosition.y, 0);
+        } else {
+            let lastPosition = this.getLastTransactionPosition();
+            transaction.position.set(lastPosition.x, lastPosition.y + this.size.y + this.distance, 0);
+        }
         this.list.push(transaction);
     }
 
     get number() {
         return this.list.length;
+    }
+
+    getLastTransactionPosition() {
+        let transaction = this.list[this.list.length - 1];
+        return transaction.position;
     }
 }
