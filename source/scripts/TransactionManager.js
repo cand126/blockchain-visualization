@@ -27,12 +27,7 @@ class TransactionManager {
         let transaction = new THREE.Mesh(transactionGeometry, transactionMaterial);
         transaction.name = transactionName; // hash
         transaction.blockHash = null;
-        // if (this.number == 0) {
-            transaction.position.set(this.lastPosition.x, this.lastPosition.y, 1);
-        // } else {
-            // let lastPosition = this.getLastPosition();
-            // transaction.position.set(lastPosition.x, lastPosition.y + this.size.y + this.distance, 1);
-        // }
+        transaction.position.set(this.lastPosition.x, this.lastPosition.y, 1);
         this.lastPosition.y += this.size.y + this.distance;
         this.list.push(transaction);
         this.scene.add(transaction);
@@ -50,10 +45,6 @@ class TransactionManager {
 
         this.lastPosition.y -= this.size.y + this.distance;
     }
-
-    // setPosition(transactionName, position) {
-        
-    // }
 
     flindTransaction(transactionName) {
         let transaction = this.list.find(function (element) {
@@ -77,7 +68,7 @@ class TransactionManager {
         for (let i = 0; i < this.moveList.length; i++) {
             let newTransaction = this.moveList[i];
             let oldTransaction = this.flindTransaction(newTransaction.name);
-            
+
             if (oldTransaction.position.x !== newTransaction.position.x || oldTransaction.position.y !== newTransaction.position.y) {
                 if (Math.abs(oldTransaction.position.x - newTransaction.position.x) > this.speed) {
                     if (oldTransaction.position.x < newTransaction.position.x) {
@@ -88,7 +79,7 @@ class TransactionManager {
                 } else {
                     oldTransaction.position.set(newTransaction.position.x, oldTransaction.position.y, 1);
                 }
-                
+
                 if (Math.abs(oldTransaction.position.y - newTransaction.position.y) > this.speed) {
                     if (oldTransaction.position.y < newTransaction.position.y) {
                         oldTransaction.position.y += this.speed;

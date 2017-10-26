@@ -5,7 +5,10 @@ class BlockManager {
     constructor(scene, positionX, positionY, size, distance, lineColor, padding, transactionSize) {
         this.scene = scene;
         this.list = [];
-        this.initialPosition = { x: positionX, y: positionY };
+        this.initialPosition = {
+            x: positionX,
+            y: positionY
+        };
         this.size = size; // THREE.Vector3
         this.distance = distance;
         this.lineColor = lineColor;
@@ -30,7 +33,9 @@ class BlockManager {
         block.transactionNumber = 0;
 
         let lineGeometry = new THREE.Geometry();
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+        let lineMaterial = new THREE.LineBasicMaterial({
+            color: 0x000000
+        });
 
         if (this.number === 0) {
             block.position.set(this.initialPosition.x, this.initialPosition.y, 0);
@@ -132,7 +137,7 @@ class BlockManager {
         switch (block.transactionNumber) {
             case 0:
                 block.transactionNumber++;
-                transactionPosition = new THREE.Vector3 (
+                transactionPosition = new THREE.Vector3(
                     block.position.x,
                     this.getTop(blockName).y - this.padding - (this.transactionSize.y * 0.5),
                     1
@@ -141,7 +146,7 @@ class BlockManager {
 
             case 1:
                 block.transactionNumber++;
-                transactionPosition = new THREE.Vector3 (
+                transactionPosition = new THREE.Vector3(
                     block.position.x,
                     this.getTop(blockName).y - (this.padding * 2) - (this.transactionSize.y * 1.5),
                     1
@@ -150,7 +155,7 @@ class BlockManager {
 
             case 2:
                 block.transactionNumber++;
-                transactionPosition = new THREE.Vector3 (
+                transactionPosition = new THREE.Vector3(
                     block.position.x,
                     this.getTop(blockName).y - (this.padding * 3) - (this.transactionSize.y * 2.5),
                     1
@@ -159,7 +164,7 @@ class BlockManager {
 
             case 3:
                 block.transactionNumber++;
-                transactionPosition = new THREE.Vector3 (
+                transactionPosition = new THREE.Vector3(
                     block.position.x,
                     this.getTop(blockName).y - (this.padding * 4) - (this.transactionSize.y * 3.5),
                     1

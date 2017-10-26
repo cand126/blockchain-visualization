@@ -30,9 +30,6 @@ var transactionDistance = 20;
 var transactionPendingColor = 0xc3bfb5;
 var transactionMinedColor = 0xc3bfb5;
 
-// TODO: delete
-// var transactionNumber = 7;
-
 // users
 var userNumber = 20;
 var userArray = [];
@@ -103,8 +100,7 @@ function initUser() {
 function initTransaction() {
     transactionManager = new TransactionManager(
         scene,
-        canvasWidthHalf - canvasMargin - (transactionSize.x / 2),
-        - canvasHeightHalf + canvasMargin + (transactionSize.y / 2),
+        canvasWidthHalf - canvasMargin - (transactionSize.x / 2), -canvasHeightHalf + canvasMargin + (transactionSize.y / 2),
         transactionSize,
         transactionDistance,
         transactionPendingColor,
@@ -120,8 +116,7 @@ function initTransaction() {
 function initBlock() {
     blockManager = new BlockManager(
         scene,
-        0,
-        - canvasHeightHalf + canvasMargin + (blockSize.y / 2),
+        0, -canvasHeightHalf + canvasMargin + (blockSize.y / 2),
         blockSize,
         blockDistance,
         lineColor,
@@ -163,6 +158,7 @@ function onWindowResize() {
 
 // just for demo
 var keyCount = 0;
+
 function onDocumentKeyDown(event) {
     let keyCode = event.which;
     let block;
@@ -288,19 +284,7 @@ function onDocumentMouseMove(event) {
  * 
  **********************************************************************/
 
-var clockCounter = 0;
 function update() {
-    // console.log(g / 60)
-    // g++;
-    // var object = scene.getObjectByName('transaction0');
-
-    // transactionManager.list.forEach(function (newTransaction) {
-    //     let oldTransaction = transactionManager.flindTransaction(newTransaction.name);
-    //     if (oldTransaction.position !== newTransaction.position) {
-    //         console.log('fdsfas')
-    //     }
-    // });
-
     transactionManager.move();
 }
 
@@ -309,6 +293,12 @@ function animate() {
     update();
     renderer.render(scene, camera);
 }
+
+/**********************************************************************
+ *
+ * Main
+ * 
+ **********************************************************************/
 
 $(document).ready(function () {
     initRenderer();
