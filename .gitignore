@@ -60,3 +60,5 @@ typings/
 # truffle compile
 build/
 
+.vscode
+
