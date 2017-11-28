@@ -1,16 +1,20 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+        "target": "es5",
+        "outDir": "src/scripts",
+        "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true
     },
     "include": [
-        "scripts/**/*"
+        "src/typescript/**/*"
     ],
     "exclude": [
         "node_modules",
-        "bower_components"
+        "bower_components",
+        "**/*.spec.ts"
     ]
 }
