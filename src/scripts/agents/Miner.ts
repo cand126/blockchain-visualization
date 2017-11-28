@@ -1,18 +1,18 @@
-var eve = require('evejs');
+import * as eve from "evejs";
 
 class Miner extends eve.Agent {
-    constructor(id) {
+    constructor(id: string) {
         super(id); // execute super constructor
         this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
     }
 
-    publish(to) {
+    publish(to: string): void {
         // this.send(to, 'Hello ' + to + '!');
     }
 
-    receive(from, message) {
-        console.log(from + ' said: ' + JSON.stringify(message));
+    receive(from: string, message: any): void {
+        console.log(from + " said: " + JSON.stringify(message));
     }
 }
 
-module.exports = Miner;
+export { Miner };

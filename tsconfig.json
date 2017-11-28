@@ -2,7 +2,7 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es5",
-        "outDir": "src/scripts",
+        "outDir": "src/dist/scripts",
         "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": true,
@@ -10,7 +10,7 @@
         "sourceMap": true
     },
     "include": [
-        "src/typescript/**/*"
+        "src/scripts/**/*"
     ],
     "exclude": [
         "node_modules",
