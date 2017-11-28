@@ -6,6 +6,7 @@ class Miner extends eve.Agent {
         this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
     }
 
+    // publish a block
     publish(to: string): void {
         // this.send(to, 'Hello ' + to + '!');
     }

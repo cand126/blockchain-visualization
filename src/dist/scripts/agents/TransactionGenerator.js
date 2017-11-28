@@ -19,15 +19,21 @@ var TransactionGenerator = (function (_super) {
         return _this;
     }
     TransactionGenerator.prototype.generate = function () {
-        var transaction = {};
-        transaction.id = "1";
-        transaction.timestamp = "now";
-        transaction.content = "hi";
+        var content = {
+            from: "bob",
+            to: "alice",
+            message: "hello"
+        };
+        var transaction = {
+            id: 1,
+            type: "transaction",
+            timestamp: new Date(),
+            content: content
+        };
         return transaction;
     };
     TransactionGenerator.prototype.publish = function (to) {
         var transaction = this.generate();
-        console.log(transaction);
         this.send(to, transaction);
     };
     return TransactionGenerator;
