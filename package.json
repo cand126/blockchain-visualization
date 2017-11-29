@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/cand126/blockchain-visualization#readme",
   "dependencies": {
-    "evejs": "^0.5.0"
+    "evejs": "^0.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^8.0.53"

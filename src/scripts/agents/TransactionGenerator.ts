@@ -1,6 +1,6 @@
 import * as eve from "evejs";
-import { Icontent } from "../data/Icontent";
-import { Itransaction } from "../data/Itransaction";
+import { Icontent } from "../types/Icontent";
+import { Itransaction } from "../types/Itransaction";
 
 class TransactionGenerator extends eve.Agent {
     constructor(id: string) {
