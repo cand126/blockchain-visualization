@@ -2,13 +2,24 @@ import * as eve from "evejs";
 import { Icontent } from "../types/Icontent";
 import { Itransaction } from "../types/Itransaction";
 
+/**
+ * @class
+ * @description this class is resposible for generating transactions
+ * @extends eve.Agent extends Agent class from eve framework
+ */
 class TransactionGenerator extends eve.Agent {
+    /**
+     * @constructor
+     * @param {string} id the id of the agent
+     * @public
+     */
     constructor(id: string) {
-        super(id); // execute super constructor
+        super(id);
         this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
     }
 
     /**
+     * @function
      * @description generate a transaction
      * @return {Itransaction} return the transaction that is generated
      * @private
@@ -31,6 +42,7 @@ class TransactionGenerator extends eve.Agent {
     }
 
     /**
+     * @function
      * @description publish a transaction
      * @param {string} to the id of the agents who will receive the transaction
      * @public
