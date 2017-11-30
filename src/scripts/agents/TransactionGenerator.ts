@@ -21,7 +21,7 @@ class TransactionGenerator extends eve.Agent {
     /**
      * @function
      * @description generate a transaction
-     * @return {Itransaction} return the transaction that is generated
+     * @returns {Itransaction} return the transaction that is generated, @see {@link Itransaction}
      * @private
      */
     private generate(): any {
@@ -48,7 +48,7 @@ class TransactionGenerator extends eve.Agent {
      * @public
      */
     publish(to: string): void {
-        let transaction: any = this.generate();
+        let transaction: Itransaction = this.generate();
         this.send(to, transaction);
     }
 }

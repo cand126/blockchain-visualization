@@ -7,3 +7,4 @@ var miner2: any = new Miner("miner2");
 
 transactionGenerator.publish("miner1");
 transactionGenerator.publish("miner2");
+transactionGenerator.publish("miner2");
