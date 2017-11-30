@@ -43,13 +43,16 @@ class TransactionGenerator extends eve.Agent {
 
     /**
      * @function
-     * @description publish a transaction
+     * @description publish a transaction with a delay time
      * @param {string} to the id of the agents who will receive the transaction
+     * @param {number} delay the number of time to delay
      * @public
      */
-    publish(to: string): void {
+    publish(to: string, delay: number): void {
         let transaction: Itransaction = this.generate();
-        this.send(to, transaction);
+        setTimeout(() => {
+            this.send(to, transaction);
+        }, delay);
     }
 }
 

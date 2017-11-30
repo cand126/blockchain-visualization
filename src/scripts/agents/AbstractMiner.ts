@@ -8,9 +8,12 @@ import { Iblock } from "../types/Iblock";
  * @extends eve.Agent extends Agent class from eve framework
  */
 abstract class AbstractMiner extends eve.Agent {
-    private pendingTransactions: Itransaction[] = [];
-    private minedBlocks: Iblock[] = [];
-    private latestBlock: Iblock;
+    /** @member {Itransaction[]} pendingTransactions stores the received pending transations */
+    protected pendingTransactions: Itransaction[] = [];
+    /** @member {Iblock[]} minedBlocks stores the received mined blocks */
+    protected minedBlocks: Iblock[] = [];
+    /** @member {Iblock} latestBlock stores the received latest block */
+    protected latestBlock: Iblock;
 
     /**
      * @constructor
