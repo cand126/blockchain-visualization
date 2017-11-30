@@ -1,0 +1,21 @@
+{
+  "name": "source",
+  "homepage": "https://github.com/cand126/blockchain-visualization",
+  "authors": [
+    "馬韶均 <justwhenithought@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4.0.0-alpha.6",
+    "three.js": "threejs#*"
+  }
+}
