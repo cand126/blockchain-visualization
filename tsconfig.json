@@ -1,20 +1,19 @@
 {
-    "compileOnSave": true,
-    "compilerOptions": {
-        "target": "es5",
-        "outDir": "src/dist/scripts",
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true
-    },
-    "include": [
-        "src/scripts/**/*"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
     ],
-    "exclude": [
-        "node_modules",
-        "bower_components",
-        "**/*.spec.ts"
+    "lib": [
+      "es2017",
+      "dom"
     ]
+  }
 }
