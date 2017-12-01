@@ -15,14 +15,17 @@ export abstract class AbstractMiner extends eve.Agent {
   /** @member {Iblock} latestBlock stores the received latest block */
   protected latestBlock: Iblock;
 
+  protected visualizer: any;
+
   /**
    * @constructor
    * @param {string} id the id of the agent
    * @public
    */
-  constructor(id: string) {
+  constructor(id: string, visualizer: any) {
     super(id); // execute super constructor
     this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
+    this.visualizer = visualizer;
   }
 
   /**
@@ -61,9 +64,9 @@ export abstract class AbstractMiner extends eve.Agent {
    * @public
    */
   receive(from: string, object: any): void {
-    console.log('re');
     if (object.type === 'transaction') {
       this.pendingTransactions.push(object);
+      this.visualizer.addTransaction(this.id, object);
     }
   }
 

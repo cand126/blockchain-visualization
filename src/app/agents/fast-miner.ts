@@ -1,8 +1,8 @@
 import { AbstractMiner } from './abstract-miner';
 
 export class FastMiner extends AbstractMiner {
-    constructor(id: string) {
-        super(id);
+    constructor(id: string, visualizer: any) {
+        super(id, visualizer);
     }
 
     stategy(): void {

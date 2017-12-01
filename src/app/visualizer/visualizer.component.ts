@@ -11,22 +11,39 @@ import { Itransaction } from '../types/itransaction';
 
 
 export class VisualizerComponent implements OnInit {
-  a1: Itransaction[] = [];
-  a2: Itransaction[] = [];
+  transactionGenerator: any;
+  miner1: any;
+  miner2: any;
+  miner3: any;
+  miners: string[] = ['miner1', 'miner2', 'miner3'];
 
   constructor() { }
 
   ngOnInit() {
-    console.log('hi');
-    const transactionGenerator: any = new TransactionGenerator('transactionGenerator');
-    const miner1: any = new FastMiner('miner1');
-    const miner2: any = new FastMiner('miner2');
+    this.transactionGenerator = new TransactionGenerator('transactionGenerator');
+    this.miner1 = new FastMiner('miner1', this);
+    this.miner2 = new FastMiner('miner2', this);
+    this.miner3 = new FastMiner('miner3', this);
+  }
 
-    transactionGenerator.publish('miner1', 1000);
-    transactionGenerator.publish('miner2', 2000);
-    transactionGenerator.publish('miner2', 3000);
+  addTransaction(id: string, transaction: any) {
+    const node = document.createElement('div');
+    node.innerText = JSON.stringify(transaction);
+    document.getElementById(id).appendChild(node);
+  }
 
-    console.log(document.getElementsByTagName('h1'));
+  onSendTransaction() {
+    const formRows = document.getElementById('formGenerator').getElementsByClassName('form-group');
+    for (let i = 0; i < formRows.length; i++) {
+      const row = formRows[i];
+      if (row.getElementsByClassName('miner-id').length > 0) {
+        if ((<HTMLInputElement>row.getElementsByClassName('miner-id')[0]).checked === true) {
+          const id: string = (<HTMLInputElement>row.getElementsByClassName('miner-id')[0]).value;
+          const delay: number = parseInt((<HTMLInputElement>row.getElementsByClassName('delay')[0]).value, 10);
+          this.transactionGenerator.publish(id, delay * 1000);
+        }
+      }
+    }
   }
 
 }
