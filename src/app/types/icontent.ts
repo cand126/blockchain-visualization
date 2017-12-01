@@ -1,6 +1,5 @@
 /**
- * @interface
- * @description a data type for the content of a transaction
+ * @interface Icontent a data type for the content of a transaction
  * @property {string} from the id of the agent who created the content
  * @property {string} to the id of the agent who will receive the content
  * @property {string} message a message can be any content
@@ -11,10 +10,8 @@
  *     message:
  * }
  */
-interface Icontent {
-    readonly from: string;
-    readonly to: string;
-    readonly message: string;
+export interface Icontent {
+  readonly from: string;
+  readonly to: string;
+  readonly message: string;
 }
-
-export { Icontent };

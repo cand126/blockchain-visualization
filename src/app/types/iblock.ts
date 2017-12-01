@@ -1,8 +1,7 @@
-import { Itransaction } from "./Itransaction";
+import { Itransaction } from './itransaction';
 
 /**
- * @interface
- * @description a data type for blocks
+ * @interface Iblock a data type for blocks
  * @property {string} id the id of the block
  * @property {string} type is always "block", to indicate this object is a block
  * @property {Date} timestamp the timestamp of the block, should be the time when the block is created
@@ -25,14 +24,12 @@ import { Itransaction } from "./Itransaction";
  *     ]
  * }
  */
-interface Iblock {
-    readonly id: string;
-    readonly type: string;
-    readonly timestamp: Date;
-    readonly miner: string;
-    previous: string[];
-    next: string[];
-    readonly transactions: Itransaction[];
+export interface Iblock {
+  readonly id: string;
+  readonly type: string;
+  readonly timestamp: Date;
+  readonly miner: string;
+  previous: string[];
+  next: string[];
+  readonly transactions: Itransaction[];
 }
-
-export { Iblock };

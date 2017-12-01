@@ -1,15 +1,13 @@
-import { AbstractMiner } from "./AbstractMiner";
+import { AbstractMiner } from './abstract-miner';
 
-class FastMiner extends AbstractMiner {
+export class FastMiner extends AbstractMiner {
     constructor(id: string) {
         super(id);
     }
 
     stategy(): void {
         if (this.getPendingTransactions.length >= 2) {
-            console.log("mine");
+            console.log('mining');
         }
     }
 }
-
-export { FastMiner };
