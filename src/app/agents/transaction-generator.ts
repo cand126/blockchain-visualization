@@ -1,5 +1,4 @@
 import * as eve from 'evejs';
-import {Icontent} from '../types/icontent';
 import {Itransaction} from '../types/Itransaction';
 
 /**
@@ -24,17 +23,12 @@ export class TransactionGenerator extends eve.Agent {
    * @private
    */
   private generate(): any {
-    const content: Icontent = {
-      from: 'bob',
-      to: 'alice',
-      message: 'hello'
-    };
-
     const transaction: Itransaction = {
       id: 'uuid',
       type: 'transaction',
       timestamp: new Date(),
-      content: content
+      message: 'hello',
+      reward: 10
     };
 
     return transaction;

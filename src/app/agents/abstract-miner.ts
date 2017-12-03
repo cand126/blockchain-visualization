@@ -1,5 +1,4 @@
 import * as eve from 'evejs';
-import { Icontent } from '../types/icontent';
 import { Itransaction } from '../types/Itransaction';
 import { Iblock } from '../types/Iblock';
 

@@ -45,5 +45,4 @@ export class VisualizerComponent implements OnInit {
       }
     }
   }
-
 }
