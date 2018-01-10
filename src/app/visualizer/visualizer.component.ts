@@ -29,6 +29,7 @@ export class VisualizerComponent implements OnInit {
   addTransaction(id: string, transaction: any) {
     const node = document.createElement('div');
     node.innerText = JSON.stringify(transaction);
+    console.log(id)
     document.getElementById(id).appendChild(node);
   }
 
