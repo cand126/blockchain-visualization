@@ -46,6 +46,5 @@ export class TransactionGenerator extends eve.Agent {
       this.send(to, transaction);
     }, delay);
   }
-
 }
 
