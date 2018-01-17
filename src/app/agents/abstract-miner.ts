@@ -65,7 +65,7 @@ export abstract class AbstractMiner extends eve.Agent {
   receive(from: string, object: any): void {
     if (object.type === 'transaction') {
       this.pendingTransactions.push(object);
-      this.visualizer.addTransaction(this.id, object);
+      this.visualizer.appendTransaction(this.id, object);
     }
   }
 

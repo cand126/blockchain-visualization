@@ -1,3 +1,50 @@
 <app-header></app-header>
-<app-visualizer class="d-flex"></app-visualizer>
+<div class="container-fluid app-content">
+  <div class="row">
+    <div class="col">
+      <h2 class="text-center">Transaction Generator</h2>
+      <form class="form-inline" id="formGenerator">
+        <div class="form-group row" name="generator-row" *ngFor="let miner of miners">
+          <div class="col-sm-4 form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input miner-id" value="{{miner.id}}"> {{miner.name}}
+            </label>
+          </div>
+          <div class="col-sm-8">
+            <input type="number" class="form-control delay" placeholder="Delay (seconds)">
+          </div>
+        </div>
+        <div class="col-12 form-group row">
+          <button type="button" class="btn btn-primary" (click)="onSendTransaction()">Send</button>
+        </div>
+      </form>
+    </div>
+    <div class="col" *ngFor="let miner of miners">
+      <h2 class="text-center">{{miner.name}}</h2>
+      <form class="form-inline">
+        <div class="form-group row">
+          <div>
+            <input type="number" class="form-control" placeholder="Reward">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div>
+            <input type="number" class="form-control" placeholder="Number of mined transactions">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div>
+            <input type="number" class="form-control" placeholder="Max number of pending transactions">
+          </div>
+        </div>
+        <div class="col-12 form-group row">
+          <button type="button" class="btn btn-primary" (click)="onSendTransaction()">Set</button>
+        </div>
+        <h3>Transaction Pool</h3>
+        <h3>Blockchain</h3>
+      </form>
+      <div id="{{miner}}"></div>
+    </div>
+  </div>
+</div>
 <app-footer class="d-flex"></app-footer>
