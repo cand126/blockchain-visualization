@@ -19,7 +19,7 @@
         </div>
       </form>
     </div>
-    <div class="col" *ngFor="let miner of miners">
+    <div class="col d-flex flex-column" *ngFor="let miner of miners">
       <h2 class="text-center">{{miner.name}}</h2>
       <form class="form-inline">
         <div class="form-group row">
@@ -40,10 +40,11 @@
         <div class="col-12 form-group row">
           <button type="button" class="btn btn-primary" (click)="onSendTransaction()">Set</button>
         </div>
-        <h3>Transaction Pool</h3>
-        <h3>Blockchain</h3>
       </form>
-      <div id="{{miner}}"></div>
+      <h3>Transaction Pool</h3>
+      <div class="d-flex transaction-pool" [attr.data-miner-id]="miner.id"></div>
+      <h3>Blockchain</h3>
+      <div class="d-flex blockchain" [attr.data-miner-id]="miner.id"></div>
     </div>
   </div>
 </div>

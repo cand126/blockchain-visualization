@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionGenerator } from './agents/transaction-generator';
-import { FastMiner } from './agents/fast-miner';
-import { Itransaction } from './types/itransaction';
-import { Watchdog } from './watchdog/watchdog';
+import { Miner } from './agents/miner';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +8,8 @@ import { Watchdog } from './watchdog/watchdog';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  watchdog: any;
-  visualizer: any;
   transactionGenerator: any;
+  // test
   miner1: any;
   miner2: any;
   miner3: any;
@@ -32,19 +29,16 @@ export class AppComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.watchdog = new Watchdog();
-    this.visualizer =
     this.transactionGenerator = new TransactionGenerator('transactionGenerator');
-    this.miner1 = new FastMiner('miner1', this);
-    this.miner2 = new FastMiner('miner2', this);
-    this.miner3 = new FastMiner('miner3', this);
+    this.miner1 = new Miner('miner1');
+    this.miner2 = new Miner('miner2');
+    this.miner3 = new Miner('miner3');
   }
 
   private onSendTransaction() {
     const formRows = document.getElementsByName('generator-row');
     for (let i = 0; i < formRows.length; i++) {
       const row = formRows[i];
-      console.log(row);
       if ((<HTMLInputElement>row.getElementsByClassName('miner-id')[0]).checked === true) {
         const id: string = (<HTMLInputElement>row.getElementsByClassName('miner-id')[0]).value;
         const delay: number = parseInt((<HTMLInputElement>row.getElementsByClassName('delay')[0]).value, 10);

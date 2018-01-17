@@ -1,30 +1,26 @@
 import * as eve from 'evejs';
 import { Itransaction } from '../types/Itransaction';
 import { Iblock } from '../types/Iblock';
+import { Watchdog } from '../watchdog/watchdog';
 
 /**
- * @class this class is resposible for generating blocks
+ * @class this class is resposible for mining
  * @extends eve.Agent extends Agent class from eve framework
  */
-export abstract class AbstractMiner extends eve.Agent {
-  /** @member {Itransaction[]} pendingTransactions stores the received pending transations */
-  protected pendingTransactions: Itransaction[] = [];
-  /** @member {Iblock[]} minedBlocks stores the received mined blocks */
-  protected minedBlocks: Iblock[] = [];
-  /** @member {Iblock} latestBlock stores the received latest block */
-  protected latestBlock: Iblock;
-
-  protected visualizer: any;
+export class Miner extends eve.Agent {
+  /** @member {Itransaction[]} transactionPool stores the received pending transations */
+  protected transactionPool: Itransaction[] = [];
+  /** @member {Iblock[]} blockchain stores the blockchain datastructure */
+  protected blockchain: Iblock[] = [];
 
   /**
    * @constructor
    * @param {string} id the id of the agent
    * @public
    */
-  constructor(id: string, visualizer: any) {
+  constructor(id: string) {
     super(id); // execute super constructor
     this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
-    this.visualizer = visualizer;
   }
 
   /**
@@ -64,8 +60,8 @@ export abstract class AbstractMiner extends eve.Agent {
    */
   receive(from: string, object: any): void {
     if (object.type === 'transaction') {
-      this.pendingTransactions.push(object);
-      this.visualizer.appendTransaction(this.id, object);
+      this.transactionPool.push(object);
+      Watchdog.onTransactionChange(this.id, object);
     }
   }
 
@@ -75,7 +71,7 @@ export abstract class AbstractMiner extends eve.Agent {
    * @public
    */
   getPendingTransactions(): Itransaction[] {
-    return this.pendingTransactions;
+    return this.transactionPool;
   }
 
   /**
@@ -95,6 +91,4 @@ export abstract class AbstractMiner extends eve.Agent {
       }
     }
   }
-
-  abstract stategy(): void;
 }
