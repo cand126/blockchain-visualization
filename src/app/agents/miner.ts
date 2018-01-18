@@ -34,8 +34,8 @@ export class Miner extends eve.Agent {
       type: 'transaction',
       timestamp: new Date(),
       miner: 'uuid',
-      previous: [],
-      next: [],
+      previous: '',
+      next: '',
       transactions: []
     };
 

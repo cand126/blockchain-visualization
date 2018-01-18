@@ -21,4 +21,5 @@ export interface Itransaction {
   readonly timestamp: Date;
   readonly message: string;
   readonly reward: number;
+  readonly privilege: number;
 }

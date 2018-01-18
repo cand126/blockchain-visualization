@@ -29,7 +29,7 @@ export interface Iblock {
   readonly type: string;
   readonly timestamp: Date;
   readonly miner: string;
-  previous: string[];
-  next: string[];
+  previous: string;
+  next: string;
   readonly transactions: Itransaction[];
 }

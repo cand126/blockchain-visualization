@@ -7,3 +7,8 @@
   height: calc(100vh - 112px);
   overflow: auto;
 }
+
+.transaction-pool, .blockchain {
+  border-top: 1px solid black;
+  padding: 8px;
+}

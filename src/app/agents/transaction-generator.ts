@@ -1,5 +1,5 @@
 import * as eve from 'evejs';
-import {Itransaction} from '../types/Itransaction';
+import { Itransaction } from '../types/Itransaction';
 
 /**
  * @class this class is resposible for generating transactions
@@ -28,7 +28,8 @@ export class TransactionGenerator extends eve.Agent {
       type: 'transaction',
       timestamp: new Date(),
       message: 'hello',
-      reward: 10
+      reward: 10,
+      privilege: 0
     };
 
     return transaction;
