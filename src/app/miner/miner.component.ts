@@ -1,16 +1,24 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { NgStyle } from '@angular/common';
 import * as eve from 'evejs';
 import { Itransaction } from '../types/Itransaction';
 import { Iblock } from '../types/Iblock';
+
+@Component({
+  selector: 'app-miner',
+  templateUrl: './miner.component.html',
+  styleUrls: ['./miner.component.scss']
+})
 
 /**
  * @class this class is resposible for mining
  * @extends eve.Agent extends Agent class from eve framework
  */
-export class Miner extends eve.Agent {
+export class MinerComponent extends eve.Agent implements OnInit {
   /** @member {Itransaction[]} transactionPool stores the received pending transations */
-  transactionPool: Itransaction[] = [];
+  transactionPool: Itransaction[];
   /** @member {Iblock[]} blockchain stores the blockchain datastructure */
-  blockchain: Iblock[] = [];
+  blockchain: Iblock[];
 
   currentBlock: Iblock;
 
@@ -20,17 +28,22 @@ export class Miner extends eve.Agent {
 
   private visualizer: any;
 
+  @Input() appComponent: any;
   id: string;
+  @Input() name: string;
+  color: string;
 
-  /**
-   * @constructor
-   * @param {string} id the id of the agent
-   * @public
-   */
-  constructor(id: string) {
-    super(id); // execute super constructor
-    this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
+  constructor() {
+    const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    super(id);
     this.id = id;
+    this.transactionPool = [];
+    this.blockchain = [];
+    this.color = this.randomColor();
+  }
+
+  ngOnInit() {
+    this.appComponent.getWatchdog().addMiner(this.id, this.name, this.color);
   }
 
   /**
@@ -71,6 +84,7 @@ export class Miner extends eve.Agent {
   receive(from: string, object: any): void {
     if (object.type === 'transaction') {
       this.transactionPool.push(object);
+      console.log('fdsa');
       // Watchdog.onTransactionChange(this.id, object, this.visualizer);
     } else if (object.type === 'block') {
       object.previous = this.currentBlock.id;
@@ -114,6 +128,15 @@ export class Miner extends eve.Agent {
   }
 
   initBlockchain() {
-    this.visualizer.initBlockchain();
+    // this.visualizer.initBlockchain();
+  }
+
+  randomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    while (color.length < 7) {
+      color += letters[Math.floor((Math.random() * 16))];
+    }
+    return color;
   }
 }
