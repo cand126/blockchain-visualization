@@ -2,6 +2,7 @@ import * as eve from 'evejs';
 import { Itransaction } from '../types/Itransaction';
 import { Iblock } from '../types/Iblock';
 import { Watchdog } from '../watchdog/watchdog';
+import { Visualizer } from '../visualizer/visualizer';
 
 /**
  * @class this class is resposible for mining
@@ -9,9 +10,19 @@ import { Watchdog } from '../watchdog/watchdog';
  */
 export class Miner extends eve.Agent {
   /** @member {Itransaction[]} transactionPool stores the received pending transations */
-  protected transactionPool: Itransaction[] = [];
+  transactionPool: Itransaction[] = [];
   /** @member {Iblock[]} blockchain stores the blockchain datastructure */
-  protected blockchain: Iblock[] = [];
+  blockchain: Iblock[] = [];
+
+  currentBlock: Iblock;
+
+  minValue: number;
+  maxPendingTransaction: number;
+  numberOfTransaction: number;
+
+  private visualizer: any;
+
+  id: string;
 
   /**
    * @constructor
@@ -21,6 +32,8 @@ export class Miner extends eve.Agent {
   constructor(id: string) {
     super(id); // execute super constructor
     this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
+    this.id = id;
+    this.visualizer = new Visualizer(this.id);
   }
 
   /**
@@ -61,7 +74,12 @@ export class Miner extends eve.Agent {
   receive(from: string, object: any): void {
     if (object.type === 'transaction') {
       this.transactionPool.push(object);
-      Watchdog.onTransactionChange(this.id, object);
+      Watchdog.onTransactionChange(this.id, object, this.visualizer);
+    } else if (object.type === 'block') {
+      object.previous = this.currentBlock.id;
+      this.currentBlock.next = object.id;
+      this.currentBlock = object;
+      Watchdog.onBlockChange(this.id, object, this.visualizer);
     }
   }
 
@@ -90,5 +108,15 @@ export class Miner extends eve.Agent {
         }
       }
     }
+  }
+
+  setMiningStrategy(minValue: number, maxPendingTransaction: number, numberOfTransaction: number) {
+    this.minValue = minValue;
+    this.maxPendingTransaction = maxPendingTransaction;
+    this.numberOfTransaction = numberOfTransaction;
+  }
+
+  initBlockchain() {
+    this.visualizer.initBlockchain();
   }
 }

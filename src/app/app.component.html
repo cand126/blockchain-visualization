@@ -20,31 +20,35 @@
       </form>
     </div>
     <div class="col d-flex flex-column" *ngFor="let miner of miners">
-      <h2 class="text-center">{{miner.name}}</h2>
-      <form class="form-inline">
+      <h2 class="text-center miner-title" [ngStyle]="{'background-color': miner.color}">{{miner.name}}</h2>
+      <form>
         <div class="form-group row">
-          <div>
-            <input type="number" class="form-control" placeholder="Reward">
+          <label class="col-9 col-form-label">Min value</label>
+          <div class="col-3">
+            <input class="form-control" type="number">
           </div>
         </div>
         <div class="form-group row">
-          <div>
-            <input type="number" class="form-control" placeholder="Number of mined transactions">
+          <label class="col-9 col-form-label">Number of mined transactions</label>
+          <div class="col-3">
+            <input class="form-control" type="number">
           </div>
         </div>
         <div class="form-group row">
-          <div>
-            <input type="number" class="form-control" placeholder="Max number of pending transactions">
+          <label class="col-9 col-form-label">Max number of pending transactions</label>
+          <div class="col-3">
+            <input class="form-control" type="number">
           </div>
-        </div>
-        <div class="col-12 form-group row">
-          <button type="button" class="btn btn-primary" (click)="onSendTransaction()">Set</button>
         </div>
       </form>
       <h3>Transaction Pool</h3>
       <div class="d-flex transaction-pool" [attr.data-miner-id]="miner.id"></div>
       <h3>Blockchain</h3>
-      <div class="d-flex blockchain" [attr.data-miner-id]="miner.id"></div>
+      <!-- <div class="d-flex blockchain" [attr.data-miner-id]="miner.id"> -->
+      <svg class="blockchain" height="1000" width="100%" [attr.data-miner-id]="miner.id">
+        <rect width="32" height="32" style="fill:red;" />
+      </svg>
+      <!-- </div> -->
     </div>
   </div>
 </div>
