@@ -13,7 +13,7 @@ class Visualizer extends Component {
       <div className="Visualizer">
         <div className="Miner-container">
           {this.props.minerList.map((miner) =>
-            <MinerRow key={miner.id} name={miner.name} />
+            <MinerRow key={miner.id} id={miner.id} name={miner.name} color={miner.color}/>
           )}
         </div>
         <Logger />
