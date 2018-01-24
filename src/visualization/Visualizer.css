@@ -1,8 +1,3 @@
 .Visualizer {
   flex: 1;
 }
-
-.Miner-container {
-  flex: 1;
-  overflow: auto;
-}

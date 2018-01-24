@@ -1,7 +1,8 @@
 .Miner-row {
-  height: 200px;
+  min-height: 200px;
 }
 
 .Miner-row>h3{
   color: white;
+  margin: 0;
 }

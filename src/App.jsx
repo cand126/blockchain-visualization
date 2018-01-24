@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import './App.css';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
-import Visualizer from './visualization/Visualizer';
+import MinerRow from './visualization/MinerRow';
+import Logger from './visualization/Logger';
 import Miner from './agents/Miner';
 import TransactionGenerator from './agents/TransactionGenerator';
 import Hash from './helper/Hash';
@@ -50,8 +51,13 @@ class App extends Component {
     return (
       <div className="d-flex flex-column App">
         <Header />
-        <div className="d-flex App-content">
-          <Visualizer minerList={this.state.minerList} />
+        <div className="d-flex flex-column App-content">
+          <div className="d-flex flex-column Miner-container">
+            {this.state.minerList.map((miner) =>
+              <MinerRow key={miner.id} id={miner.id} name={miner.name} color={miner.color} />
+            )}
+          </div>
+          <Logger />
         </div>
         <Footer />
       </div>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './MinerRow.css';
+import Visualizer from './Visualizer';
 
 /**
  * MinerRow
@@ -12,8 +13,9 @@ class MinerRow extends Component {
     };
 
     return (
-      <div className="container-fluid Miner-row">
+      <div className="d-flex flex-column Miner-row">
         <h3 style={minerHeader}>{this.props.name}: {this.props.id}</h3>
+        <Visualizer />
       </div>
     );
   }
