@@ -1,9 +1,8 @@
 .Visualizer {
-  width: 100%;
-  height: 100%;
+  flex: 1;
 }
 
 .Miner-container {
-  height: calc(100% - 150px);
+  flex: 1;
   overflow: auto;
 }

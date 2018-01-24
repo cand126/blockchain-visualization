@@ -1,4 +1,8 @@
+.App {
+  height: 100vh;
+}
+
 .App-content {
-  height: calc(100vh - 112px);
+  flex: 1;
   overflow: auto;
 }

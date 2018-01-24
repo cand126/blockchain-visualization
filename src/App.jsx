@@ -48,7 +48,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className="d-flex flex-column App">
         <Header />
         <div className="d-flex App-content">
           <Visualizer minerList={this.state.minerList} />

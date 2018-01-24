@@ -1,7 +1,5 @@
 .Logger {
-  position: absolute;
-  bottom: 56px;
   height: 150px;
   background-color: #b7d5f3;
-  overflow: autol
+  overflow: auto;
 }

@@ -10,7 +10,7 @@ import Logger from './Logger';
 class Visualizer extends Component {
   render() {
     return (
-      <div className="Visualizer">
+      <div className="d-flex flex-column Visualizer">
         <div className="Miner-container">
           {this.props.minerList.map((miner) =>
             <MinerRow key={miner.id} id={miner.id} name={miner.name} color={miner.color}/>
