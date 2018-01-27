@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import * as THREE from 'three';
 import './Visualizer.css';
+import Watchdog from '../watchdog/Watchdog';
+import Hash from '../helper/Hash';
 
 /**
  * Visualizer
@@ -9,16 +11,21 @@ import './Visualizer.css';
 class Visualizer extends Component {
   constructor(props) {
     super(props);
+    this.watchdog = Watchdog.getInstance();
     this.blockSize = new THREE.Vector3(32, 32, 0);
+    this.minerId = this.props.minerId;
 
     // binding
     this._animate = this._animate.bind(this);
   }
 
   componentDidMount() {
+    // subscribe
+    this.watchdog.addVisualizer(this);
     this._init();
     this._animate();
-    this._addBlock();
+    // add initial block
+    // this.addBlock();
   }
 
   _init() {
@@ -26,12 +33,13 @@ class Visualizer extends Component {
     this.camera = new THREE.OrthographicCamera();
     this.renderer = new THREE.WebGLRenderer();
 
-    this.scene.background = new THREE.Color( 0xf0f0f0 );
+    this.scene.background = new THREE.Color(0xf0f0f0);
 
     this.canvasWidth = this.canvasContainer.clientWidth;
     this.canvasHeight = this.canvasContainer.clientHeight;
-    // canvasWidthHalf = canvasWidth / 2;
-    // canvasHeightHalf = canvasHeight / 2;
+    this.canvasWidthHalf = this.canvasWidth / 2;
+    this.canvasHeightHalf = this.canvasHeight / 2;
+    this.margin = 16;
     this.renderer.setClearColor(0xFFFFFF, 1);
     this.renderer.setSize(this.canvasWidth, this.canvasHeight);
     this.canvasContainer.appendChild(this.renderer.domElement);
@@ -52,15 +60,35 @@ class Visualizer extends Component {
     this.renderer.render(this.scene, this.camera);
   }
 
-  _addBlock() {
-    let blockGeometry = new THREE.BoxGeometry(this.blockSize.x, this.blockSize.y, this.blockSize.z);
-    let blockMaterial = new THREE.MeshBasicMaterial({
+  addBlock(block) {
+    console.log('add');
+    const blockGeometry = new THREE.BoxGeometry(this.blockSize.x, this.blockSize.y, this.blockSize.z);
+    const blockMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color(0xff0000),
       // transparent: true,
       // opacity: 0.5
     });
-    let block = new THREE.Mesh(blockGeometry, blockMaterial);
-    block.position.set(0, 0, 0);
+    let blockObject = new THREE.Mesh(blockGeometry, blockMaterial);
+    blockObject.data = block;
+    if (block.id === Hash.generateNull()) {
+      // initial blocks
+      blockObject.position.set(
+        -this.canvasWidthHalf + (this.blockSize.x / 2) + this.margin,
+        this.canvasHeightHalf - (this.blockSize.y / 2) - this.margin,
+        0
+      );
+    } else {
+      // received blocks
+      const lineGeometry = new THREE.Geometry();
+      const lineMaterial = new THREE.LineBasicMaterial({
+          color: 0x000000,
+      });
+      // this.list.find((element) => {
+      //   if (element.name === blockName) {
+      //     return element;
+      //   }
+      // });
+    }
 
     // let lineGeometry = new THREE.Geometry();
     // let lineMaterial = new THREE.LineBasicMaterial({
@@ -99,7 +127,7 @@ class Visualizer extends Component {
     // }
 
     // let line = new THREE.Line(lineGeometry, lineMaterial);
-    this.scene.add(block);
+    this.scene.add(blockObject);
     // this.scene.add(line);
   }
 

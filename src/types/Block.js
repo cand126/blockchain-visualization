@@ -31,6 +31,7 @@ class Block {
     previous,
     next,
     layer,
+    color,
     transactions
   ) {
     this.id = id;
@@ -40,6 +41,7 @@ class Block {
     this.previous = previous;
     this.next = next;
     this.layer = layer;
+    this.color = color;
     this.transactions = transactions;
   }
 }

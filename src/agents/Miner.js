@@ -12,16 +12,13 @@ class Miner extends Eve.Agent {
   maxPendingTransaction;
   numberOfTransaction;
 
-  constructor(id, name, color) {
-    super(id);
+  constructor(color) {
+    super(); // uuid
     this.connect(Eve.system.transports.getAll()); // connect to all transports configured by the system
-    this.id = id;
-    this.name = name;
     this.color = color;
     this.transactionPool = [];
     this.blockchain = [];
     this.watchdog = Watchdog.getInstance();
-    this._initBlockchain();
   }
 
   /**
@@ -30,15 +27,14 @@ class Miner extends Eve.Agent {
    * @private
    */
   generate() {
-    let block = new Block(
+    const block = new Block(
       Hash.generateId(),
       'block',
       new Date(),
       this.id,
       '',
-      '',
-      -1,
-      []
+      '', -1,
+      this.color, []
     );
 
     return block;
@@ -50,7 +46,7 @@ class Miner extends Eve.Agent {
    * @public
    */
   publish(to, delay) {
-    let block = this.generate();
+    const block = this.generate();
     setTimeout(() => {
       this.send(to, block);
     }, delay * 1000);
@@ -65,19 +61,21 @@ class Miner extends Eve.Agent {
   receive(from, object) {
     if (object.type === 'transaction') {
       this.transactionPool.push(object);
-      this.watchdog.onTransactionChange(this.id, object);
+      this.watchdog.onTransactionChange(this, object);
     } else if (object.type === 'block') {
-      // a block from a miner
       if (object.previous === '') {
+        // a block from a miner
         object.previous = this.currentBlock.id;
         object.layer = this.currentBlock.layer + 1;
         this.currentBlock.next = object.id;
         this.currentBlock = object;
         this.blockchain.push(this.currentBlock);
-      }
-      // consensus protocol: add longer blockchain
+      } else {
+        // consensus protocol: add longer blockchain
 
-      this.watchdog.onBlockChange(this.id, object);
+      }
+
+      // this.watchdog.onBlockChange(this, object);
     }
   }
 
@@ -87,7 +85,7 @@ class Miner extends Eve.Agent {
     this.numberOfTransaction = numberOfTransaction;
   }
 
-  _initBlockchain() {
+  initBlockchain() {
     this.currentBlock = new Block(
       Hash.generateNull(),
       'block',
@@ -96,9 +94,10 @@ class Miner extends Eve.Agent {
       Hash.generateNull(),
       '',
       0,
-      []
+      '0x91989F', []
     );
     this.blockchain.push(this.currentBlock);
+    this.watchdog.onBlockChange(this, this.currentBlock);
   }
 }
 

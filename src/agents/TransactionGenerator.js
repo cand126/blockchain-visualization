@@ -14,7 +14,16 @@ class TransactionGenerator extends Eve.Agent {
    */
   constructor(id) {
     super(id);
-    this.connect(Eve.system.transports.getAll()); // connect to all transports configured by the system
+    // connect to all transports configured by the system
+    this.connect(Eve.system.transports.getAll());
+  }
+
+  // singleton
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new TransactionGenerator(Hash.generateId());
+    }
+    return this.instance;
   }
 
   /**
@@ -42,7 +51,7 @@ class TransactionGenerator extends Eve.Agent {
    * @public
    */
   publish(to, delay) {
-    let transaction = this.generate();
+    const transaction = this.generate();
     setTimeout(() => {
       this.send(to, transaction);
     }, delay * 1000);

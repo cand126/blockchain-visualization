@@ -1,5 +1,7 @@
 class Watchdog {
-  instance;
+  constructor() {
+    this.visualizerList = [];
+  }
 
   // singleton
   static getInstance() {
@@ -13,12 +15,21 @@ class Watchdog {
     this.logger = logger;
   }
 
-  onTransactionChange(id, transaction) {
-    this.logger.addlog(id, transaction);
+  addVisualizer(visualizer) {
+    this.visualizerList.push(visualizer);
   }
 
-  onBlockChange(id, block) {
-    this.logger.addlog(id, block);
+  onTransactionChange(miner, transaction) {
+    this.logger.addlog(miner.id, transaction);
+  }
+
+  onBlockChange(miner, block) {
+    this.logger.addlog(miner.id, block);
+    this.visualizerList.forEach((visualizer) => {
+      if (visualizer.minerId === miner.id) {
+        visualizer.addBlock(block);
+      }
+    });
   }
 }
 
