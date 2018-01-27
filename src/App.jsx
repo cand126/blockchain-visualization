@@ -9,8 +9,9 @@ import Simulator from './simulation/Simulator';
 // import Hash from './helper/Hash';
 
 /**
- * App
- * @class
+ * Class representing the whole app.
+ * @extends Component
+ * @since 1.0.0
  */
 class App extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class App extends Component {
         <div className="d-flex flex-column App-content">
           <div className="d-flex flex-column Miner-container">
             {this.state.minerList.map((miner, index) =>
-              <MinerRow key={index} color={miner.color} />
+              <MinerRow key={index} color={miner.color} ready={index === 2}/>
             )}
           </div>
           <Logger />

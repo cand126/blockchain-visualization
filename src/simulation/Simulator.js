@@ -28,6 +28,11 @@ class Simulator {
       });
     });
   }
+
+  start() {
+    // test
+    this.minerList[0].publish(this.minerList[1].id, 0);
+  }
 }
 
 export default Simulator;

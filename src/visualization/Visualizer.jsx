@@ -13,6 +13,9 @@ class Visualizer extends Component {
     super(props);
     this.watchdog = Watchdog.getInstance();
     this.blockSize = new THREE.Vector3(32, 32, 0);
+    this.blockSpace = new THREE.Vector3(16, 16, 0);
+    // records the number of blocks in each layer
+    this.layers = [];
     this.minerId = this.props.minerId;
 
     // binding
@@ -61,7 +64,6 @@ class Visualizer extends Component {
   }
 
   addBlock(block) {
-    console.log('add');
     const blockGeometry = new THREE.BoxGeometry(this.blockSize.x, this.blockSize.y, this.blockSize.z);
     const blockMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color(0xff0000),
@@ -71,6 +73,7 @@ class Visualizer extends Component {
     let blockObject = new THREE.Mesh(blockGeometry, blockMaterial);
     blockObject.data = block;
     if (block.id === Hash.generateNull()) {
+      this.layers[0] = 1;
       // initial blocks
       blockObject.position.set(
         -this.canvasWidthHalf + (this.blockSize.x / 2) + this.margin,
@@ -79,52 +82,30 @@ class Visualizer extends Component {
       );
     } else {
       // received blocks
-      const lineGeometry = new THREE.Geometry();
-      const lineMaterial = new THREE.LineBasicMaterial({
-          color: 0x000000,
-      });
-      // this.list.find((element) => {
-      //   if (element.name === blockName) {
-      //     return element;
-      //   }
+
+      // const lineGeometry = new THREE.Geometry();
+      // const lineMaterial = new THREE.LineBasicMaterial({
+      //     color: 0x000000,
       // });
+
+      // initialize each layer
+      if (typeof this.layers[block.layer] === 'undefined') {
+        this.layers[block.layer] = 0;
+      }
+      this.scene.children.find((object) => {
+        if (object.data.id === block.previous) {
+          console.log('set');
+          blockObject.position.set(
+            object.position.x + this.blockSpace.x + this.blockSize.x,
+            object.position.y - ((this.blockSpace.y + this.blockSize.y) * this.layers[block.layer]),
+            0
+          );
+        }
+      });
+      this.layers[block.layer] += 1;
+      console.log(this.layers);
+      console.log(blockObject);
     }
-
-    // let lineGeometry = new THREE.Geometry();
-    // let lineMaterial = new THREE.LineBasicMaterial({
-    //   color: 0x000000,
-    // });
-
-    // if (this.number === 0) {
-    //   block.position.set(this.initialPosition.x, this.initialPosition.y, 0);
-    //   this.list.push(block);
-    // } else {
-    //   let previousBlockPosition = this.getPosition(data.prev);
-    //   switch (this.getFreePoint(data.prev)) {
-    //     case 'top':
-    //       block.position.set(previousBlockPosition.x, previousBlockPosition.y + this.distance + this.size.y, 0);
-    //       this.list.push(block);
-    //       lineGeometry.vertices.push(this.getTop(data.prev));
-    //       lineGeometry.vertices.push(this.getBottom(data.name));
-    //       break;
-
-    //     case 'right':
-    //       block.position.set(previousBlockPosition.x + this.distance + this.size.x, previousBlockPosition.y + this.distance + this.size.y, 0);
-    //       this.list.push(block);
-    //       lineGeometry.vertices.push(this.getRight(data.prev));
-    //       lineGeometry.vertices.push(new THREE.Vector3(this.getBottom(data.name).x, this.getRight(data.prev).y, 0));
-    //       lineGeometry.vertices.push(this.getBottom(data.name));
-    //       break;
-
-    //     case 'left':
-    //       block.position.set(previousBlockPosition.x - this.distance - this.size.x, previousBlockPosition.y + this.distance + this.size.y, 0);
-    //       this.list.push(block);
-    //       lineGeometry.vertices.push(this.getLeft(data.prev));
-    //       lineGeometry.vertices.push(new THREE.Vector3(this.getBottom(data.name).x, this.getLeft(data.prev).y, 0));
-    //       lineGeometry.vertices.push(this.getBottom(data.name));
-    //       break;
-    //   }
-    // }
 
     // let line = new THREE.Line(lineGeometry, lineMaterial);
     this.scene.add(blockObject);

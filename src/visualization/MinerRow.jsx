@@ -13,12 +13,14 @@ class MinerRow extends Component {
     super(props);
     this.miner = new Miner(this.props.color);
     this.miner.minerList = [];
-
-    Simulator.getInstance().addMiner(this.miner);
   }
 
   componentDidMount() {
     this.miner.initBlockchain();
+    Simulator.getInstance().addMiner(this.miner);
+    if (this.props.ready) {
+      Simulator.getInstance().start();
+    }
   }
 
 

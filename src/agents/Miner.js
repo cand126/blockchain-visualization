@@ -75,7 +75,7 @@ class Miner extends Eve.Agent {
 
       }
 
-      // this.watchdog.onBlockChange(this, object);
+      this.watchdog.onBlockChange(this, object);
     }
   }
 
