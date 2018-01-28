@@ -112,7 +112,7 @@ class Miner extends Eve.Agent {
       Hash.generateNull(),
       '',
       0,
-      '0x91989F', []
+      0x91989F, []
     );
     this.blockchain.push(this.currentBlock);
     this.watchdog.onBlockChange(this, this.currentBlock);

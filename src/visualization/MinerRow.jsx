@@ -11,7 +11,7 @@ import Simulator from '../simulation/Simulator';
 class MinerRow extends Component {
   constructor(props) {
     super(props);
-    this.miner = new Miner(this.props.color);
+    this.miner = new Miner(this.props.colorHex);
     this.miner.minerList = [];
   }
 

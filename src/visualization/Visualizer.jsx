@@ -66,7 +66,7 @@ class Visualizer extends Component {
   addBlock(block) {
     const blockGeometry = new THREE.BoxGeometry(this.blockSize.x, this.blockSize.y, this.blockSize.z);
     const blockMaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(0xff0000),
+      color: new THREE.Color(block.color),
       // transparent: true,
       // opacity: 0.5
     });

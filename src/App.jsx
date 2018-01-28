@@ -27,19 +27,28 @@ class App extends Component {
     this.setState((prevState) => ({
       minerList: [
         ...prevState.minerList,
-        {color: 'FF0000'},
+        {
+          color: 'FF0000',
+          colorHex: 0xFF0000,
+        },
       ],
     }));
     this.setState((prevState) => ({
       minerList: [
         ...prevState.minerList,
-        {color: '00FF00'},
+        {
+          color: '00FF00',
+          colorHex: 0x00FF00,
+        },
       ],
     }));
     this.setState((prevState) => ({
       minerList: [
         ...prevState.minerList,
-        {color: '0000FF'},
+        {
+          color: '0000FF',
+          colorHex: 0x0000FF,
+        },
       ],
     }));
   }
@@ -51,7 +60,7 @@ class App extends Component {
         <div className="d-flex flex-column App-content">
           <div className="d-flex flex-column Miner-container">
             {this.state.minerList.map((miner, index) =>
-              <MinerRow key={index} color={miner.color} ready={index === 2}/>
+              <MinerRow key={index} color={miner.color} colorHex={miner.colorHex} ready={index === 2}/>
             )}
           </div>
           <Logger />
