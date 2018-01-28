@@ -94,7 +94,6 @@ class Visualizer extends Component {
       }
       this.scene.children.find((object) => {
         if (object.data.id === block.previous) {
-          console.log('set');
           blockObject.position.set(
             object.position.x + this.blockSpace.x + this.blockSize.x,
             object.position.y - ((this.blockSpace.y + this.blockSize.y) * this.layers[block.layer]),
@@ -103,8 +102,6 @@ class Visualizer extends Component {
         }
       });
       this.layers[block.layer] += 1;
-      console.log(this.layers);
-      console.log(blockObject);
     }
 
     // let line = new THREE.Line(lineGeometry, lineMaterial);

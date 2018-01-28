@@ -18,6 +18,9 @@ class Miner extends Eve.Agent {
     this.color = color;
     this.transactionPool = [];
     this.blockchain = [];
+    this.currentBlock = null;
+    this.layer = 0;
+    this.neighbors = [];
     this.watchdog = Watchdog.getInstance();
   }
 
@@ -63,19 +66,34 @@ class Miner extends Eve.Agent {
       this.transactionPool.push(object);
       this.watchdog.onTransactionChange(this, object);
     } else if (object.type === 'block') {
-      if (object.previous === '') {
-        // a block from a miner
-        object.previous = this.currentBlock.id;
-        object.layer = this.currentBlock.layer + 1;
-        this.currentBlock.next = object.id;
-        this.currentBlock = object;
-        this.blockchain.push(this.currentBlock);
-      } else {
-        // consensus protocol: add longer blockchain
-
+      console.log(this.blockchain);
+      for (let i = 0; i < this.blockchain.length; i++) {
+        // repeated blocks
+        if (this.blockchain[i].id === object.id) {
+          return;
+        }
       }
-
+      this.addBlock(object);
       this.watchdog.onBlockChange(this, object);
+    }
+  }
+
+  addBlock(block) {
+    if (block.previous === '') {
+      // a block from a miner
+      block.previous = this.currentBlock.id;
+      block.layer = this.currentBlock.layer + 1;
+      this.currentBlock.next = block.id;
+      this.currentBlock = block;
+      this.layer = block.layer;
+      this.blockchain.push(this.currentBlock);
+
+      // publish
+      this.neighbors.forEach((node) => {
+        this.send(node, block);
+      });
+    } else {
+      // consensus protocol: add longer blockchain
     }
   }
 

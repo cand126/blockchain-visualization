@@ -22,8 +22,8 @@ class Simulator {
     // let miners know each other
     this.minerList.forEach((miner) => {
       this.minerList.forEach((otherMiner) => {
-        if (miner.id !== otherMiner.id && miner.minerList.indexOf(otherMiner.id) === -1) {
-          miner.minerList.push(otherMiner.id);
+        if (miner.id !== otherMiner.id && miner.neighbors.indexOf(otherMiner.id) === -1) {
+          miner.neighbors.push(otherMiner.id);
         }
       });
     });
