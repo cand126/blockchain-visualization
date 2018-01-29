@@ -48,10 +48,11 @@ class Miner extends Eve.Agent {
    * @param {string} to the id of the agents who will receive the block
    * @public
    */
-  publish(to, delay) {
-    const block = this.generate();
+  publish(block, delay) {
     setTimeout(() => {
-      this.send(to, block);
+      this.neighbors.forEach((node) => {
+        this.send(node, block);
+      });
     }, delay * 1000);
   }
 
@@ -66,34 +67,73 @@ class Miner extends Eve.Agent {
       this.transactionPool.push(object);
       this.watchdog.onTransactionChange(this, object);
     } else if (object.type === 'block') {
-      console.log(this.blockchain);
       for (let i = 0; i < this.blockchain.length; i++) {
         // repeated blocks
         if (this.blockchain[i].id === object.id) {
           return;
         }
       }
-      this.addBlock(object);
-      this.watchdog.onBlockChange(this, object);
+      this.addBlock(object, from);
+    } else if (object === 'blockchain') {
+      // consensus protocol
+      let currentBlockchain = {
+        type: 'blockchain',
+        blocks: [],
+      };
+      let block = this.currentBlock;
+      while (block.id !== Hash.generateNull()) {
+        currentBlockchain.blocks.push(block);
+        block = this.blockchain.find((element) => {
+          if (element.id === block.previous) {
+            return element;
+          }
+        });
+      }
+      // TODO: add the starting block
+
+      this.send(from, currentBlockchain);
+    } else if (object.type = 'blockchain') {
+      while (object.blocks.length > 0) {
+        const block = object.blocks.pop();
+        const checkBlock = this.blockchain.find((element) => {
+          if (element.id === block.id) {
+            return element;
+          }
+        });
+        if (typeof checkBlock === 'undefined') {
+          this.blockchain.push(block);
+          this.watchdog.onBlockChange(this, block);
+        }
+      }
     }
   }
 
-  addBlock(block) {
+  addBlock(block, from = null) {
     if (block.previous === '') {
       // a block from a miner
       block.previous = this.currentBlock.id;
       block.layer = this.currentBlock.layer + 1;
-      this.currentBlock.next = block.id;
+      // this.currentBlock.next = block.id;
+    } else {
+      // consensus protocol: add longer blockchain
+      const previousBlock = this.blockchain.find((element) => {
+        if (element.id === block.previous) {
+          return element;
+        }
+      });
+      if (typeof previousBlock === 'undefined') {
+        this.consensusProtocol(from);
+        return;
+      }
+    }
+    if (this.layer < block.layer) {
       this.currentBlock = block;
       this.layer = block.layer;
       this.blockchain.push(this.currentBlock);
-
-      // publish
-      this.neighbors.forEach((node) => {
-        this.send(node, block);
-      });
+      this.watchdog.onBlockChange(this, this.currentBlock);
     } else {
-      // consensus protocol: add longer blockchain
+      this.blockchain.push(block);
+      this.watchdog.onBlockChange(this, block);
     }
   }
 
@@ -116,6 +156,18 @@ class Miner extends Eve.Agent {
     );
     this.blockchain.push(this.currentBlock);
     this.watchdog.onBlockChange(this, this.currentBlock);
+  }
+
+  mine(delay) {
+    const block = this.generate();
+    setTimeout(() => {
+      this.addBlock(block);
+      this.publish(block, 0);
+    }, delay * 1000);
+  }
+
+  consensusProtocol(from) {
+    this.send(from, 'blockchain');
   }
 }
 

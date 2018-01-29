@@ -92,15 +92,16 @@ class Visualizer extends Component {
       if (typeof this.layers[block.layer] === 'undefined') {
         this.layers[block.layer] = 0;
       }
-      this.scene.children.find((object) => {
+      const previousBlock = this.scene.children.find((object) => {
         if (object.data.id === block.previous) {
-          blockObject.position.set(
-            object.position.x + this.blockSpace.x + this.blockSize.x,
-            object.position.y - ((this.blockSpace.y + this.blockSize.y) * this.layers[block.layer]),
-            0
-          );
+          return object;
         }
       });
+      blockObject.position.set(
+        previousBlock.position.x + this.blockSpace.x + this.blockSize.x,
+        previousBlock.position.y - ((this.blockSpace.y + this.blockSize.y) * this.layers[block.layer]),
+        0
+      );
       this.layers[block.layer] += 1;
     }
 
