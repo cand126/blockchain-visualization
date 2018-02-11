@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Button} from 'reactstrap';
 import './Footer.css';
 
 class Footer extends Component {
@@ -27,8 +28,10 @@ class Footer extends Component {
 
   render() {
     return (
-      <div className="d-flex justify-content-center Footer">
-        <h3>Timer: {this.state.counter}</h3>
+      <div className="d-flex justify-content-between align-items-center Footer">
+        <div></div>
+        <Button color="primary">Start</Button>
+        <h3 className="d-flex align-items-center">Timer: {this.state.counter}</h3>
       </div>
     );
   }

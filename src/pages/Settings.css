@@ -1,0 +1,8 @@
+.Settings {
+  flex: 1;
+  overflow: auto;
+}
+
+.card {
+  margin: 8px 0 8px 0;
+}

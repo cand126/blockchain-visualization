@@ -1,4 +1,4 @@
-import Eve from 'evejs';
+import Node from './Node';
 import Transaction from '../types/Transaction';
 import Hash from '../helper/Hash';
 
@@ -6,22 +6,19 @@ import Hash from '../helper/Hash';
  * @class this class is resposible for generating transactions
  * @extends Eve.Agent extends Agent class from eve framework
  */
-class TransactionGenerator extends Eve.Agent {
+class TransactionGenerator extends Node {
   /**
    * @constructor
-   * @param {string} id the id of the agent
    * @public
    */
   constructor(id) {
     super(id);
-    // connect to all transports configured by the system
-    this.connect(Eve.system.transports.getAll());
   }
 
   // singleton
   static getInstance() {
     if (!this.instance) {
-      this.instance = new TransactionGenerator(Hash.generateId());
+      this.instance = new TransactionGenerator();
     }
     return this.instance;
   }

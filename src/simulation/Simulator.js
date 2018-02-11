@@ -6,6 +6,7 @@ class Simulator {
   constructor() {
     this.minerList = [];
     this.transactionGenerator = TransactionGenerator.getInstance();
+    this.obj = [];
   }
 
   // singleton
@@ -31,11 +32,16 @@ class Simulator {
 
   start() {
     // test
+    this.obj[0].fuck();
     this.minerList[1].neighbors.pop();
     this.minerList[0].mine(0);
     this.minerList[1].mine(3);
     this.minerList[2].mine(6);
     this.minerList[0].mine(9);
+  }
+
+  add(obj) {
+    this.obj.push(obj);
   }
 }
 

@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import './MinerRow.css';
+import './Row.css';
 import Miner from '../agents/Miner';
-import Visualizer from './Visualizer';
+import Visualizer from '../visualization/Visualizer';
 import Simulator from '../simulation/Simulator';
 
 /**
  * MinerRow
  * @class
  */
-class MinerRow extends Component {
+class Row extends Component {
   constructor(props) {
     super(props);
     this.miner = new Miner(this.props.colorHex);
@@ -18,11 +18,11 @@ class MinerRow extends Component {
   componentDidMount() {
     this.miner.initBlockchain();
     Simulator.getInstance().addMiner(this.miner);
-    if (this.props.ready) {
-      Simulator.getInstance().start();
-    }
+    Simulator.getInstance().addMiner(this);
+    // if (this.props.ready) {
+    //   Simulator.getInstance().start();
+    // }
   }
-
 
   render() {
     const minerHeader = {
@@ -38,4 +38,4 @@ class MinerRow extends Component {
   }
 }
 
-export default MinerRow;
+export default Row;

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import './App.css';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
-import MinerRow from './visualization/MinerRow';
-import Logger from './visualization/Logger';
-import Simulator from './simulation/Simulator';
+import Visualization from './pages/Visualization';
+import Settings from './pages/Settings';
 
 // import Hash from './helper/Hash';
 
@@ -16,57 +16,66 @@ import Simulator from './simulation/Simulator';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.simulator = Simulator.getInstance();
     this.state = {
-      minerList: [],
+      nodes: [
+        {
+          id: 't',
+          type: 'transaction generator',
+        },
+        {
+          id: 'a',
+          type: 'miner',
+          color: '#FF0000',
+          miningTime: 10,
+          minValue: 3,
+          mineNumber: 2,
+          maxPending: 10,
+        },
+        {
+          id: 'b',
+          type: 'miner',
+          color: '#00FF00',
+          miningTime: 10,
+          minValue: 3,
+          mineNumber: 2,
+          maxPending: 10,
+        },
+        {
+          id: 'c',
+          type: 'miner',
+          color: '#0000FF',
+          miningTime: 10,
+          minValue: 3,
+          mineNumber: 2,
+          maxPending: 10,
+        },
+        {
+          id: 'd',
+          type: 'node',
+        },
+        {
+          id: 'e',
+          type: 'node',
+        },
+      ],
     };
   }
 
   componentDidMount() {
-    // test
-    this.setState((prevState) => ({
-      minerList: [
-        ...prevState.minerList,
-        {
-          color: 'FF0000',
-          colorHex: 0xFF0000,
-        },
-      ],
-    }));
-    this.setState((prevState) => ({
-      minerList: [
-        ...prevState.minerList,
-        {
-          color: '00FF00',
-          colorHex: 0x00FF00,
-        },
-      ],
-    }));
-    this.setState((prevState) => ({
-      minerList: [
-        ...prevState.minerList,
-        {
-          color: '0000FF',
-          colorHex: 0x0000FF,
-        },
-      ],
-    }));
   }
 
   render() {
     return (
-      <div className="d-flex flex-column App">
-        <Header />
-        <div className="d-flex flex-column App-content">
-          <div className="d-flex flex-column Miner-container">
-            {this.state.minerList.map((miner, index) =>
-              <MinerRow key={index} color={miner.color} colorHex={miner.colorHex} ready={index === 2}/>
-            )}
-          </div>
-          <Logger />
+      <Router>
+        <div className="d-flex flex-column App">
+          <Header />
+          <Route exact path="/" component={Visualization} />
+          <Route path="/settings" render={(props) => (
+            <Settings {...props} nodes={this.state.nodes} />
+          )} />
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </Router>
     );
   }
 }
