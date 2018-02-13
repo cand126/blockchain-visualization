@@ -5,6 +5,7 @@ import Header from './layout/Header';
 import Footer from './layout/Footer';
 import Visualization from './pages/Visualization';
 import Settings from './pages/Settings';
+import Simulator from './simulation/Simulator';
 
 // import Hash from './helper/Hash';
 
@@ -18,10 +19,6 @@ class App extends Component {
     super(props);
     this.state = {
       nodes: [
-        {
-          id: 't',
-          type: 'transaction generator',
-        },
         {
           id: 'a',
           type: 'miner',
@@ -58,10 +55,39 @@ class App extends Component {
           type: 'node',
         },
       ],
+      delays: [],
     };
+
+    this.handleNodesChange = this.handleNodesChange.bind(this);
+    this.initNodes = this.initNodes.bind(this);
   }
 
   componentDidMount() {
+    this.updateNatch();
+  }
+
+  handleNodesChange(nodes) {
+    this.setState({nodes: nodes});
+  }
+
+  updateNatch() {
+    this.setState({
+      delays: [],
+    });
+    for (let i = 0; i < this.state.nodes.length; i++) {
+      for (let j = i + 1; j < this.state.nodes.length; j++) {
+        this.setState((prevState) => ({
+          delays: [...prevState.delays, {
+            node: [this.state.nodes[i].id, this.state.nodes[j].id],
+            time: 0,
+          }],
+        }));
+      }
+    }
+  }
+
+  initNodes() {
+    Simulator.getInstance().addNodes(this.state.nodes, this.state.delays);
   }
 
   render() {
@@ -69,9 +95,11 @@ class App extends Component {
       <Router>
         <div className="d-flex flex-column App">
           <Header />
-          <Route exact path="/" component={Visualization} />
+          <Route exact path="/" render={(props) => (
+            <Visualization {...props} onInitNodes={this.initNodes} />
+          )} />
           <Route path="/settings" render={(props) => (
-            <Settings {...props} nodes={this.state.nodes} />
+            <Settings {...props} nodes={this.state.nodes} delays={this.state.delays} onNodesChange={this.handleNodesChange} />
           )} />
           <Footer />
         </div>

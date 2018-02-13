@@ -10,7 +10,7 @@ import Hash from '../helper/Hash';
  */
 class Node extends Eve.Agent {
   constructor(id) {
-    super(id); // uuid
+    super(id);
     // connect to all transports configured by the system
     this.connect(Eve.system.transports.getAll());
     this.transactionPool = [];
@@ -128,6 +128,13 @@ class Node extends Eve.Agent {
     );
     this.blockchain.push(this.currentBlock);
     this.watchdog.onBlockChange(this, this.currentBlock);
+  }
+
+  addNeighbor(id, delay) {
+    this.neighbors.push({
+      id: id,
+      delay: delay,
+    });
   }
 }
 
