@@ -7,13 +7,14 @@ import Hash from '../helper/Hash';
  * @extends Eve.Agent extends Agent class from eve framework
  */
 class Miner extends Node {
-  minValue;
-  maxPendingTransaction;
-  numberOfTransaction;
-
-  constructor(id, color) {
-    super(id);
+  constructor(id, type, name, color, miningTime, minValue, mineNumber, maxPending) {
+    super(id, type);
     this.color = color;
+    this.name = name;
+    this.miningTime = miningTime;
+    this.minValue = minValue;
+    this.mineNumber = mineNumber;
+    this.maxPending = maxPending;
   }
 
   /**

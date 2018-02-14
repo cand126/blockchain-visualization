@@ -9,10 +9,12 @@ import Hash from '../helper/Hash';
  * @extends Eve.Agent
  */
 class Node extends Eve.Agent {
-  constructor(id) {
+  constructor(id, type='', name='') {
     super(id);
     // connect to all transports configured by the system
     this.connect(Eve.system.transports.getAll());
+    this.type = type;
+    this.name = name;
     this.transactionPool = [];
     this.blockchain = [];
     this.currentBlock = null;
@@ -130,9 +132,10 @@ class Node extends Eve.Agent {
     this.watchdog.onBlockChange(this, this.currentBlock);
   }
 
-  addNeighbor(id, delay) {
+  addNeighbor(id, name, delay) {
     this.neighbors.push({
       id: id,
+      name: name,
       delay: delay,
     });
   }

@@ -1,29 +1,37 @@
 import React, {Component} from 'react';
 import {Form} from 'reactstrap';
-import MinerRow from './MinerRow';
+import NodeCard from './NodeCard';
 import DelayRow from './DelayRow';
 import './Settings.css';
+import Simulator from '../simulation/Simulator';
+import TransactionGenerator from '../agents/TransactionGenerator';
 
 /**
  * Logger
  * @class
  */
 class Settings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transactionGenerator: TransactionGenerator.getInstance(),
+    };
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    console.log(nextProps.nodes);
+    this.setState({
+      transactionGenerator: TransactionGenerator.getInstance(),
+    });
+  }
+
   render() {
     return (
       <div className="container Settings">
-        <h3>Nodes</h3>
+        <NodeCard node={this.state.transactionGenerator} />
         {this.props.nodes.map((node, index) =>
-          <MinerRow key={index} index={index} id={node.id} type={node.type} color={node.color} miningTime={node.miningTime} minValue={node.minValue} mineNumber={node.mineNumber} maxPending={node.maxPending} />
+          <NodeCard key={index} index={index} node={node} />
         )}
-        <h3>Delay of Network (seconds)</h3>
-        <h4>Transaction Generator</h4>
-        <h4>Other Nodes</h4>
-        <Form>
-        {this.props.delays.map((delay, index) =>
-          <DelayRow key={index} node1={delay.node[0]} node2={delay.node[1]} time={delay.time}/>
-        )}
-        </Form>
       </div>
     );
   }

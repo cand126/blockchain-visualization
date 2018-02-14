@@ -9,7 +9,11 @@ class DelayRow extends Component {
   render() {
     return (
       <FormGroup row>
-        <Label sm={6}>{this.props.node1} & {this.props.node2}</Label>
+        {this.props.node2 ?
+          <Label sm={6}>{this.props.node1} & {this.props.node2}</Label>
+          :
+          <Label sm={6}>{this.props.node1} </Label>
+        }
         <Col sm={6}>
           <Input type="number" name="delay" value={this.props.time} />
         </Col>

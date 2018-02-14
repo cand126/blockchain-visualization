@@ -6,3 +6,7 @@
 .card {
   margin: 8px 0 8px 0;
 }
+
+.settings-row {
+  height: 38px;
+}
