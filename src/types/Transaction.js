@@ -16,6 +16,9 @@
  * }
  */
 class Transaction {
+  /**
+   * @public
+   */
   constructor(
     id,
     type,

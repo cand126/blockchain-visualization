@@ -6,6 +6,9 @@ import {FormGroup, Label, Col, Input} from 'reactstrap';
  * @class
  */
 class DelayRow extends Component {
+  /**
+   * @public
+   */
   render() {
     return (
       <FormGroup row>

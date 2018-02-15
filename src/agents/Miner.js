@@ -7,10 +7,14 @@ import Hash from '../helper/Hash';
  * @extends Eve.Agent extends Agent class from eve framework
  */
 class Miner extends Node {
+  /**
+   * @public
+   */
   constructor(id, type, name, color, miningTime, minValue, mineNumber, maxPending) {
-    super(id, type);
-    this.color = color;
+    super(id);
+    this.type = type;
     this.name = name;
+    this.color = color;
     this.miningTime = miningTime;
     this.minValue = minValue;
     this.mineNumber = mineNumber;
@@ -36,12 +40,18 @@ class Miner extends Node {
     return block;
   }
 
+  /**
+   * @public
+   */
   setMiningStrategy(minValue, maxPendingTransaction, numberOfTransaction) {
     this.minValue = minValue;
     this.maxPendingTransaction = maxPendingTransaction;
     this.numberOfTransaction = numberOfTransaction;
   }
 
+  /**
+   * @public
+   */
   mine(delay) {
     const block = this.generate();
     setTimeout(() => {
@@ -50,6 +60,9 @@ class Miner extends Node {
     }, delay * 1000);
   }
 
+  /**
+   * @public
+   */
   consensusProtocol(from) {
     this.send(from, 'blockchain');
   }

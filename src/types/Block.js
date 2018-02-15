@@ -23,6 +23,9 @@
  * }
  */
 class Block {
+  /**
+   * @public
+   */
   constructor(
     id,
     type,

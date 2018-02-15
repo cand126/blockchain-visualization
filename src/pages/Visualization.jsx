@@ -10,24 +10,23 @@ import './Visualization.css';
  * @class
  */
 class Visualization extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
     this.state = {
       nodes: [],
     };
-
-    this.handleInitNodes = this.handleInitNodes.bind(this);
   }
 
-  handleInitNodes(e) {
-    this.props.onInitNodes();
-  }
-
+  /**
+   * @public
+   */
   render() {
     return (
       <div className="d-flex flex-column Visualization">
         <div className="d-flex flex-column node-container">
-          {/* <Button color="primary" onClick={this.handleInitNodes}>Initialize</Button> */}
           {this.props.nodes.map((node, index) =>
             <VisualizationRow key={index} id={node.id} name={node.name} color={node.color} type={node.type}/>
           )}

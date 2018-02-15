@@ -2,7 +2,13 @@ import React, {Component} from 'react';
 import {Navbar, NavbarToggler, Collapse, Nav, NavItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 
+/**
+ * @public
+ */
 class Header extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
 
@@ -12,12 +18,18 @@ class Header extends Component {
     };
   }
 
+  /**
+   * @public
+   */
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen,
     });
   }
 
+  /**
+   * @public
+   */
   render() {
     return (
       <div>

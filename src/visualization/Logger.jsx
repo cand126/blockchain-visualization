@@ -7,6 +7,9 @@ import Watchdog from '../watchdog/Watchdog';
  * @class
  */
 class Logger extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -14,10 +17,16 @@ class Logger extends Component {
     };
   }
 
+  /**
+   * @public
+   */
   componentDidMount() {
     Watchdog.getInstance().addLogger(this);
   }
 
+  /**
+   * @public
+   */
   addlog(id, data) {
     this.setState((prevState) => ({
       logList: [...prevState.logList, {
@@ -27,6 +36,9 @@ class Logger extends Component {
     }));
   }
 
+  /**
+   * @public
+   */
   render() {
     return (
       <div className="container-fluid Logger">

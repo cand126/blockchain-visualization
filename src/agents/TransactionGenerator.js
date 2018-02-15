@@ -15,7 +15,9 @@ class TransactionGenerator extends Node {
     super(id);
   }
 
-  // singleton
+  /**
+   * singleton
+   */
   static getInstance() {
     if (!this.instance) {
       this.instance = new TransactionGenerator(Hash.generateId());

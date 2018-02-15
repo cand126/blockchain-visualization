@@ -9,12 +9,13 @@ import Hash from '../helper/Hash';
  * @extends Eve.Agent
  */
 class Node extends Eve.Agent {
-  constructor(id, type='', name='') {
+  /**
+   * @public
+   */
+  constructor(id) {
     super(id);
     // connect to all transports configured by the system
     this.connect(Eve.system.transports.getAll());
-    this.type = type;
-    this.name = name;
     this.transactionPool = [];
     this.blockchain = [];
     this.currentBlock = null;
@@ -88,6 +89,9 @@ class Node extends Eve.Agent {
     }
   }
 
+  /**
+   * @public
+   */
   addBlock(block, from = null) {
     if (block.previous === '') {
       // a block from a miner
@@ -117,6 +121,9 @@ class Node extends Eve.Agent {
     }
   }
 
+  /**
+   * @public
+   */
   initBlockchain() {
     this.currentBlock = new Block(
       Hash.generateNull(),
@@ -132,6 +139,9 @@ class Node extends Eve.Agent {
     this.watchdog.onBlockChange(this, this.currentBlock);
   }
 
+  /**
+   * @public
+   */
   addNeighbor(id, name, delay) {
     this.neighbors.push({
       id: id,

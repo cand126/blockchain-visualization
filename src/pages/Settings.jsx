@@ -11,6 +11,9 @@ import TransactionGenerator from '../agents/TransactionGenerator';
  * @class
  */
 class Settings extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -18,6 +21,9 @@ class Settings extends Component {
     };
   }
 
+  /**
+   * @public
+   */
   componentWillReceiveProps(nextProps, nextContext) {
     console.log(nextProps.nodes);
     this.setState({
@@ -25,6 +31,9 @@ class Settings extends Component {
     });
   }
 
+  /**
+   * @public
+   */
   render() {
     return (
       <div className="container Settings">

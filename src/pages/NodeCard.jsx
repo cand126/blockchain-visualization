@@ -7,6 +7,9 @@ import './Settings.css';
  * @class
  */
 class NodeCard extends Component {
+  /**
+   * @public
+   */
   render() {
     return (
       <Card className="MinerCard">

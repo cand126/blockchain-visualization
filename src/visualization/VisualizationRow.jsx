@@ -9,32 +9,20 @@ import Simulator from '../simulation/Simulator';
  * @class
  */
 class VisualizationRow extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.miner = new Miner(this.props.colorHex);
-  //   this.miner.minerList = [];
-  // }
-
-  // componentDidMount() {
-  //   this.miner.initBlockchain();
-  //   Simulator.getInstance().addMiner(this.miner);
-  //   Simulator.getInstance().addMiner(this);
-  //   // if (this.props.ready) {
-  //   //   Simulator.getInstance().start();
-  //   // }
-  // }
-
+  /**
+   * @public
+   */
   render() {
-    let minerHeader = {};
+    let nodeHeader = {};
     this.props.color ?
-    minerHeader.backgroundColor = this.props.color
+    nodeHeader.backgroundColor = this.props.color
     :
-    minerHeader.backgroundColor = '#FFFFFF';
+    nodeHeader.backgroundColor = '#FFFFFF';
 
     return (
       <div className="d-flex flex-column Miner-row">
-        <h3 style={minerHeader}>{this.props.name} ({this.props.type})</h3>
-        {/* <Visualizer minerId={this.miner.id}/> */}
+        <h3 style={nodeHeader}>{this.props.name} ({this.props.type})</h3>
+        <Visualizer nodeId={this.props.id}/>
       </div>
     );
   }

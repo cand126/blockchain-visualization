@@ -9,6 +9,9 @@ import Hash from '../helper/Hash';
  * @class
  */
 class Visualizer extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
     this.watchdog = Watchdog.getInstance();
@@ -16,11 +19,11 @@ class Visualizer extends Component {
     this.blockSpace = new THREE.Vector3(16, 16, 0);
     // records the number of blocks in each layer
     this.layers = [];
-    this.minerId = this.props.minerId;
-
+    this.nodeId = this.props.nodeId;
     // binding
     this._animate = this._animate.bind(this);
   }
+
 
   componentDidMount() {
     // subscribe
@@ -31,6 +34,9 @@ class Visualizer extends Component {
     // this.addBlock();
   }
 
+  /**
+   * @public
+   */
   _init() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera();
@@ -57,12 +63,18 @@ class Visualizer extends Component {
     this.camera.updateProjectionMatrix();
   }
 
+  /**
+   * @public
+   */
   _animate() {
     // loop
     requestAnimationFrame(this._animate);
     this.renderer.render(this.scene, this.camera);
   }
 
+  /**
+   * @public
+   */
   addBlock(block) {
     const blockGeometry = new THREE.BoxGeometry(this.blockSize.x, this.blockSize.y, this.blockSize.z);
     const blockMaterial = new THREE.MeshBasicMaterial({
@@ -110,6 +122,9 @@ class Visualizer extends Component {
     // this.scene.add(line);
   }
 
+  /**
+   * @public
+   */
   render() {
     return (
       <div

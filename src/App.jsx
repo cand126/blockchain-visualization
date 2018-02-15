@@ -16,17 +16,20 @@ import Hash from './helper/Hash';
  * @since 1.0.0
  */
 class App extends Component {
+  /**
+   * @public
+   */
   constructor(props) {
     super(props);
     // test
     this.state = {
       nodes: [],
     };
-
-    this.handleNodesChange = this.handleNodesChange.bind(this);
-    this.initNodes = this.initNodes.bind(this);
   }
 
+  /**
+   * @public
+   */
   componentDidMount() {
     // test
     let n1 = Simulator.getInstance().addNode({
@@ -34,7 +37,7 @@ class App extends Component {
       type: 'miner',
       color: '#FF0000',
       name: 'Alice',
-      miningTime: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
       minValue: 3,
       mineNumber: 2,
       maxPending: 10,
@@ -47,7 +50,7 @@ class App extends Component {
       type: 'miner',
       color: '#00FF00',
       name: 'Bob',
-      miningTime: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
       minValue: 3,
       mineNumber: 2,
       maxPending: 10,
@@ -60,7 +63,7 @@ class App extends Component {
       type: 'miner',
       color: '#0000FF',
       name: 'Charlie',
-      miningTime: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
       minValue: 3,
       mineNumber: 2,
       maxPending: 10,
@@ -70,7 +73,7 @@ class App extends Component {
     }));
     let n4 = Simulator.getInstance().addNode({
       id: Hash.generateId(),
-      type: 'node',
+      type: 'nonminer',
       name: 'David',
     });
     this.setState((prevState) => ({
@@ -78,7 +81,7 @@ class App extends Component {
     }));
     let n5 = Simulator.getInstance().addNode({
       id: Hash.generateId(),
-      type: 'node',
+      type: 'nonminer',
       name: 'Eric',
     });
     this.setState((prevState) => ({
@@ -86,21 +89,16 @@ class App extends Component {
     }));
   }
 
-  handleNodesChange(nodes) {
-    this.setState({nodes: nodes});
-  }
-
-  initNodes() {
-    // Simulator.getInstance().addDelays(this.state.transactionDelays, this.state.nodeDelays);
-  }
-
+  /**
+   * @public
+   */
   render() {
     return (
       <Router>
         <div className="d-flex flex-column App">
           <Header />
           <Route exact path="/" render={(props) => (
-            <Visualization {...props} nodes={this.state.nodes} onInitNodes={this.initNodes} />
+            <Visualization {...props} nodes={this.state.nodes} />
           )} />
           <Route path="/settings" render={(props) => (
             <Settings {...props} nodes={this.state.nodes} onNodesChange={this.handleNodesChange} />
