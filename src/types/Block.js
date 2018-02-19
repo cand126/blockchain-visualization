@@ -31,7 +31,6 @@ class Block {
     timestamp,
     miner,
     previous,
-    next,
     layer,
     color,
     transactions

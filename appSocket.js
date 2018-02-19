@@ -26,6 +26,14 @@ io.on('connection', (socket) => {
     let Simulator = require('./src/Simulator');
     Simulator.getInstance().publishTransaction(data);
   });
+  socket.on('init blockchain', (data) => {
+    let Simulator = require('./src/Simulator');
+    let blockchain = Simulator.getInstance().getBlockchain(data.nodeId);
+    socket.emit('update blockchain', {
+      nodeId: data.nodeId,
+      blockchain: blockchain,
+    });
+  });
 });
 
 appSocket.updateVisualization = (action, data) => {

@@ -84,11 +84,14 @@ class Node extends eve.Agent {
    * @public
    */
   addBlock(block, from = null) {
-    if (block.previous === '') {
-      // a block from a miner
-      block.previous = this.currentBlock.id;
-      block.layer = this.currentBlock.layer + 1;
-      // this.currentBlock.next = block.id;
+    if (this.currentBlock === null) {
+      this.currentBlock = block;
+      this.blockchain.push(this.currentBlock);
+    } else if (block.previous === '') {
+        // a block from a miner
+        block.previous = this.currentBlock.id;
+        block.layer = this.currentBlock.layer + 1;
+        // this.currentBlock.next = block.id;
     } else {
       // consensus protocol: add longer blockchain
       const previousBlock = this.blockchain.find((element) => {
@@ -101,33 +104,37 @@ class Node extends eve.Agent {
         return;
       }
     }
-    if (this.layer < block.layer) {
-      this.currentBlock = block;
-      this.layer = block.layer;
-      this.blockchain.push(this.currentBlock);
-      this.watchdog.onBlockChange(this, this.currentBlock);
-    } else {
-      this.blockchain.push(block);
-      this.watchdog.onBlockChange(this, block);
-    }
+    // if (this.layer < block.layer) {
+    //   this.currentBlock = block;
+    //   this.layer = block.layer;
+    //   this.blockchain.push(this.currentBlock);
+    //   this.watchdog.onBlockChange(this, this.currentBlock);
+    // } else {
+    //   this.blockchain.push(block);
+    //   this.watchdog.onBlockChange(this, block);
+    // }
+
+    this.watchdog.onBlockChange('update blockchain', {
+      nodeId: this.id,
+      block: block,
+    });
   }
 
   /**
    * @public
    */
   initBlockchain() {
-    this.currentBlock = new Block(
+    const block = new Block(
       Hash.generateNull(),
       'block',
       new Date(),
       Hash.generateNull(),
-      Hash.generateNull(),
-      '',
+      'null',
       0,
-      0x91989F, []
+      0x91989F,
+      []
     );
-    this.blockchain.push(this.currentBlock);
-    this.watchdog.onBlockChange(this, this.currentBlock);
+    this.addBlock(block);
   }
 
   /**

@@ -1,3 +1,5 @@
+const Visualizer = require('./Visualizer');
+
 /**
  * @public
  */
@@ -34,14 +36,13 @@ class Watchdog {
   /**
    * @public
    */
-  onBlockChange(node, block) {
-    // this.visualizerList.forEach((visualizer) => {
-    //   if (visualizer.nodeId === node.id) {
-    //     visualizer.addBlock(block);
-    //   }
-    // });
+  onBlockChange(action, data) {
+    Visualizer.getInstance().updateBlockchain(action, data);
   }
 
+  /**
+   * @public
+   */
   onMiningChange(action, data) {
     let appSocket = require('../appSocket');
     appSocket.updateVisualization(action, data);

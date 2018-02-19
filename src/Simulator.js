@@ -2,6 +2,7 @@ const TransactionGenerator = require('./agents/TransactionGenerator');
 const Miner = require('./agents/Miner');
 const Nonminer = require('./agents/Nonminer');
 const Hash = require('./helper/Hash');
+const Visualizer = require('./Visualizer');
 
 /**
  * @class this class is resposible for generating transactions
@@ -95,6 +96,8 @@ class Simulator {
       newNode.addNeighbor(oldNode.id, oldNode.name, delay);
     });
 
+    Visualizer.getInstance().addNode(newNode.id);
+    newNode.initBlockchain();
     this.nodeList.push(newNode);
   }
 
@@ -120,18 +123,6 @@ class Simulator {
   /**
    * @public
    */
-  start() {
-    this.nodeList.forEach((node) => {
-      node.initBlockchain();
-    });
-    // test
-    TransactionGenerator.getInstance().publish();
-    TransactionGenerator.getInstance().publish();
-  }
-
-  /**
-   * @public
-   */
   getNodesInfo() {
     let info = [];
     const transactionGenerator = TransactionGenerator.getInstance();
@@ -142,7 +133,7 @@ class Simulator {
     });
     this.nodeList.forEach((node) => {
       info.push({
-        id: node.id,
+        nodeId: node.id,
         name: node.name,
         type: node.type,
         color: node.color,
@@ -160,22 +151,33 @@ class Simulator {
   /**
    * @public
    */
+  getBlockchain(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].blockchain;
+      }
+    }
+  }
+
+  /**
+   * @public
+   */
   updateNode(data) {
     switch (data.action) {
       case 'update node name':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.name = data.value;
           } else {
             node.neighbors.forEach((neighbor) => {
-              if (neighbor.id === data.id) {
+              if (neighbor.id === data.nodeId) {
                 neighbor.name = data.value;
               }
             });
           }
         });
         TransactionGenerator.getInstance().neighbors.forEach((neighbor) => {
-          if (neighbor.id === data.id) {
+          if (neighbor.id === data.nodeId) {
             neighbor.name = data.value;
           }
         });
@@ -183,7 +185,7 @@ class Simulator {
 
       case 'update node color':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.color = data.value;
           }
         });
@@ -191,7 +193,7 @@ class Simulator {
 
       case 'update node neighbor':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.neighbors.forEach((neighbor) => {
               if (neighbor.id === data.neighborId) {
                 neighbor.delay = data.value;
@@ -214,7 +216,7 @@ class Simulator {
     switch (data.action) {
       case 'update mining time':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.miningTime = data.value;
           }
         });
@@ -222,7 +224,7 @@ class Simulator {
 
       case 'update min value':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.minValue = data.value;
           }
         });
@@ -230,7 +232,7 @@ class Simulator {
 
       case 'update mine number':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.mineNumber = data.value;
           }
         });
@@ -238,7 +240,7 @@ class Simulator {
 
       case 'update max pending':
         this.nodeList.forEach((node) => {
-          if (node.id === data.id) {
+          if (node.id === data.nodeId) {
             node.maxPending = data.value;
           }
         });
