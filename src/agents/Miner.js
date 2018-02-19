@@ -1,6 +1,6 @@
-import Node from './Node';
-import Block from '../types/Block';
-import Hash from '../helper/Hash';
+var Node = require('./Node');
+var Block = require('../types/Block');
+var Hash = require('../helper/Hash');
 
 /**
  * @class this class is resposible for mining
@@ -52,12 +52,13 @@ class Miner extends Node {
   /**
    * @public
    */
-  mine(delay) {
-    const block = this.generate();
-    setTimeout(() => {
-      this.addBlock(block);
-      this.publish(block, 0);
-    }, delay * 1000);
+  mine(transactions) {
+    // const block = this.generate();
+    // setTimeout(() => {
+    //   this.addBlock(block);
+    //   this.publish(block, 0);
+    // }, delay * 1000);
+    console.log('mining');
   }
 
   /**
@@ -66,6 +67,32 @@ class Miner extends Node {
   consensusProtocol(from) {
     this.send(from, 'blockchain');
   }
+
+  /**
+   * @public
+   */
+  receiveTransaction(transaction) {
+    this.transactionPool.push(transaction);
+    if (this.transactionPool.length >= this.maxPending) {
+      // TODO: maximum number of transactions
+    } else if (this.transactionPool.length >= this.mineNumber) {
+      let transactions = [];
+
+      for (let i = 0; i < this.transactionPool.length; i++) {
+        if (this.transactionPool[i].reward + this.transactionPool[i].privilege >= this.minValue) {
+          transactions.push(this.transactionPool[i]);
+        } else {
+          this.transactionPool[i].privilege += 1;
+        }
+
+        if (transactions.length >= this.mineNumber) {
+          this.mine(transactions);
+          break;
+        }
+      }
+    }
+    this.watchdog.onTransactionChange(this, transaction);
+  }
 }
 
-export default Miner;
+module.exports = Miner;

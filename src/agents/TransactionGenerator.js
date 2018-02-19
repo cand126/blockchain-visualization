@@ -1,6 +1,6 @@
-import Node from './Node';
-import Transaction from '../types/Transaction';
-import Hash from '../helper/Hash';
+var Node = require('./Node');
+var Transaction = require('../types/Transaction');
+var Hash = require('../helper/Hash');
 
 /**
  * @class this class is resposible for generating transactions
@@ -30,13 +30,13 @@ class TransactionGenerator extends Node {
    * @returns {Itransaction} return the transaction that is generated, @see {@link Itransaction}
    * @private
    */
-  generate() {
+  generate(reward) {
     const transaction = new Transaction(
       Hash.generateId(),
       'transaction',
       new Date(),
       '',
-      10,
+      reward,
       0
     );
 
@@ -49,12 +49,14 @@ class TransactionGenerator extends Node {
    * @param {number} delay the number of time to delay
    * @public
    */
-  publish(to, delay) {
-    const transaction = this.generate();
-    setTimeout(() => {
-      this.send(to, transaction);
-    }, delay * 1000);
+  publish(reward) {
+    const transaction = this.generate(reward);
+    this.neighbors.forEach((neighbor) => {
+      setTimeout(() => {
+        this.send(neighbor.id, transaction);
+      }, neighbor.delay * 1000);
+    });
   }
 }
 
-export default TransactionGenerator;
+module.exports = TransactionGenerator;

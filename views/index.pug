@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  div(class='container-fluid nodes-container')
+    each node in nodes
+      div(class='card')
+        h3(class='text-center', style='background-color: ' + node.color) #{node.name} (#{node.type})
+        if node.type === 'miner'
+          div(class='row')
+            div(class='col d-flex flex-column')
+              div(class='text-center progress-text') Transaction Pool
+              div(class='progress')
+                div(class='progress-bar', role='progressbar', style='width: 25%', aria-valuenow='33', aria-valuemin='0', aria-valuemax='100')
+            div(class='col d-flex flex-column')
+              div(class='text-center progress-text') Mining Progress
+              div(class='progress')
+                div(class='progress-bar', role='progressbar', style='width: 25%', aria-valuenow='33', aria-valuemin='0', aria-valuemax='100')
+        div(id='canvas-container-' + node.id, name='canvas-container')

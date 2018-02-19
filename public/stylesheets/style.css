@@ -1,0 +1,45 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column; }
+
+.main-content {
+  flex: 1; }
+
+.nodes-container {
+  flex: 1;
+  overflow: auto; }
+  .nodes-container > div {
+    margin: 16px 0 16px 0; }
+    .nodes-container > div > h3 {
+      padding: 8px 0 8px 0;
+      margin: 0; }
+    .nodes-container > div > div.row {
+      margin: 0;
+      padding: 16px 0 16px 0; }
+      .nodes-container > div > div.row > div > div.progress-text {
+        font-size: 16px; }
+      .nodes-container > div > div.row > div > div.progress {
+        height: 6px; }
+    .nodes-container > div > div[name=canvas-container] {
+      height: 200px; }
+
+.settings-container {
+  overflow: auto; }
+  .settings-container > div.card {
+    margin: 16px 0 16px 0; }
+    .settings-container > div.card > div.card-block > div.row {
+      height: 38px; }
+      .settings-container > div.card > div.card-block > div.row:not(:last-child) {
+        margin-bottom: 8px; }
+
+footer {
+  padding: 8px 0 8px 0; }
+  footer > div > .publish-text {
+    padding: 0 8px 0 8px; }
+  footer > div > input {
+    width: 100px !important;
+    margin: 0 8px 0 8px; }
+
+/*# sourceMappingURL=style.css.map */

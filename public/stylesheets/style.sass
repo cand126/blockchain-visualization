@@ -1,0 +1,46 @@
+body 
+  font-family: 'Roboto', sans-serif
+  height: 100vh
+  display: flex
+  flex-direction: column
+
+.main-content
+  flex: 1
+
+.nodes-container
+  flex: 1
+  overflow: auto
+  > div
+    margin: 16px 0 16px 0
+    > h3
+      padding: 8px 0 8px 0
+      margin: 0
+    > div.row
+      margin: 0
+      padding: 16px 0 16px 0
+      > div
+        > div.progress-text
+          font-size: 16px
+        > div.progress
+          height: 6px
+    > div[name=canvas-container]
+      height: 200px
+
+.settings-container
+  overflow: auto
+  > div.card
+    margin: 16px 0 16px 0
+    > div.card-block
+      > div.row
+        height: 38px
+        &:not(:last-child)
+          margin-bottom: 8px
+
+footer
+  padding: 8px 0 8px 0
+  > div
+    > .publish-text
+      padding: 0 8px 0 8px
+    > input
+      width: 100px !important
+      margin: 0 8px 0 8px

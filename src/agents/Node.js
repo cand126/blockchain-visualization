@@ -1,40 +1,27 @@
-import Eve from 'evejs';
-import Block from '../types/Block';
-import Watchdog from '../watchdog/Watchdog';
-import Hash from '../helper/Hash';
+var eve = require('evejs');
+var Block = require('../types/Block');
+var Watchdog = require('../Watchdog');
+var Hash = require('../helper/Hash');
 
 /**
  * this class is resposible for mining.
  * @class
- * @extends Eve.Agent
+ * @extends eve.Agent
  */
-class Node extends Eve.Agent {
+class Node extends eve.Agent {
   /**
    * @public
    */
   constructor(id) {
     super(id);
     // connect to all transports configured by the system
-    this.connect(Eve.system.transports.getAll());
+    this.connect(eve.system.transports.getAll());
     this.transactionPool = [];
     this.blockchain = [];
     this.currentBlock = null;
     this.layer = 0;
     this.neighbors = [];
     this.watchdog = Watchdog.getInstance();
-  }
-
-  /**
-   * @function publish publish a block
-   * @param {string} to the id of the agents who will receive the block
-   * @public
-   */
-  publish(block, delay) {
-    setTimeout(() => {
-      this.neighbors.forEach((node) => {
-        this.send(node, block);
-      });
-    }, delay * 1000);
   }
 
   /**
@@ -45,8 +32,7 @@ class Node extends Eve.Agent {
    */
   receive(from, object) {
     if (object.type === 'transaction') {
-      this.transactionPool.push(object);
-      this.watchdog.onTransactionChange(this, object);
+      this.receiveTransaction(object);
     } else if (object.type === 'block') {
       for (let i = 0; i < this.blockchain.length; i++) {
         // repeated blocks
@@ -88,6 +74,11 @@ class Node extends Eve.Agent {
       }
     }
   }
+
+  /**
+   * @public
+   */
+  receiveTransaction(transaction) {}
 
   /**
    * @public
@@ -151,4 +142,4 @@ class Node extends Eve.Agent {
   }
 }
 
-export default Node;
+module.exports = Node;

@@ -1,4 +1,4 @@
-import Node from './Node';
+var Node = require('./Node');
 
 /**
  * @class this class is resposible for mining
@@ -15,4 +15,4 @@ class Nonminer extends Node {
   }
 }
 
-export default Nonminer;
+module.exports = Nonminer;

@@ -1,28 +1,24 @@
 {
-  "name": "blockchain-visualization",
-  "version": "0.1.0",
+  "name": "blockchainapp",
+  "version": "0.0.0",
   "private": true,
-  "dependencies": {
-    "bootstrap": "^4.0.0-beta.3",
-    "bufferutil": "^3.0.3",
-    "evejs": "^0.5.0",
-    "jquery": "^3.3.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
-    "reactstrap": "^5.0.0-beta",
-    "three": "^0.89.0",
-    "utf-8-validate": "^4.0.0"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "nodemon ./bin/www"
   },
-  "devDependencies": {
-    "eslint-config-google": "^0.9.1"
+  "dependencies": {
+    "body-parser": "~1.18.2",
+    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap-material-design": "^4.1.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "evejs": "^0.5.0",
+    "express": "~4.15.5",
+    "morgan": "~1.9.0",
+    "node-sass-middleware": "0.11.0",
+    "popper.js": "^1.12.9",
+    "pug": "2.0.0-beta11",
+    "serve-favicon": "~2.4.5",
+    "socket.io": "^2.0.4",
+    "three": "^0.90.0"
   }
 }

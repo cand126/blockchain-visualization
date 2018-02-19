@@ -1,6 +1,6 @@
-  /**
-   * @public
-   */
+/**
+ * @public
+ */
 class Watchdog {
   constructor() {
     this.visualizerList = [];
@@ -19,13 +19,6 @@ class Watchdog {
   /**
    * @public
    */
-  addLogger(logger) {
-    this.logger = logger;
-  }
-
-  /**
-   * @public
-   */
   addVisualizer(visualizer) {
     this.visualizerList.push(visualizer);
   }
@@ -33,21 +26,30 @@ class Watchdog {
   /**
    * @public
    */
-  onTransactionChange(miner, transaction) {
-    this.logger.addlog(miner.id, transaction);
+  onTransactionChange(node, transaction) {
+    this.visualizerList.forEach((visualizer) => {
+      if (visualizer.nodeId === node.id) {
+        if (node.type === 'miner') {
+          visualizer.updateTransactionPool(node.transactionPool.length);
+        }
+      }
+    });
   }
 
   /**
    * @public
    */
   onBlockChange(node, block) {
-    this.logger.addlog(node.id, block);
     this.visualizerList.forEach((visualizer) => {
       if (visualizer.nodeId === node.id) {
         visualizer.addBlock(block);
       }
     });
   }
+
+  onNodeChange(action, state) {
+
+  }
 }
 
-export default Watchdog;
+module.exports = Watchdog;
