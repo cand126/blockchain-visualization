@@ -17,38 +17,90 @@ block content
             div(class='form-group row')
               div(class='d-flex align-items-center col') #{node.name}
               div(class='col')
-                input(class='form-control', type='text', name='nodeName', value=node.name)
+                input(
+                  class='form-control', 
+                  type='text', 
+                  value=node.name, 
+                  data-nodeId=node.id, 
+                  oninput='updateNode("update node name", this.getAttribute("data-nodeId"), this.value)'
+                )
             div(class='form-group row')
               div(class='d-flex align-items-center col') Type
               div(class='col')
-                input(class='form-control', type='text', name='typeName', value=node.type)
+                input(
+                  class='form-control', 
+                  type='text', 
+                  value=node.type,
+                  data-nodeId=node.id
+                )
             if node.type === 'miner'
               div(class='form-group row')
                 div(class='d-flex align-items-center col') Color
                 div(class='col')
-                  input(class='form-control', type='text', name='color', value=node.color)
+                  input(
+                    class='form-control', 
+                    type='text', 
+                    value=node.color,
+                    data-nodeId=node.id, 
+                    oninput='updateNode("update node color", this.getAttribute("data-nodeId"), this.value)'
+                  )
           h4(class='card-title') Delay of Network (seconds)
           each neighbor in node.neighbors
             div(class='form-group row')
               div(class='d-flex align-items-center col') #{neighbor.name}
               div(class='col')
-                input(class='form-control', type='number', name='delay', value=neighbor.delay)
+                input(
+                  class='form-control', 
+                  type='number', 
+                  value=neighbor.delay,
+                  data-nodeId=node.id,
+                  data-neighborId=neighbor.id
+                  oninput='updateNode("update node neighbor", this.getAttribute("data-nodeId"), this.value, this.getAttribute("data-neighborId"))'
+                )
           if node.type === 'miner'
             h4(class='card-title') Mining Strategy
             div(class='form-group row')
               div(class='d-flex align-items-center col') Mining Time (Seconds)
               div(class='col')
-                input(class='form-control', type='number', name='miningTime', value=node.miningTime)
+                input(
+                  class='form-control', 
+                  type='number', 
+                  value=node.miningTime,
+                  data-nodeId=node.id, 
+                  oninput='updateStrategy("update mining time", this.getAttribute("data-nodeId"), this.value)'
+                )
             div(class='form-group row')
               div(class='d-flex align-items-center col') Minimum Value of Transactions
               div(class='col')
-                input(class='form-control', type='number', name='minValue', value=node.minValue)
+                input(
+                  class='form-control', 
+                  type='number', 
+                  value=node.minValue,
+                  data-nodeId=node.id, 
+                  oninput='updateStrategy("update min value", this.getAttribute("data-nodeId"), this.value)'
+                )
             div(class='form-group row')
               div(class='d-flex align-items-center col') Number of Transactions to Mine
               div(class='col')
-                input(class='form-control', type='number', name='mineNumber', value=node.mineNumber)
+                input(
+                  class='form-control', 
+                  type='number', 
+                  value=node.mineNumber,
+                  data-nodeId=node.id, 
+                  oninput='updateStrategy("update mine number", this.getAttribute("data-nodeId"), this.value)'
+                )
             div(class='form-group row')
               div(class='d-flex align-items-center col') Maximum Number of Pending Transactions
               div(class='col')
-                input(class='form-control', type='number', name='maxPending', value=node.maxPending)
+                input(
+                  class='form-control', 
+                  type='number', 
+                  value=node.maxPending,
+                  data-nodeId=node.id, 
+                  oninput='updateStrategy("update max pending", this.getAttribute("data-nodeId"), this.value)'
+                )
+  
+  div(class='alert alert-secondary text-muted' id='savingSpinner' role='alert') 
+    i(class='fas fa-spinner fa-spin') 
+    span Saving...
     

@@ -1,7 +1,7 @@
-var eve = require('evejs');
-var Block = require('../types/Block');
-var Watchdog = require('../Watchdog');
-var Hash = require('../helper/Hash');
+const eve = require('evejs');
+const Block = require('../types/Block');
+const Watchdog = require('../Watchdog');
+const Hash = require('../helper/Hash');
 
 /**
  * this class is resposible for mining.

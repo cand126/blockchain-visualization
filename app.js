@@ -37,8 +37,8 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap-material-design/dist/'));
 app.use('/tether', express.static(__dirname + '/node_modules/tether/dist/'));
 app.use('/three', express.static(__dirname + '/node_modules/three/build/'));
-app.use('/socket', express.static(__dirname + '/node_modules/socket.io-client/dist'));
-app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
+app.use('/socket', express.static(__dirname + '/node_modules/socket.io-client/dist/'));
+app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

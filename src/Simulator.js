@@ -155,8 +155,103 @@ class Simulator {
         maxPending: node.maxPending,
       });
     });
-
+    console.log(info);
     return info;
+  }
+
+  /**
+   * @public
+   */
+  updateNode(data) {
+    switch (data.action) {
+      case 'update node name':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.name = data.value;
+          } else {
+            node.neighbors.forEach((neighbor) => {
+              if (neighbor.id === data.id) {
+                neighbor.name = data.value;
+              }
+            });
+          }
+        });
+        TransactionGenerator.getInstance().neighbors.forEach((neighbor) => {
+          if (neighbor.id === data.id) {
+            neighbor.name = data.value;
+          }
+        });
+        break;
+
+      case 'update node color':
+        console.log(data);
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.color = data.value;
+          }
+        });
+        break;
+
+      case 'update node neighbor':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.neighbors.forEach((neighbor) => {
+              if (neighbor.id === data.neighborId) {
+                neighbor.delay = data.value;
+              }
+            });
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
+    return true;
+  }
+
+  /**
+   * @public
+   */
+  updateStrategy(data) {
+    switch (data.action) {
+      case 'update mining time':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.miningTime = data.value;
+          }
+        });
+        break;
+
+      case 'update min value':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.minValue = data.value;
+          }
+        });
+        break;
+
+      case 'update mine number':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.mineNumber = data.value;
+          }
+        });
+        break;
+
+      case 'update max pending':
+        this.nodeList.forEach((node) => {
+          if (node.id === data.id) {
+            node.maxPending = data.value;
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    return true;
   }
 }
 
