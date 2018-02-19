@@ -22,9 +22,9 @@ class Simulator {
       type: 'miner',
       color: '#e53935',
       name: 'Alice',
-      miningTime: Math.floor(Math.random() * 5) + 5,
-      minValue: 3,
-      mineNumber: 2,
+      miningTime: 2,
+      minValue: 1,
+      mineNumber: 1,
       maxPending: 10,
     });
     this.addNode({
@@ -33,7 +33,7 @@ class Simulator {
       color: '#03a9f4',
       name: 'Bob',
       miningTime: Math.floor(Math.random() * 5) + 5,
-      minValue: 2,
+      minValue: 5,
       mineNumber: 2,
       maxPending: 10,
     });
@@ -258,6 +258,17 @@ class Simulator {
    */
   publishTransaction(data) {
     TransactionGenerator.getInstance().publish(data.reward);
+  }
+
+  /**
+   * @public
+   */
+  getTransactionPoolLength(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].transactionPool.length;
+      }
+    }
   }
 }
 

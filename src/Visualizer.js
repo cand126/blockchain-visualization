@@ -44,22 +44,22 @@ class Visualizer {
    * @public
    */
   updateBlockchain(action, data) {
-    let block = data.block;
-    let newBlockchain = [];
-    if (data.block.id === Hash.generateNull()) {
+    let node = this.nodeList.find((node) => {
+      if (node.nodeId === data.nodeId) {
+        return node;
+      }
+    });
+    let newBlock = data.block;
+    let changedBlocks = [];
+    if (newBlock.previous === 'null') {
       // initial block
-      // this.layers[0] = 1;
-      // block.position = {
-      //   x: -this.canvasWidthHalf + (this.blockSize.x / 2) + this.margin,
-      //   y: this.canvasHeightHalf - (this.blockSize.y / 2) - this.margin,
-      //   z: 0,
-      // };
-      block.position = {
+      newBlock.position = {
         x: 0,
         y: 0,
         z: 0,
       };
-      newBlockchain.push(block);
+      node.blockchain.push(newBlock);
+      changedBlocks.push(newBlock);
     } else {
       // received blocks
 
@@ -87,7 +87,7 @@ class Visualizer {
     let appSocket = require('../appSocket');
     appSocket.updateVisualization(action, {
       nodeId: data.nodeId,
-      blockchain: newBlockchain,
+      blocks: changedBlocks,
     });
   }
 }

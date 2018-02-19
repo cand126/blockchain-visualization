@@ -31,7 +31,15 @@ io.on('connection', (socket) => {
     let blockchain = Simulator.getInstance().getBlockchain(data.nodeId);
     socket.emit('update blockchain', {
       nodeId: data.nodeId,
-      blockchain: blockchain,
+      blocks: blockchain,
+    });
+  });
+  socket.on('init transaction pool', (data) => {
+    let Simulator = require('./src/Simulator');
+    let transactionPoolLength = Simulator.getInstance().getTransactionPoolLength(data.nodeId);
+    socket.emit('update transaction pool', {
+      nodeId: data.nodeId,
+      length: transactionPoolLength,
     });
   });
 });

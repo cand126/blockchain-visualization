@@ -58,31 +58,19 @@ class Miner extends Node {
     let timer = setInterval(() => {
       count += 1;
       this.watchdog.onMiningChange('update mining progress', {
-        id: this.id,
+        nodeId: this.id,
         progress: count,
       });
       if (count >= this.miningTime) {
         this.watchdog.onMiningChange('update mining progress', {
-          id: this.id,
+          nodeId: this.id,
           progress: 0,
         });
-        // const block = this.generate(transactions);
-        // this.publish(block);
+        const block = this.generate(transactions);
+        this.addBlock(block);
         clearInterval(timer);
       }
     }, 1000);
-  }
-
-  /**
-   * @public
-   */
-  publish(block) {
-    this.addBlock(block);
-    this.neighbors.forEach((neighbor) => {
-      setTimeout(() => {
-        this.send(neighbor.id, block);
-      }, neighbor.delay * 1000);
-    });
   }
 
   /**
@@ -117,7 +105,7 @@ class Miner extends Node {
       }
     }
     this.watchdog.onTransactionChange('update transaction pool', {
-      id: this.id,
+      nodeId: this.id,
       length: this.transactionPool.length,
     });
   }

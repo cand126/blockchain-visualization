@@ -9,6 +9,7 @@ let blockSpace = 16;
 $(document).ready(() => {
   initSocket();
   initCanvas();
+  initProgress();
 });
 
 /**
@@ -27,7 +28,7 @@ function initSocket() {
     socket.on('update transaction pool', (data) => {
       let progressBars = document.getElementsByName('transactionPool');
       for (let i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('data-nodeid') === data.id) {
+        if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
           progressBars[i].setAttribute('aria-valuenow', data.length);
           progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
         }
@@ -37,7 +38,7 @@ function initSocket() {
     socket.on('update mining progress', (data) => {
       let progressBars = document.getElementsByName('miningProcess');
       for (let i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('data-nodeid') === data.id) {
+        if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
           progressBars[i].setAttribute('aria-valuenow', data.progress);
           progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
         }
@@ -50,7 +51,7 @@ function initSocket() {
           return canvas;
         }
       });
-      updateCanvas(canvas, data.blockchain);
+      updateCanvas(canvas, data.blocks);
     });
   });
 }
@@ -70,6 +71,18 @@ function initCanvas() {
       nodeId: canvas.nodeId,
     });
   });
+}
+
+/**
+ * @public
+ */
+function initProgress() {
+  let progressBars = document.getElementsByName('transactionPool');
+  for (let i = 0; i < progressBars.length; i++) {
+    socket.emit('init transaction pool', {
+      nodeId: progressBars[i].getAttribute('data-nodeid'),
+    });
+  }
 }
 
 /**
@@ -158,7 +171,7 @@ function animate() {
  * @public
  */
 function updateCanvas(canvas, blockchain) {
-  for (let i = blockchain.length - 1; i >= 0; i--) {
+  for (let i = 0; i < blockchain.length; i++) {
     let blockObject = canvas.scene.getObjectByName(blockchain[i].id);
     if (typeof blockObject === 'undefined') {
       const blockGeometry = new THREE.BoxGeometry(blockSize, blockSize, 0);
@@ -175,10 +188,27 @@ function updateCanvas(canvas, blockchain) {
           (canvasHeight / 2) - (blockSize / 2) - canvasMargin,
           0,
         );
+        blockObject.row = 0;
+        blockObject.nextBlocks = 0;
+      } else {
+        let previousblockObject = canvas.scene.getObjectByName(blockchain[i].previous);
+        blockObject.row = previousblockObject.nextBlocks;
+        blockObject.position.set(
+          previousblockObject.position.x + blockSpace + blockSize,
+          previousblockObject.position.y - ((blockSpace + blockSize) * previousblockObject.nextBlocks),
+          0,
+        );
+        previousblockObject.nextBlocks += 1;
+        canvas.scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            if (object.row > blockObject.row) {
+
+            }
+          }
+        });
       }
 
       canvas.scene.add(blockObject);
     }
   }
 }
-

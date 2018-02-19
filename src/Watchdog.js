@@ -1,5 +1,3 @@
-const Visualizer = require('./Visualizer');
-
 /**
  * @public
  */
@@ -21,13 +19,6 @@ class Watchdog {
   /**
    * @public
    */
-  // addVisualizer(visualizer) {
-  //   this.visualizerList.push(visualizer);
-  // }
-
-  /**
-   * @public
-   */
   onTransactionChange(action, data) {
     let appSocket = require('../appSocket');
     appSocket.updateVisualization(action, data);
@@ -37,7 +28,8 @@ class Watchdog {
    * @public
    */
   onBlockChange(action, data) {
-    Visualizer.getInstance().updateBlockchain(action, data);
+    let appSocket = require('../appSocket');
+    appSocket.updateVisualization(action, data);
   }
 
   /**

@@ -40,39 +40,51 @@ class Node extends eve.Agent {
           return;
         }
       }
-      this.addBlock(object, from);
-    } else if (object === 'blockchain') {
-      // consensus protocol
-      let currentBlockchain = {
-        type: 'blockchain',
-        blocks: [],
-      };
-      let block = this.currentBlock;
-      while (block.id !== Hash.generateNull()) {
-        currentBlockchain.blocks.push(block);
-        block = this.blockchain.find((element) => {
-          if (element.id === block.previous) {
-            return element;
-          }
-        });
-      }
-      // TODO: add the starting block
-
-      this.send(from, currentBlockchain);
-    } else if (object.type = 'blockchain') {
-      while (object.blocks.length > 0) {
-        const block = object.blocks.pop();
-        const checkBlock = this.blockchain.find((element) => {
-          if (element.id === block.id) {
-            return element;
-          }
-        });
-        if (typeof checkBlock === 'undefined') {
-          this.blockchain.push(block);
-          this.watchdog.onBlockChange(this, block);
-        }
-      }
+      this.addBlock(object);
     }
+    // else if (object === 'blockchain') {
+    //   // consensus protocol
+    //   let currentBlockchain = {
+    //     type: 'blockchain',
+    //     blocks: [],
+    //   };
+    //   let block = this.currentBlock;
+    //   while (block.id !== Hash.generateNull()) {
+    //     currentBlockchain.blocks.push(block);
+    //     block = this.blockchain.find((element) => {
+    //       if (element.id === block.previous) {
+    //         return element;
+    //       }
+    //     });
+    //   }
+    //   // TODO: add the starting block
+
+    //   this.send(from, currentBlockchain);
+    // } else if (object.type = 'blockchain') {
+    //   while (object.blocks.length > 0) {
+    //     const block = object.blocks.pop();
+    //     const checkBlock = this.blockchain.find((element) => {
+    //       if (element.id === block.id) {
+    //         return element;
+    //       }
+    //     });
+    //     if (typeof checkBlock === 'undefined') {
+    //       this.blockchain.push(block);
+    //       this.watchdog.onBlockChange(this, block);
+    //     }
+    //   }
+    // }
+  }
+
+  /**
+   * @public
+   */
+  publish(block) {
+    this.neighbors.forEach((neighbor) => {
+      setTimeout(() => {
+        this.send(neighbor.id, block);
+      }, neighbor.delay * 1000);
+    });
   }
 
   /**
@@ -83,40 +95,44 @@ class Node extends eve.Agent {
   /**
    * @public
    */
-  addBlock(block, from = null) {
-    if (this.currentBlock === null) {
+  addBlock(block) {
+    if (block.previous === 'null') {
       this.currentBlock = block;
       this.blockchain.push(this.currentBlock);
     } else if (block.previous === '') {
-        // a block from a miner
-        block.previous = this.currentBlock.id;
-        block.layer = this.currentBlock.layer + 1;
-        // this.currentBlock.next = block.id;
+      // a new block
+      block.previous = this.currentBlock.id;
+      block.layer = this.currentBlock.layer + 1;
+      this.currentBlock = block;
+      this.blockchain.push(block);
+      this.publish(block);
     } else {
-      // consensus protocol: add longer blockchain
-      const previousBlock = this.blockchain.find((element) => {
-        if (element.id === block.previous) {
-          return element;
-        }
-      });
-      if (typeof previousBlock === 'undefined') {
-        this.consensusProtocol(from);
-        return;
+      if (this.currentBlock.layer < block.layer) {
+        this.currentBlock = block;
       }
+      this.blockchain.push(block);
+      this.publish(block);
     }
-    // if (this.layer < block.layer) {
-    //   this.currentBlock = block;
-    //   this.layer = block.layer;
-    //   this.blockchain.push(this.currentBlock);
-    //   this.watchdog.onBlockChange(this, this.currentBlock);
-    // } else {
-    //   this.blockchain.push(block);
-    //   this.watchdog.onBlockChange(this, block);
+    // else {
+    //   // consensus protocol: add longer blockchain
+    //   // const previousBlock = this.blockchain.find((element) => {
+    //   //   if (element.id === block.previous) {
+    //   //     return element;
+    //   //   }
+    //   // });
+    //   // if (typeof previousBlock === 'undefined') {
+    //   //   this.consensusProtocol(from);
+    //   //   return;
+    //   // }
+
+    //   if (this.currentBlock.layer < block.layer) {
+
+    //   }
     // }
 
     this.watchdog.onBlockChange('update blockchain', {
       nodeId: this.id,
-      block: block,
+      blocks: [block],
     });
   }
 
