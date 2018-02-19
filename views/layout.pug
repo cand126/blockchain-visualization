@@ -4,7 +4,7 @@ html
     title Blockchain Visualization
     script(src='/jquery/jquery.min.js')
     script(src='/tether/js/tether.min.js')
-    script(src='/popper/popper.min.js')
+    script(src='/popper/umd/popper.min.js')
     script(src='/bootstrap/js/bootstrap-material-design.min.js')
     script(src='/three/three.min.js')
     script(src='/socket/socket.io.js')
@@ -16,7 +16,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     header
-      nav(class='navbar navbar-expand-lg navbar-light bg-light')
+      nav(class='navbar navbar-expand-lg navbar-dark bg-dark')
         a(class='navbar-brand', href='/') Blockchain Visualization
         button(class='navbar-toggler', type='button', data-toggle='collapse', data-target='#navbarContent', aria-controls='navbarContent', aria-expanded='false', aria-label='Toggle navigation')
           span(class='navbar-toggler-icon')
@@ -27,13 +27,3 @@ html
 
     div(class='d-flex flex-column main-content')
       block content
-
-    footer(class='navbar-light bg-light')
-      div(class='d-flex flex-row align-items-center justify-content-center container')
-        span(class='publish-text') Publish a new transaction:
-        div(class='publish-text') reward
-        input(class='form-control', type='number', id='transactionReward', value='0')
-        button(class='btn btn-raised btn-secondary', type='button', onclick='publishTransaction()') Publish
-      //- div
-      //- button(class='btn btn-primary', type='button') Start
-      //- span(class='d-flex align-items-center') Timer: #{count}

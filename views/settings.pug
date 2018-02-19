@@ -2,45 +2,53 @@ extends layout
 
 block content
   div(class='container settings-container')
-    div(class='card')
-      h3(class='card-header') Transaction Generator
-      div(class='card-block')
-        h4(class='card-title') Information
-        div(class='row')
-          div(class='d-flex align-items-center col') ID
-          div(class='d-flex align-items-center col') 1
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Name
-          div(class='col')
-            input(class='form-control', type='text', name='nodeName', value='0')
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Type
-          div(class='col')
-            input(class='form-control', type='text', name='typeName', value='0')
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Color
-          div(class='col')
-            input(class='form-control', type='text', name='color', value='0')
-        h4(class='card-title') Delay of Network
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') fff
-          div(class='col')
-            input(class='form-control', type='number', name='delay', value='0')
-        h4(class='card-title') Mining Strategy
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Mining Time (Seconds)
-          div(class='col')
-            input(class='form-control', type='number', name='miningTime', value='0')
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Minimum Value of Transactions
-          div(class='col')
-            input(class='form-control', type='number', name='minValue', value='0')
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Number of Transactions to Mine
-          div(class='col')
-            input(class='form-control', type='number', name='mineNumber', value='0')
-        div(class='form-group row')
-          div(class='d-flex align-items-center col') Maximum Number of Pending Transactions
-          div(class='col')
-            input(class='form-control', type='number', name='maxPending', value='0')
+    each node, index in nodes
+      div(class='card')
+        if node.type === 'generator'
+          h3(class='card-header') Transaction Generator
+        else
+          h3(class='card-header') Node #{index}
+        div(class='card-block')
+          h4(class='card-title') Information
+          div(class='row')
+            div(class='d-flex align-items-center col') ID
+            div(class='d-flex align-items-center col') #{node.id}
+          unless node.type === 'generator'
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') #{node.name}
+              div(class='col')
+                input(class='form-control', type='text', name='nodeName', value=node.name)
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') Type
+              div(class='col')
+                input(class='form-control', type='text', name='typeName', value=node.type)
+            if node.type === 'miner'
+              div(class='form-group row')
+                div(class='d-flex align-items-center col') Color
+                div(class='col')
+                  input(class='form-control', type='text', name='color', value=node.color)
+          h4(class='card-title') Delay of Network (seconds)
+          each neighbor in node.neighbors
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') #{neighbor.name}
+              div(class='col')
+                input(class='form-control', type='number', name='delay', value=neighbor.delay)
+          if node.type === 'miner'
+            h4(class='card-title') Mining Strategy
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') Mining Time (Seconds)
+              div(class='col')
+                input(class='form-control', type='number', name='miningTime', value=node.miningTime)
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') Minimum Value of Transactions
+              div(class='col')
+                input(class='form-control', type='number', name='minValue', value=node.minValue)
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') Number of Transactions to Mine
+              div(class='col')
+                input(class='form-control', type='number', name='mineNumber', value=node.mineNumber)
+            div(class='form-group row')
+              div(class='d-flex align-items-center col') Maximum Number of Pending Transactions
+              div(class='col')
+                input(class='form-control', type='number', name='maxPending', value=node.maxPending)
     

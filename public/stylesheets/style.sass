@@ -6,6 +6,7 @@ body
 
 .main-content
   flex: 1
+  overflow: auto
 
 .nodes-container
   flex: 1
@@ -27,7 +28,6 @@ body
       height: 200px
 
 .settings-container
-  overflow: auto
   > div.card
     margin: 16px 0 16px 0
     > div.card-block
@@ -35,9 +35,12 @@ body
         height: 38px
         &:not(:last-child)
           margin-bottom: 8px
+        > div
+          font-size: 16px
 
-footer
+div.publish-container
   padding: 8px 0 8px 0
+  background-color: #439889
   > div
     > .publish-text
       padding: 0 8px 0 8px

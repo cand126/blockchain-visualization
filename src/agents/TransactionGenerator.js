@@ -1,6 +1,6 @@
-var Node = require('./Node');
-var Transaction = require('../types/Transaction');
-var Hash = require('../helper/Hash');
+const Node = require('./Node');
+const Transaction = require('../types/Transaction');
+const Hash = require('../helper/Hash');
 
 /**
  * @class this class is resposible for generating transactions
@@ -13,6 +13,7 @@ class TransactionGenerator extends Node {
    */
   constructor(id) {
     super(id);
+    this.type = 'generator';
   }
 
   /**

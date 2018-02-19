@@ -1,8 +1,8 @@
-var TransactionGenerator = require('./agents/TransactionGenerator');
-var Miner = require('./agents/Miner');
-var Nonminer = require('./agents/Nonminer');
-var Hash = require('./helper/Hash');
-var Watchdog = require('./Watchdog');
+const TransactionGenerator = require('./agents/TransactionGenerator');
+const Miner = require('./agents/Miner');
+const Nonminer = require('./agents/Nonminer');
+const Hash = require('./helper/Hash');
+const Watchdog = require('./Watchdog');
 
 /**
  * @class this class is resposible for generating transactions
@@ -89,7 +89,7 @@ class Simulator {
     }
 
     this.nodeList.forEach((oldNode) => {
-      const delay = Math.floor(Math.random() * 5);
+      let delay = Math.floor(Math.random() * 5);
       // oldNode.addNeighbor(newNode.id, newNode.name, 0);
       oldNode.addNeighbor(newNode.id, newNode.name, delay);
       // newNode.addNeighbor(oldNode.id, oldNode.name, 0);
@@ -104,7 +104,6 @@ class Simulator {
    * @public
    */
   addDelays(transactionDelays, nodeDelays) {
-
     transactionDelays.forEach((delay) => {
       TransactionGenerator.getInstance().addNeighbor(delay.nodeId, delay.time);
     });
@@ -132,14 +131,28 @@ class Simulator {
     TransactionGenerator.getInstance().publish();
   }
 
+  /**
+   * @public
+   */
   getNodesInfo() {
     let info = [];
+    const transactionGenerator = TransactionGenerator.getInstance();
+    info.push({
+      id: transactionGenerator.id,
+      type: transactionGenerator.type,
+      neighbors: transactionGenerator.neighbors,
+    });
     this.nodeList.forEach((node) => {
       info.push({
         id: node.id,
         name: node.name,
         type: node.type,
-        color: node.color
+        color: node.color,
+        neighbors: node.neighbors,
+        miningTime: node.miningTime,
+        minValue: node.minValue,
+        mineNumber: node.mineNumber,
+        maxPending: node.maxPending,
       });
     });
 
