@@ -19,36 +19,32 @@ class Watchdog {
   /**
    * @public
    */
-  addVisualizer(visualizer) {
-    this.visualizerList.push(visualizer);
-  }
+  // addVisualizer(visualizer) {
+  //   this.visualizerList.push(visualizer);
+  // }
 
   /**
    * @public
    */
-  onTransactionChange(node, transaction) {
-    this.visualizerList.forEach((visualizer) => {
-      if (visualizer.nodeId === node.id) {
-        if (node.type === 'miner') {
-          visualizer.updateTransactionPool(node.transactionPool.length);
-        }
-      }
-    });
+  onTransactionChange(action, data) {
+    let appSocket = require('../appSocket');
+    appSocket.updateVisualization(action, data);
   }
 
   /**
    * @public
    */
   onBlockChange(node, block) {
-    this.visualizerList.forEach((visualizer) => {
-      if (visualizer.nodeId === node.id) {
-        visualizer.addBlock(block);
-      }
-    });
+    // this.visualizerList.forEach((visualizer) => {
+    //   if (visualizer.nodeId === node.id) {
+    //     visualizer.addBlock(block);
+    //   }
+    // });
   }
 
-  onNodeChange(action, state) {
-
+  onMiningChange(action, data) {
+    let appSocket = require('../appSocket');
+    appSocket.updateVisualization(action, data);
   }
 }
 

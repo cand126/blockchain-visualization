@@ -1,6 +1,6 @@
-var Node = require('./Node');
-var Block = require('../types/Block');
-var Hash = require('../helper/Hash');
+let Node = require('./Node');
+let Block = require('../types/Block');
+let Hash = require('../helper/Hash');
 
 /**
  * @class this class is resposible for mining
@@ -26,15 +26,16 @@ class Miner extends Node {
    * @returns {Iblock} return the block that is generated, @see {@link Iblock}
    * @private
    */
-  generate() {
+  generate(transactions) {
     const block = new Block(
       Hash.generateId(),
       'block',
       new Date(),
       this.id,
       '',
-      '', -1,
-      this.color, []
+      -1,
+      this.color,
+      transactions
     );
 
     return block;
@@ -53,12 +54,35 @@ class Miner extends Node {
    * @public
    */
   mine(transactions) {
-    // const block = this.generate();
-    // setTimeout(() => {
-    //   this.addBlock(block);
-    //   this.publish(block, 0);
-    // }, delay * 1000);
-    console.log('mining');
+    let count = 0;
+    let timer = setInterval(() => {
+      count += 1;
+      this.watchdog.onMiningChange('update mining progress', {
+        id: this.id,
+        progress: count,
+      });
+      if (count >= this.miningTime) {
+        this.watchdog.onMiningChange('update mining progress', {
+          id: this.id,
+          progress: 0,
+        });
+        // const block = this.generate(transactions);
+        // this.publish(block);
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
+  /**
+   * @public
+   */
+  publish(block) {
+    this.addBlock(block);
+    this.neighbors.forEach((neighbor) => {
+      setTimeout(() => {
+        this.send(neighbor.id, block);
+      }, neighbor.delay * 1000);
+    });
   }
 
   /**
@@ -78,9 +102,10 @@ class Miner extends Node {
     } else if (this.transactionPool.length >= this.mineNumber) {
       let transactions = [];
 
-      for (let i = 0; i < this.transactionPool.length; i++) {
-        if (this.transactionPool[i].reward + this.transactionPool[i].privilege >= this.minValue) {
+      for (let i = this.transactionPool.length - 1; i >= 0; i--) {
+        if ((this.transactionPool[i].reward + this.transactionPool[i].privilege) >= this.minValue) {
           transactions.push(this.transactionPool[i]);
+          this.transactionPool.splice(i, 1);
         } else {
           this.transactionPool[i].privilege += 1;
         }
@@ -91,7 +116,10 @@ class Miner extends Node {
         }
       }
     }
-    this.watchdog.onTransactionChange(this, transaction);
+    this.watchdog.onTransactionChange('update transaction pool', {
+      id: this.id,
+      length: this.transactionPool.length,
+    });
   }
 }
 

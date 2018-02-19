@@ -26,13 +26,15 @@ body {
     .nodes-container > div > div[name=canvas-container] {
       height: 200px; }
 
-.settings-container > div.card {
+.settings-container > .card {
   margin: 16px 0 16px 0; }
-  .settings-container > div.card > div.card-block > div.row {
+  .settings-container > .card > .card-header {
+    background-color: #439889; }
+  .settings-container > .card > .card-block > div.row {
     height: 38px; }
-    .settings-container > div.card > div.card-block > div.row:not(:last-child) {
+    .settings-container > .card > .card-block > div.row:not(:last-child) {
       margin-bottom: 8px; }
-    .settings-container > div.card > div.card-block > div.row > div {
+    .settings-container > .card > .card-block > div.row > div {
       font-size: 16px; }
 
 div.publish-container {

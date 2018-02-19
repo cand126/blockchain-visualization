@@ -2,7 +2,6 @@ const TransactionGenerator = require('./agents/TransactionGenerator');
 const Miner = require('./agents/Miner');
 const Nonminer = require('./agents/Nonminer');
 const Hash = require('./helper/Hash');
-const Watchdog = require('./Watchdog');
 
 /**
  * @class this class is resposible for generating transactions
@@ -97,7 +96,6 @@ class Simulator {
     });
 
     this.nodeList.push(newNode);
-    // Watchdog.onNodeChange('NEW_NODE', {node: newNode});
   }
 
   /**
@@ -155,7 +153,7 @@ class Simulator {
         maxPending: node.maxPending,
       });
     });
-    console.log(info);
+
     return info;
   }
 
@@ -184,7 +182,6 @@ class Simulator {
         break;
 
       case 'update node color':
-        console.log(data);
         this.nodeList.forEach((node) => {
           if (node.id === data.id) {
             node.color = data.value;
@@ -252,6 +249,13 @@ class Simulator {
     }
 
     return true;
+  }
+
+  /**
+   * @public
+   */
+  publishTransaction(data) {
+    TransactionGenerator.getInstance().publish(data.reward);
   }
 }
 

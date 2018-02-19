@@ -37,7 +37,7 @@ class TransactionGenerator extends Node {
       'transaction',
       new Date(),
       '',
-      reward,
+      Number(reward),
       0
     );
 
