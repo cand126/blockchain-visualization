@@ -34,7 +34,7 @@ block content
                     aria-valuemin='0', 
                     aria-valuemax=node.miningTime
                   )
-          div(id='canvas-container-' + node.nodeId, name='canvas-container')
+          div(id='canvas-container-' + node.nodeId, name='canvas-container', data-nodeid=node.nodeId)
 
   div(class='publish-container')
     div(class='d-flex flex-row align-items-center justify-content-center container text-light')

@@ -147,7 +147,7 @@ class Node extends eve.Agent {
       Hash.generateNull(),
       'null',
       0,
-      0x91989F,
+      '#91989F',
       []
     );
     this.addBlock(block);

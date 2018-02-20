@@ -23,7 +23,7 @@ class Simulator {
       color: '#e53935',
       name: 'Alice',
       miningTime: 2,
-      minValue: 1,
+      minValue: 2,
       mineNumber: 1,
       maxPending: 10,
     });
@@ -32,9 +32,9 @@ class Simulator {
       type: 'miner',
       color: '#03a9f4',
       name: 'Bob',
-      miningTime: Math.floor(Math.random() * 5) + 5,
+      miningTime: 2,
       minValue: 5,
-      mineNumber: 2,
+      mineNumber: 1,
       maxPending: 10,
     });
     this.addNode({
@@ -42,9 +42,9 @@ class Simulator {
       type: 'miner',
       color: '#4caf50',
       name: 'Charlie',
-      miningTime: Math.floor(Math.random() * 5) + 5,
+      miningTime: 2,
       minValue: 8,
-      mineNumber: 2,
+      mineNumber: 1,
       maxPending: 10,
     });
     this.addNode({
@@ -85,15 +85,16 @@ class Simulator {
 
     // this.transactionGenerator.addNeighbor(node.id, node.name, 0);
     if (newNode.type === 'miner') {
-      TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, Math.floor(Math.random() * 5));
+      TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, 0);
+      // TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, Math.floor(Math.random() * 5));
     }
 
     this.nodeList.forEach((oldNode) => {
-      let delay = Math.floor(Math.random() * 5);
-      // oldNode.addNeighbor(newNode.id, newNode.name, 0);
-      oldNode.addNeighbor(newNode.id, newNode.name, delay);
-      // newNode.addNeighbor(oldNode.id, oldNode.name, 0);
-      newNode.addNeighbor(oldNode.id, oldNode.name, delay);
+      // let delay = Math.floor(Math.random() * 5);
+      oldNode.addNeighbor(newNode.id, newNode.name, 0);
+      // oldNode.addNeighbor(newNode.id, newNode.name, delay);
+      newNode.addNeighbor(oldNode.id, oldNode.name, 0);
+      // newNode.addNeighbor(oldNode.id, oldNode.name, delay);
     });
 
     Visualizer.getInstance().addNode(newNode.id);

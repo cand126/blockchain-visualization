@@ -1,6 +1,7 @@
 let Node = require('./Node');
 let Block = require('../types/Block');
 let Hash = require('../helper/Hash');
+const Transaction = require('../types/Transaction');
 
 /**
  * @class this class is resposible for mining
@@ -84,12 +85,21 @@ class Miner extends Node {
    * @public
    */
   receiveTransaction(transaction) {
-    this.transactionPool.push(transaction);
+    // copy transaction
+    const newTransaction = new Transaction(
+      transaction.id,
+      'transaction',
+      transaction.timestamp,
+      transaction.message,
+      transaction.reward,
+      transaction.privilege
+    );
+    this.transactionPool.push(newTransaction);
+    let transactions = [];
+
     if (this.transactionPool.length >= this.maxPending) {
       // TODO: maximum number of transactions
     } else if (this.transactionPool.length >= this.mineNumber) {
-      let transactions = [];
-
       for (let i = this.transactionPool.length - 1; i >= 0; i--) {
         if ((this.transactionPool[i].reward + this.transactionPool[i].privilege) >= this.minValue) {
           transactions.push(this.transactionPool[i]);
@@ -102,6 +112,11 @@ class Miner extends Node {
           this.mine(transactions);
           break;
         }
+      }
+    }
+    if (transactions.length < this.mineNumber) {
+      for (let i = 0; i < transactions.length; i++) {
+        this.transactionPool.push(transactions[i]);
       }
     }
     this.watchdog.onTransactionChange('update transaction pool', {
