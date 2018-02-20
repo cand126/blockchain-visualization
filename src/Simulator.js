@@ -23,7 +23,7 @@ class Simulator {
       color: '#e53935',
       name: 'Alice',
       miningTime: 2,
-      minValue: 2,
+      minValue: 4,
       mineNumber: 1,
       maxPending: 10,
     });
@@ -43,7 +43,7 @@ class Simulator {
       color: '#4caf50',
       name: 'Charlie',
       miningTime: 2,
-      minValue: 8,
+      minValue: 6,
       mineNumber: 1,
       maxPending: 10,
     });

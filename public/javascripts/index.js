@@ -15,10 +15,10 @@ $(document).ready(() => {
   $('div[name="canvas-container"]').mousedown((e) => {
     onDocumentMouseDown(e);
   });
-    $('div[name="canvas-container"]').mouseup((e) => {
+  $('div[name="canvas-container"]').mouseup((e) => {
     onDocumentMouseUp(e);
   });
-    $('div[name="canvas-container"]').mouseleave((e) => {
+  $('div[name="canvas-container"]').mouseleave((e) => {
     onDocumentMouseLeave(e);
   });
 });
@@ -134,8 +134,10 @@ function onDocumentMouseUp(e) {
       return canvas;
     }
   });
-  canvas.mousePosition.x = -1;
-  canvas.mousePosition.y = -1;
+  if (typeof canvas !== 'undefined') {
+    canvas.mousePosition.x = -1;
+    canvas.mousePosition.y = -1;
+  }
 };
 
 /**
@@ -148,8 +150,11 @@ function onDocumentMouseLeave(e) {
       return canvas;
     }
   });
-  canvas.mousePosition.x = -1;
-  canvas.mousePosition.y = -1;
+
+  if (typeof canvas !== 'undefined') {
+    canvas.mousePosition.x = -1;
+    canvas.mousePosition.y = -1;
+  }
 };
 
 /**
@@ -161,10 +166,10 @@ function onDocumentMouseMove(e, canvas) {
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
   if (canvas.mousePosition.x !== -1 && canvas.mousePosition.y !== -1) {
-      const distanceX = -(x - canvas.mousePosition.x);
-      const distanceY = y - canvas.mousePosition.y;
-      canvas.camera.position.set(canvas.camera.position.x + distanceX, canvas.camera.position.y + distanceY, canvas.camera.position.z);
-      canvas.camera.updateProjectionMatrix();
+    const distanceX = -(x - canvas.mousePosition.x);
+    const distanceY = y - canvas.mousePosition.y;
+    canvas.camera.position.set(canvas.camera.position.x + distanceX, canvas.camera.position.y + distanceY, canvas.camera.position.z);
+    canvas.camera.updateProjectionMatrix();
   }
   canvas.mousePosition.x = x;
   canvas.mousePosition.y = y;
@@ -262,8 +267,8 @@ function animate() {
 function updateCanvas(canvas, blockchain) {
   for (let i = 0; i < blockchain.length; i++) {
     let blockObject = canvas.scene.getObjectByName(blockchain[i].id);
+    let lineObject;
     if (typeof blockObject === 'undefined') {
-      // new block
       const blockGeometry = new THREE.BoxGeometry(blockSize, blockSize, 0);
       const blockMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color(blockchain[i].color),
@@ -272,6 +277,13 @@ function updateCanvas(canvas, blockchain) {
       });
       let blockObject = new THREE.Mesh(blockGeometry, blockMaterial);
       blockObject.name = blockchain[i].id;
+
+      const lineGeometry = new THREE.Geometry();
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color: '#212121',
+        linewidth: 3,
+      });
+
       if (blockchain[i].previous === 'null') {
         blockObject.position.set(-(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
           (canvasHeight / 2) - (blockSize / 2) - canvasMargin,
@@ -280,6 +292,8 @@ function updateCanvas(canvas, blockchain) {
         blockObject.row = 0;
         blockObject.previousBlock = 'null';
         blockObject.nextBlocks = 0;
+        blockObject.previousLine = 'null';
+        blockObject.nextLines = [];
       } else {
         let previousblockObject = canvas.scene.getObjectByName(blockchain[i].previous);
         blockObject.row = previousblockObject.row + previousblockObject.nextBlocks;
@@ -290,25 +304,62 @@ function updateCanvas(canvas, blockchain) {
           previousblockObject.position.y - ((blockSpace + blockSize) * previousblockObject.nextBlocks),
           0,
         );
+
+        if (previousblockObject.row === blockObject.row) {
+          // straight line
+          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x, previousblockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x, blockObject.position.y, 0));
+        } else {
+          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x, previousblockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x + (blockSize / 2) + (blockSpace / 2), previousblockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x - (blockSize / 2) - (blockSpace / 2), blockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x, blockObject.position.y, 0));
+        }
+
+        lineObject = new THREE.Line(lineGeometry, lineMaterial);
+        previousblockObject.nextLines.push(lineObject.id);
+        blockObject.previousLine = lineObject.id;
+        blockObject.nextLines = [];
+
+        canvas.scene.add(lineObject);
+
+        // add a new row
         if (previousblockObject.nextBlocks > 0) {
           canvas.scene.traverse((object) => {
             if (object instanceof THREE.Mesh) {
               if (object.row >= blockObject.row) {
                 object.row += 1;
-                let previousPosition = object.position;
+                let newPosition = new THREE.Vector3(object.position.x, object.position.y - (blockSpace + blockSize), 0);
                 object.position.set(
-                  previousPosition.x,
-                  previousPosition.y - (blockSpace + blockSize),
+                  newPosition.x,
+                  newPosition.y,
                   0,
                 );
+                // update lines
+                let previousLineObject = canvas.scene.getObjectById(object.previousLine);
+                previousLineObject.geometry.vertices[previousLineObject.geometry.vertices.length - 1].x = newPosition.x;
+                previousLineObject.geometry.vertices[previousLineObject.geometry.vertices.length - 1].y = newPosition.y;
+                if (previousLineObject.geometry.vertices.length === 4) {
+                  previousLineObject.geometry.vertices[2].x = newPosition.x - (blockSize / 2) - (blockSpace / 2);
+                  previousLineObject.geometry.vertices[2].y = newPosition.y;
+                }
+                previousLineObject.geometry.verticesNeedUpdate = true;
+                object.nextLines.forEach((nextLine) => {
+                  let nextLineObject = canvas.scene.getObjectById(nextLine);
+                  nextLineObject.geometry.vertices[0].x = newPosition.x;
+                  nextLineObject.geometry.vertices[0].y = newPosition.y;
+                  if (nextLineObject.geometry.vertices.length === 4) {
+                    nextLineObject.geometry.vertices[1].x = newPosition.x + (blockSize / 2) + (blockSpace / 2);
+                    nextLineObject.geometry.vertices[1].y = newPosition.y;
+                  }
+                  nextLineObject.geometry.verticesNeedUpdate = true;
+                });
               }
             }
           });
         }
 
         previousblockObject.nextBlocks += 1;
-        console.log(previousblockObject);
-        console.log(blockObject);
       }
 
       canvas.scene.add(blockObject);
