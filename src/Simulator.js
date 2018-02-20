@@ -2,7 +2,6 @@ const TransactionGenerator = require('./agents/TransactionGenerator');
 const Miner = require('./agents/Miner');
 const Nonminer = require('./agents/Nonminer');
 const Hash = require('./helper/Hash');
-const Visualizer = require('./Visualizer');
 
 /**
  * @class this class is resposible for generating transactions

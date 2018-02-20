@@ -42,38 +42,6 @@ class Node extends eve.Agent {
       }
       this.addBlock(object);
     }
-    // else if (object === 'blockchain') {
-    //   // consensus protocol
-    //   let currentBlockchain = {
-    //     type: 'blockchain',
-    //     blocks: [],
-    //   };
-    //   let block = this.currentBlock;
-    //   while (block.id !== Hash.generateNull()) {
-    //     currentBlockchain.blocks.push(block);
-    //     block = this.blockchain.find((element) => {
-    //       if (element.id === block.previous) {
-    //         return element;
-    //       }
-    //     });
-    //   }
-    //   // TODO: add the starting block
-
-    //   this.send(from, currentBlockchain);
-    // } else if (object.type = 'blockchain') {
-    //   while (object.blocks.length > 0) {
-    //     const block = object.blocks.pop();
-    //     const checkBlock = this.blockchain.find((element) => {
-    //       if (element.id === block.id) {
-    //         return element;
-    //       }
-    //     });
-    //     if (typeof checkBlock === 'undefined') {
-    //       this.blockchain.push(block);
-    //       this.watchdog.onBlockChange(this, block);
-    //     }
-    //   }
-    // }
   }
 
   /**
@@ -113,22 +81,6 @@ class Node extends eve.Agent {
       this.blockchain.push(block);
       this.publish(block);
     }
-    // else {
-    //   // consensus protocol: add longer blockchain
-    //   // const previousBlock = this.blockchain.find((element) => {
-    //   //   if (element.id === block.previous) {
-    //   //     return element;
-    //   //   }
-    //   // });
-    //   // if (typeof previousBlock === 'undefined') {
-    //   //   this.consensusProtocol(from);
-    //   //   return;
-    //   // }
-
-    //   if (this.currentBlock.layer < block.layer) {
-
-    //   }
-    // }
 
     this.watchdog.onBlockChange('update blockchain', {
       nodeId: this.id,
