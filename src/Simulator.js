@@ -143,7 +143,7 @@ class Simulator {
 
     // Information of the transaction generator.
     info.push({
-      id: transactionGenerator.id,
+      nodeId: transactionGenerator.id,
       type: transactionGenerator.type,
       neighbors: transactionGenerator.neighbors,
     });
@@ -220,6 +220,15 @@ class Simulator {
         break;
 
       case 'update node neighbor':
+      const transactionGenerator = TransactionGenerator.getInstance();
+        if (transactionGenerator.id === data.nodeId) {
+          transactionGenerator.neighbors.forEach((neighbor) => {
+            if (neighbor.id === data.neighborId) {
+              neighbor.delay = data.value;
+            }
+          });
+          break;
+        }
         this.nodeList.forEach((node) => {
           if (node.id === data.nodeId) {
             node.neighbors.forEach((neighbor) => {
