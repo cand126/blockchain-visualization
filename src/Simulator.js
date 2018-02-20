@@ -96,7 +96,6 @@ class Simulator {
       // newNode.addNeighbor(oldNode.id, oldNode.name, delay);
     });
 
-    Visualizer.getInstance().addNode(newNode.id);
     newNode.initBlockchain();
     this.nodeList.push(newNode);
   }
