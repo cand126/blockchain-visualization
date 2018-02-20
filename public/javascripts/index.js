@@ -92,7 +92,7 @@ function initCanvas() {
   animate();
 
   canvasList.forEach((canvas) => {
-    socket.emit('init blockchain', {
+    socket.emit('get blockchain', {
       nodeId: canvas.nodeId,
     });
   });
@@ -104,7 +104,7 @@ function initCanvas() {
 function initProgress() {
   let progressBars = document.getElementsByName('transactionPool');
   for (let i = 0; i < progressBars.length; i++) {
-    socket.emit('init transaction pool', {
+    socket.emit('get transaction pool', {
       nodeId: progressBars[i].getAttribute('data-nodeid'),
     });
   }

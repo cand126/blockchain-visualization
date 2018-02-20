@@ -1,11 +1,17 @@
+/*
+ * Send and receive messages from clients through websockets.
+ */
+
 let io = require('socket.io')();
 
+// Represents the socket of the whole app.
 let appSocket = {};
 appSocket.io = io;
 
 io.on('connection', (socket) => {
+  // Receive requests for updating nodes
   socket.on('update node', (data) => {
-    let Simulator = require('./src/Simulator');
+    const Simulator = require('./src/Simulator');
     const success = Simulator.getInstance().updateNode(data);
     if (success) {
       socket.emit('finish', {
@@ -13,8 +19,10 @@ io.on('connection', (socket) => {
       });
     }
   });
+
+  // Receive requests for updating strategies of miners
   socket.on('update strategy', (data) => {
-    let Simulator = require('./src/Simulator');
+    const Simulator = require('./src/Simulator');
     const success = Simulator.getInstance().updateStrategy(data);
     if (success) {
       socket.emit('finish', {
@@ -22,21 +30,28 @@ io.on('connection', (socket) => {
       });
     }
   });
+
+  // Receive requests for publishing transactions
   socket.on('publish transaction', (data) => {
-    let Simulator = require('./src/Simulator');
+    const Simulator = require('./src/Simulator');
     Simulator.getInstance().publishTransaction(data);
   });
-  socket.on('init blockchain', (data) => {
-    let Simulator = require('./src/Simulator');
-    let blockchain = Simulator.getInstance().getBlockchain(data.nodeId);
+
+  // Receive requests for getting blockchains
+  socket.on('get blockchain', (data) => {
+    const Simulator = require('./src/Simulator');
+    const blockchain = Simulator.getInstance().getBlockchain(data.nodeId);
     socket.emit('update blockchain', {
       nodeId: data.nodeId,
       blocks: blockchain,
     });
   });
-  socket.on('init transaction pool', (data) => {
-    let Simulator = require('./src/Simulator');
-    let transactionPoolLength = Simulator.getInstance().getTransactionPoolLength(data.nodeId);
+
+  // Receive requests for getting transaction pools
+  socket.on('get transaction pool', (data) => {
+    const Simulator = require('./src/Simulator');
+    const transactionPoolLength =
+      Simulator.getInstance().getTransactionPoolLength(data.nodeId);
     socket.emit('update transaction pool', {
       nodeId: data.nodeId,
       length: transactionPoolLength,
@@ -44,6 +59,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// Notify the changes of the visualization
 appSocket.updateVisualization = (action, data) => {
   io.sockets.emit(action, data);
 };

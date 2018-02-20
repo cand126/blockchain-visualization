@@ -4,16 +4,17 @@ const Nonminer = require('./agents/Nonminer');
 const Hash = require('./helper/Hash');
 
 /**
- * @class this class is resposible for generating transactions
- * @extends Eve.Agent extends Agent class from eve framework
+ * Responible for managing the blockchain system.
+ * @class
+ * @public
  */
 class Simulator {
   /**
    * @constructor
-   * @public
+   * @private
    */
   constructor() {
-    this.nodeList = [];
+    this.nodeList = []; // contains all the instances of nodes
 
     // test
     this.addNode({
@@ -61,7 +62,10 @@ class Simulator {
   }
 
   /**
-   * singleton
+   * Singleton pattern.
+   * @function
+   * @static
+   * @return {object} The instance of the class.
    */
   static getInstance() {
     if (!this.instance) {
@@ -71,28 +75,57 @@ class Simulator {
   }
 
   /**
+   * Instantiate a node.
+   * @function
    * @public
+   * @param {object} nodeData - The required information for a node.
    */
   addNode(nodeData) {
     let newNode = null;
 
     if (nodeData.type === 'miner') {
-      newNode = new Miner(nodeData.id, nodeData.type, nodeData.name, nodeData.color, nodeData.miningTime, nodeData.minValue, nodeData.mineNumber, nodeData.maxPending);
+      newNode = new Miner(
+        nodeData.id,
+        nodeData.type,
+        nodeData.name,
+        nodeData.color,
+        nodeData.miningTime,
+        nodeData.minValue,
+        nodeData.mineNumber,
+        nodeData.maxPending
+      );
     } else if (nodeData.type === 'nonminer') {
-      newNode = new Nonminer(nodeData.id, nodeData.type, nodeData.name);
+      newNode = new Nonminer(
+        nodeData.id,
+        nodeData.type,
+        nodeData.name
+      );
     }
 
-    // this.transactionGenerator.addNeighbor(node.id, node.name, 0);
+    // Add the new node as a neighbor to the transaction genertor
     if (newNode.type === 'miner') {
-      TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, 0);
+      TransactionGenerator.getInstance().addNeighbor(
+        newNode.id,
+        newNode.name,
+        0
+      );
       // TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, Math.floor(Math.random() * 5));
     }
 
+    // Update the neighbors of the whole nodes.
     this.nodeList.forEach((oldNode) => {
       // let delay = Math.floor(Math.random() * 5);
-      oldNode.addNeighbor(newNode.id, newNode.name, 0);
+      oldNode.addNeighbor(
+        newNode.id,
+        newNode.name,
+        0
+      );
       // oldNode.addNeighbor(newNode.id, newNode.name, delay);
-      newNode.addNeighbor(oldNode.id, oldNode.name, 0);
+      newNode.addNeighbor(
+        oldNode.id,
+        oldNode.name,
+        0
+      );
       // newNode.addNeighbor(oldNode.id, oldNode.name, delay);
     });
 
@@ -101,35 +134,23 @@ class Simulator {
   }
 
   /**
+   * Get the information of all nodes.
+   * @function
    * @public
-   */
-  addDelays(transactionDelays, nodeDelays) {
-    transactionDelays.forEach((delay) => {
-      TransactionGenerator.getInstance().addNeighbor(delay.nodeId, delay.time);
-    });
-
-    nodeDelays.forEach((delay) => {
-      this.nodeList.forEach((node) => {
-        if (node.id === delay.nodeId[0]) {
-          node.addNeighbor(delay.nodeId[1], delay.time);
-        } else if (node.id === delay.nodeId[1]) {
-          node.addNeighbor(delay.nodeId[0], delay.time);
-        }
-      });
-    });
-  }
-
-  /**
-   * @public
+   * @return {object}
    */
   getNodesInfo() {
     let info = [];
     const transactionGenerator = TransactionGenerator.getInstance();
+
+    // Information of the transaction generator.
     info.push({
       id: transactionGenerator.id,
       type: transactionGenerator.type,
       neighbors: transactionGenerator.neighbors,
     });
+
+    // Information of miners and nonminers.
     this.nodeList.forEach((node) => {
       info.push({
         nodeId: node.id,
@@ -148,7 +169,11 @@ class Simulator {
   }
 
   /**
+   * Get the information of the blockchain of specific node.
+   * @function
    * @public
+   * @param {string} nodeId
+   * @return {bool} True for successes, false for errors.
    */
   getBlockchain(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
@@ -159,7 +184,11 @@ class Simulator {
   }
 
   /**
+   * Update the information of specific node.
+   * @function
    * @public
+   * @param {object} data - Contains the action and the required data.
+   * @return {bool} True for successes, false for errors.
    */
   updateNode(data) {
     switch (data.action) {
@@ -168,6 +197,7 @@ class Simulator {
           if (node.id === data.nodeId) {
             node.name = data.value;
           } else {
+            // update the name in the neighbors
             node.neighbors.forEach((neighbor) => {
               if (neighbor.id === data.nodeId) {
                 neighbor.name = data.value;
@@ -175,6 +205,7 @@ class Simulator {
             });
           }
         });
+        // update the name in the neighbors
         TransactionGenerator.getInstance().neighbors.forEach((neighbor) => {
           if (neighbor.id === data.nodeId) {
             neighbor.name = data.value;
@@ -209,7 +240,11 @@ class Simulator {
   }
 
   /**
+   * Update the strategies of specific miner.
+   * @function
    * @public
+   * @param {object} data - Contains the action and the required data.
+   * @return {bool} True for successes, false for errors.
    */
   updateStrategy(data) {
     switch (data.action) {
@@ -253,14 +288,21 @@ class Simulator {
   }
 
   /**
+   * Publish transactions through the transaction generator.
+   * @function
    * @public
+   * @param {object} data - Contains the reward of the transaction.
    */
   publishTransaction(data) {
     TransactionGenerator.getInstance().publish(data.reward);
   }
 
   /**
+   * Get the length of the transaction pool of specific miner.
+   * @function
    * @public
+   * @param {object} nodeId
+   * @return {number}
    */
   getTransactionPoolLength(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
