@@ -1,3 +1,7 @@
+/***************************************
+ * Global.
+ ***************************************/
+  
 body 
   font-family: 'Roboto', sans-serif
   height: 100vh
@@ -7,6 +11,10 @@ body
 .main-content
   flex: 1
   overflow: auto
+
+/***************************************
+ * Index.
+ ***************************************/
 
 .nodes-container
   flex: 1
@@ -20,12 +28,26 @@ body
       margin: 0
       padding: 16px 0 16px 0
       > div
-        > div.progress-text
+        > .progress-text
           font-size: 16px
-        > div.progress
+        > .progress
           height: 6px
     > div[name=canvas-container]
       height: 200px
+
+.publish-container
+  padding: 8px 0 8px 0
+  background-color: #439889
+  > div
+    > .publish-text
+      padding: 0 8px 0 8px
+    > input
+      width: 100px !important
+      margin: 0 8px 0 8px
+
+/***************************************
+ * Settings.
+ ***************************************/
 
 .settings-container
   > .card
@@ -39,16 +61,6 @@ body
           margin-bottom: 8px
         > div
           font-size: 16px
-
-div.publish-container
-  padding: 8px 0 8px 0
-  background-color: #439889
-  > div
-    > .publish-text
-      padding: 0 8px 0 8px
-    > input
-      width: 100px !important
-      margin: 0 8px 0 8px
 
 #savingSpinner
   position: absolute

@@ -1,16 +1,21 @@
-var Node = require('./Node');
+const AbstractNode = require('./AbstractNode');
 
 /**
- * @class this class is resposible for mining
- * @extends Eve.Agent extends Agent class from eve framework
+ * Represents a nonminer.
+ * @class
+ * @public
+ * @extends AbstractNode
  */
-class Nonminer extends Node {
+class Nonminer extends AbstractNode {
   /**
+   * @constructor
    * @public
+   * @param {string} id
+   * @param {string} name
    */
-  constructor(id, type, name) {
+  constructor(id, name) {
     super(id);
-    this.type = type;
+    this.type = 'nonminer';
     this.name = name;
   }
 }

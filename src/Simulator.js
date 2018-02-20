@@ -86,7 +86,6 @@ class Simulator {
     if (nodeData.type === 'miner') {
       newNode = new Miner(
         nodeData.id,
-        nodeData.type,
         nodeData.name,
         nodeData.color,
         nodeData.miningTime,
@@ -97,7 +96,6 @@ class Simulator {
     } else if (nodeData.type === 'nonminer') {
       newNode = new Nonminer(
         nodeData.id,
-        nodeData.type,
         nodeData.name
       );
     }

@@ -1,19 +1,30 @@
-let Node = require('./Node');
-let Block = require('../types/Block');
-let Hash = require('../helper/Hash');
+const AbstractNode = require('./AbstractNode');
+const Block = require('../types/Block');
 const Transaction = require('../types/Transaction');
+const Hash = require('../helper/Hash');
+const Watchdog = require('../Watchdog');
 
 /**
- * @class this class is resposible for mining
- * @extends Eve.Agent extends Agent class from eve framework
+ * Represents a miner.
+ * @class
+ * @public
+ * @extends AbstractNode
  */
-class Miner extends Node {
+class Miner extends AbstractNode {
   /**
+   * @constructor
    * @public
+   * @param {string} id
+   * @param {string} name
+   * @param {string} color
+   * @param {number} miningTime - The length of time for mining.
+   * @param {number} minValue   - The minimum value of a transaction that can be mined.
+   * @param {number} mineNumber - The number of transactions that are included in a block.
+   * @param {number} maxPending - The number of maximum pending transactions in the transactin pool.
    */
-  constructor(id, type, name, color, miningTime, minValue, mineNumber, maxPending) {
+  constructor(id, name, color, miningTime, minValue, mineNumber, maxPending) {
     super(id);
-    this.type = type;
+    this.type = 'miner';
     this.name = name;
     this.color = color;
     this.miningTime = miningTime;
@@ -23,9 +34,12 @@ class Miner extends Node {
   }
 
   /**
-   * @function generate generate a block
-   * @returns {Iblock} return the block that is generated, @see {@link Iblock}
+   * Generates a block.
+   * @function
+   * @param {object} transactions - An array of transactions
+   * @return {object}
    * @private
+   * @see {@link Block}
    */
   generate(transactions) {
     const block = new Block(
@@ -43,46 +57,37 @@ class Miner extends Node {
   }
 
   /**
-   * @public
-   */
-  setMiningStrategy(minValue, maxPendingTransaction, numberOfTransaction) {
-    this.minValue = minValue;
-    this.maxPendingTransaction = maxPendingTransaction;
-    this.numberOfTransaction = numberOfTransaction;
-  }
-
-  /**
-   * @public
+   * Mines a block.
+   * @function
+   * @param {object} transactions - An array of transactions
+   * @private
    */
   mine(transactions) {
     let count = 0;
     let timer = setInterval(() => {
       count += 1;
-      this.watchdog.onMiningChange('update mining progress', {
+      Watchdog.getInstance().onDataChange('update mining progress', {
         nodeId: this.id,
         progress: count,
       });
       if (count >= this.miningTime) {
-        this.watchdog.onMiningChange('update mining progress', {
+        // finish mining
+        Watchdog.getInstance().onDataChange('update mining progress', {
           nodeId: this.id,
           progress: 0,
         });
         const block = this.generate(transactions);
-        this.addBlock(block);
+        this.receiveBlock(block);
         clearInterval(timer);
       }
     }, 1000);
   }
 
   /**
-   * @public
-   */
-  consensusProtocol(from) {
-    this.send(from, 'blockchain');
-  }
-
-  /**
-   * @public
+   * Receive a transaction.
+   * @function
+   * @param {object} transaction
+   * @private
    */
   receiveTransaction(transaction) {
     // copy transaction
@@ -95,17 +100,21 @@ class Miner extends Node {
       transaction.privilege
     );
     this.transactionPool.push(newTransaction);
-    let transactions = [];
+
+    let transactions = []; // contains the candidate transactions for mining
 
     if (this.transactionPool.length >= this.maxPending) {
       // TODO: maximum number of transactions
     } else if (this.transactionPool.length >= this.mineNumber) {
+      // select candidate transactions
       for (let i = this.transactionPool.length - 1; i >= 0; i--) {
-        if ((this.transactionPool[i].reward + this.transactionPool[i].privilege) >= this.minValue) {
-          transactions.push(this.transactionPool[i]);
+        const pendingTransaction = this.transactionPool[i];
+        const value = pendingTransaction.reward + pendingTransaction.privilege;
+        if (value >= this.minValue) {
+          transactions.push(pendingTransaction);
           this.transactionPool.splice(i, 1);
         } else {
-          this.transactionPool[i].privilege += 1;
+          pendingTransaction.privilege += 1;
         }
 
         if (transactions.length >= this.mineNumber) {
@@ -114,12 +123,14 @@ class Miner extends Node {
         }
       }
     }
+
+    // push back the candidate transactions because the node does not mine
     if (transactions.length < this.mineNumber) {
       for (let i = 0; i < transactions.length; i++) {
         this.transactionPool.push(transactions[i]);
       }
     }
-    this.watchdog.onTransactionChange('update transaction pool', {
+    Watchdog.getInstance().onDataChange('update transaction pool', {
       nodeId: this.id,
       length: this.transactionPool.length,
     });

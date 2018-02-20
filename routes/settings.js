@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const Simulator = require('../src/Simulator');
 
-/* GET users listing. */
+/* GET settings page. */
 router.get('/', function(req, res, next) {
   let nodes = Simulator.getInstance().getNodesInfo();
   res.render('settings', {

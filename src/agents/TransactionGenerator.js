@@ -1,15 +1,18 @@
-const Node = require('./Node');
+const AbstractNode = require('./AbstractNode');
 const Transaction = require('../types/Transaction');
 const Hash = require('../helper/Hash');
 
 /**
- * @class this class is resposible for generating transactions
- * @extends Eve.Agent extends Agent class from eve framework
+ * Responsible for publishing transactions.
+ * @class
+ * @public
+ * @extends AbstractNode
  */
-class TransactionGenerator extends Node {
+class TransactionGenerator extends AbstractNode {
   /**
    * @constructor
    * @public
+   * @param {string} id
    */
   constructor(id) {
     super(id);
@@ -17,7 +20,10 @@ class TransactionGenerator extends Node {
   }
 
   /**
-   * singleton
+   * Singleton pattern.
+   * @function
+   * @static
+   * @return {object} The instance of the class.
    */
   static getInstance() {
     if (!this.instance) {
@@ -27,9 +33,12 @@ class TransactionGenerator extends Node {
   }
 
   /**
-   * @function generate generate a transaction
-   * @returns {Itransaction} return the transaction that is generated, @see {@link Itransaction}
+   * Generates a transaction.
+   * @function
+   * @param {number} reward
+   * @return {object}
    * @private
+   * @see {@link Transaction}
    */
   generate(reward) {
     const transaction = new Transaction(
@@ -45,9 +54,9 @@ class TransactionGenerator extends Node {
   }
 
   /**
-   * @function publish publish a transaction with a delay time
-   * @param {string} to the id of the agents who will receive the transaction
-   * @param {number} delay the number of time to delay
+   * Publish a transaction.
+   * @function
+   * @param {number} reward
    * @public
    */
   publish(reward) {
