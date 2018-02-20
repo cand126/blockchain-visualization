@@ -1,13 +1,19 @@
 /*
  * Send and receive messages from clients through websockets.
  */
-
 let io = require('socket.io')();
 
-// Represents the socket of the whole app.
+/**
+ * Represents the socket of the whole app.
+ * @class
+ */
 let appSocket = {};
 appSocket.io = io;
 
+/**
+ * Responsible for websockets connections.
+ * @function
+ */
 io.on('connection', (socket) => {
   // Receive requests for updating nodes
   socket.on('update node', (data) => {
@@ -58,7 +64,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Notify the changes of the visualization
+/**
+ * Notify the visualization.
+ * @param {string} action
+ * @param {object} data
+ * @function
+ */
 appSocket.updateVisualization = (action, data) => {
   io.sockets.emit(action, data);
 };
