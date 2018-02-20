@@ -12,12 +12,14 @@
     "debug": "~2.6.9",
     "evejs": "^0.5.0",
     "express": "~4.15.5",
+    "jquery": "^3.3.1",
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.11.0",
     "popper.js": "^1.12.9",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5",
     "socket.io": "^2.0.4",
+    "tether": "^1.4.3",
     "three": "^0.90.0"
   }
 }
