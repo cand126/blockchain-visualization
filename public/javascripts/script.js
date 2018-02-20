@@ -1,10 +1,12 @@
-let canvasList = [];
+/* global THREE io:true */
+
+let canvasList = []; // contains all canvas
 let canvasWidth;
 let canvasHeight;
-let socket;
-let blockSize = 32;
 let canvasMargin = 16;
+let blockSize = 32;
 let blockSpace = 16;
+let socket;
 
 $(document).ready(() => {
   initSocket();
@@ -13,13 +15,13 @@ $(document).ready(() => {
 
   // implicit iteration
   $('div[name="canvas-container"]').mousedown((e) => {
-    onDocumentMouseDown(e);
+    onCanvasMouseDown(e);
   });
   $('div[name="canvas-container"]').mouseup((e) => {
-    onDocumentMouseUp(e);
+    onCanvasMouseUp(e);
   });
   $('div[name="canvas-container"]').mouseleave((e) => {
-    onDocumentMouseLeave(e);
+    onCanvasMouseLeave(e);
   });
 });
 
@@ -27,6 +29,7 @@ $(window).resize(() => {
   canvasWidth = $('div[name="canvas-container"]').first().width();
   canvasHeight = $('div[name="canvas-container"]').first().height();
 
+  // resize each canvas
   canvasList.forEach((canvas) => {
     canvas.camera.left = -canvasWidth / 2;
     canvas.camera.right = canvasWidth / 2;
@@ -38,51 +41,52 @@ $(window).resize(() => {
 });
 
 /**
- * @public
+ * Initialize websockets.
+ * @function
  */
 function initSocket() {
   socket = io.connect();
 
-  socket.on('connect', () => {
-    socket.on('finish', (data) => {
-      if (data.status === 'success') {
-        $('#savingSpinner').hide();
+  socket.on('update transaction pool', (data) => {
+    let progressBars = document.getElementsByName('transactionPool');
+    for (let i = 0; i < progressBars.length; i++) {
+      if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
+        progressBars[i].setAttribute('aria-valuenow', data.length);
+        progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
+      }
+    }
+  });
+
+  socket.on('update mining progress', (data) => {
+    let progressBars = document.getElementsByName('miningProcess');
+    for (let i = 0; i < progressBars.length; i++) {
+      if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
+        progressBars[i].setAttribute('aria-valuenow', data.progress);
+        progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
+      }
+    }
+  });
+
+  // signal for finishing updating
+  socket.on('finish', (data) => {
+    if (data.status === 'success') {
+      $('#savingSpinner').hide();
+    }
+  });
+
+  socket.on('update blockchain', (data) => {
+    let canvas = canvasList.find((canvas) => {
+      if (canvas.nodeId === data.nodeId) {
+        return canvas;
       }
     });
-
-    socket.on('update transaction pool', (data) => {
-      let progressBars = document.getElementsByName('transactionPool');
-      for (let i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
-          progressBars[i].setAttribute('aria-valuenow', data.length);
-          progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
-        }
-      }
-    });
-
-    socket.on('update mining progress', (data) => {
-      let progressBars = document.getElementsByName('miningProcess');
-      for (let i = 0; i < progressBars.length; i++) {
-        if (progressBars[i].getAttribute('data-nodeid') === data.nodeId) {
-          progressBars[i].setAttribute('aria-valuenow', data.progress);
-          progressBars[i].style.width = progressBars[i].getAttribute('aria-valuenow') / progressBars[i].getAttribute('aria-valuemax') * 100 + '%';
-        }
-      }
-    });
-
-    socket.on('update blockchain', (data) => {
-      let canvas = canvasList.find((canvas) => {
-        if (canvas.nodeId === data.nodeId) {
-          return canvas;
-        }
-      });
-      updateCanvas(canvas, data.blocks);
-    });
+    updateCanvas(canvas, data.blocks);
   });
 }
 
 /**
- * @public
+ * Initialize canvas.
+ * @function
  */
 function initCanvas() {
   let canvasContainers = document.getElementsByName('canvas-container');
@@ -99,7 +103,8 @@ function initCanvas() {
 }
 
 /**
- * @public
+ * Initialize progress bars.
+ * @function
  */
 function initProgress() {
   let progressBars = document.getElementsByName('transactionPool');
@@ -111,23 +116,27 @@ function initProgress() {
 }
 
 /**
- * @public
+ * Mousedown event.
+ * @param {Event} e
+ * @function
  */
-function onDocumentMouseDown(e) {
+function onCanvasMouseDown(e) {
   let canvas = canvasList.find((canvas) => {
     if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
       return canvas;
     }
   });
   $(e.target).mousemove((e) => {
-    onDocumentMouseMove(e, canvas);
+    onCanvasMouseMove(e, canvas);
   });
 };
 
 /**
- * @public
+ * Mouseup event.
+ * @param {Event} e
+ * @function
  */
-function onDocumentMouseUp(e) {
+function onCanvasMouseUp(e) {
   $(e.target).unbind('mousemove');
   let canvas = canvasList.find((canvas) => {
     if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
@@ -141,9 +150,11 @@ function onDocumentMouseUp(e) {
 };
 
 /**
- * @public
+ * Mouseleave event.
+ * @param {Event} e
+ * @function
  */
-function onDocumentMouseLeave(e) {
+function onCanvasMouseLeave(e) {
   $(e.target).unbind('mousemove');
   let canvas = canvasList.find((canvas) => {
     if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
@@ -158,9 +169,12 @@ function onDocumentMouseLeave(e) {
 };
 
 /**
- * @public
+ * Mousemove event.
+ * @param {Event} e
+ * @param {object} canvas
+ * @function
  */
-function onDocumentMouseMove(e, canvas) {
+function onCanvasMouseMove(e, canvas) {
   e.preventDefault();
   const rect = canvas.renderer.domElement.getBoundingClientRect();
   const x = e.clientX - rect.left;
@@ -168,7 +182,11 @@ function onDocumentMouseMove(e, canvas) {
   if (canvas.mousePosition.x !== -1 && canvas.mousePosition.y !== -1) {
     const distanceX = -(x - canvas.mousePosition.x);
     const distanceY = y - canvas.mousePosition.y;
-    canvas.camera.position.set(canvas.camera.position.x + distanceX, canvas.camera.position.y + distanceY, canvas.camera.position.z);
+    canvas.camera.position.set(
+      canvas.camera.position.x + distanceX,
+      canvas.camera.position.y + distanceY,
+      canvas.camera.position.z
+    );
     canvas.camera.updateProjectionMatrix();
   }
   canvas.mousePosition.x = x;
@@ -176,7 +194,8 @@ function onDocumentMouseMove(e, canvas) {
 };
 
 /**
- * @public
+ * Publish a transaction.
+ * @function
  */
 function publishTransaction() {
   socket.emit('publish transaction', {
@@ -185,7 +204,12 @@ function publishTransaction() {
 }
 
 /**
- * @public
+ * Update nodes.
+ * @param {string} action
+ * @param {string} nodeId
+ * @param {string} value
+ * @param {string} [neighborId=null]
+ * @function
  */
 function updateNode(action, nodeId, value, neighborId = null) {
   $('#savingSpinner').show();
@@ -198,19 +222,25 @@ function updateNode(action, nodeId, value, neighborId = null) {
 }
 
 /**
- * @public
+ * Update strategies.
+ * @param {string} action
+ * @param {string} nodeId
+ * @param {string} value
+ * @function
  */
 function updateStrategy(action, nodeId, value) {
   $('#savingSpinner').show();
   socket.emit('update strategy', {
     nodeId: nodeId,
     action: action,
-    value: value,
+    value: Number(value),
   });
 }
 
 /**
- * @public
+ * Instantiate a canvas.
+ * @param {DOM} canvasContainer
+ * @function
  */
 function addCanvas(canvasContainer) {
   if (!canvasWidth || !canvasHeight) {
@@ -251,7 +281,8 @@ function addCanvas(canvasContainer) {
 }
 
 /**
- * @public
+ * Update the frame.
+ * @function
  */
 function animate() {
   // loop
@@ -262,7 +293,10 @@ function animate() {
 }
 
 /**
- * @public
+ * Update the objects on the canvas.
+ * @param {object} canvas
+ * @param {object[]} blockchain
+ * @function
  */
 function updateCanvas(canvas, blockchain) {
   for (let i = 0; i < blockchain.length; i++) {
@@ -285,7 +319,8 @@ function updateCanvas(canvas, blockchain) {
       });
 
       if (blockchain[i].previous === 'null') {
-        blockObject.position.set(-(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
+        blockObject.position.set(
+          -(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
           (canvasHeight / 2) - (blockSize / 2) - canvasMargin,
           0,
         );
@@ -307,13 +342,37 @@ function updateCanvas(canvas, blockchain) {
 
         if (previousblockObject.row === blockObject.row) {
           // straight line
-          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x, previousblockObject.position.y, 0));
-          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x, blockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            previousblockObject.position.x,
+            previousblockObject.position.y,
+            0
+          ));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            blockObject.position.x,
+            blockObject.position.y,
+            0
+          ));
         } else {
-          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x, previousblockObject.position.y, 0));
-          lineGeometry.vertices.push(new THREE.Vector3(previousblockObject.position.x + (blockSize / 2) + (blockSpace / 2), previousblockObject.position.y, 0));
-          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x - (blockSize / 2) - (blockSpace / 2), blockObject.position.y, 0));
-          lineGeometry.vertices.push(new THREE.Vector3(blockObject.position.x, blockObject.position.y, 0));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            previousblockObject.position.x,
+            previousblockObject.position.y,
+            0
+          ));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            previousblockObject.position.x + (blockSize / 2) + (blockSpace / 2),
+            previousblockObject.position.y,
+            0
+          ));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            blockObject.position.x - (blockSize / 2) - (blockSpace / 2),
+            blockObject.position.y,
+            0
+          ));
+          lineGeometry.vertices.push(new THREE.Vector3(
+            blockObject.position.x,
+            blockObject.position.y,
+            0
+          ));
         }
 
         lineObject = new THREE.Line(lineGeometry, lineMaterial);
@@ -329,7 +388,11 @@ function updateCanvas(canvas, blockchain) {
             if (object instanceof THREE.Mesh) {
               if (object.row >= blockObject.row) {
                 object.row += 1;
-                let newPosition = new THREE.Vector3(object.position.x, object.position.y - (blockSpace + blockSize), 0);
+                let newPosition = new THREE.Vector3(
+                  object.position.x,
+                  object.position.y - (blockSpace + blockSize),
+                  0
+                );
                 object.position.set(
                   newPosition.x,
                   newPosition.y,

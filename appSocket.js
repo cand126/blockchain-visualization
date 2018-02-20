@@ -50,8 +50,7 @@ io.on('connection', (socket) => {
   // Receive requests for getting transaction pools
   socket.on('get transaction pool', (data) => {
     const Simulator = require('./src/Simulator');
-    const transactionPoolLength =
-      Simulator.getInstance().getTransactionPoolLength(data.nodeId);
+    const transactionPoolLength = Simulator.getInstance().getTransactionPoolLength(data.nodeId);
     socket.emit('update transaction pool', {
       nodeId: data.nodeId,
       length: transactionPoolLength,
