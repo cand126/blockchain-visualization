@@ -1,6 +1,14 @@
 # Blockchain Visualization
 
+Explore the blockchain technology by yourself.
+
+### Introduction
+
 ### Requirements
+
+* [node.js]
+* [npm]
+* [Express]
 
 ### Installation
 
@@ -21,3 +29,10 @@ $ npm run
 ### Todos
 
 ### License
+
+MIT
+
+
+[node.js]: <https://nodejs.org/en/>
+[npm]: <https://www.npmjs.com/>
+[Express]: <http://expressjs.com/>
