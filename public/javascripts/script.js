@@ -189,13 +189,14 @@ function onCanvasMouseMove(e, canvas) {
 /**
  * Publish a transaction.
  * @function
+ * @param {DOM} button
  */
-function publishTransaction(target) {
+function publishTransaction(button) {
   socket.emit('publish transaction', {
     reward: document.getElementById('transactionReward').value,
   });
   $('#publishAlert').show();
-  target.blur();
+  button.blur();
   setTimeout(() => {
     $('#publishAlert').hide();
   }, 1500);
