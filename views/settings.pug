@@ -15,7 +15,7 @@ block content
             div(class='d-flex align-items-center col') #{node.nodeId}
           unless node.type === 'generator'
             div(class='form-group row')
-              div(class='d-flex align-items-center col') #{node.name}
+              div(class='d-flex align-items-center col') Name
               div(class='col')
                 input(
                   class='form-control', 
@@ -47,7 +47,7 @@ block content
           h4(class='card-title') Delay of Network (seconds)
           each neighbor in node.neighbors
             div(class='form-group row')
-              div(class='d-flex align-items-center col') #{neighbor.name}
+              div(class='d-flex align-items-center col', name='neighborName', data-nodeid=neighbor.id) #{neighbor.name}
               div(class='col')
                 input(
                   class='form-control', 

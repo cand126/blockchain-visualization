@@ -78,6 +78,15 @@ function initSocket() {
     let canvas = canvasList.find((canvas) => canvas.nodeId === data.nodeId);
     updateCanvas(canvas, data.blocks);
   });
+
+  socket.on('update neighbor name', (data) => {
+    let neighbors = document.getElementsByName('neighborName');
+    for (let i = 0; i < neighbors.length; i++) {
+      if (neighbors[i].getAttribute('data-nodeid') === data.neighborId) {
+        neighbors[i].innerText = data.neighborName;
+      }
+    }
+  });
 }
 
 /**

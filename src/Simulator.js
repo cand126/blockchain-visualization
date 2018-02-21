@@ -206,6 +206,12 @@ class Simulator {
             neighbor.name = data.value;
           }
         });
+
+        let appSocket = require('../appSocket');
+        appSocket.updateVisualization('update neighbor name', {
+          neighborId: data.nodeId,
+          neighborName: data.value,
+        });
         break;
 
       case 'update node color':
