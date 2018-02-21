@@ -75,11 +75,7 @@ function initSocket() {
   });
 
   socket.on('update blockchain', (data) => {
-    let canvas = canvasList.find((canvas) => {
-      if (canvas.nodeId === data.nodeId) {
-        return canvas;
-      }
-    });
+    let canvas = canvasList.find((canvas) => canvas.nodeId === data.nodeId);
     updateCanvas(canvas, data.blocks);
   });
 }
@@ -121,11 +117,7 @@ function initProgress() {
  * @function
  */
 function onCanvasMouseDown(e) {
-  let canvas = canvasList.find((canvas) => {
-    if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
-      return canvas;
-    }
-  });
+  let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
   $(e.target).mousemove((e) => {
     onCanvasMouseMove(e, canvas);
   });
@@ -138,11 +130,7 @@ function onCanvasMouseDown(e) {
  */
 function onCanvasMouseUp(e) {
   $(e.target).unbind('mousemove');
-  let canvas = canvasList.find((canvas) => {
-    if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
-      return canvas;
-    }
-  });
+  let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
   if (typeof canvas !== 'undefined') {
     canvas.mousePosition.x = -1;
     canvas.mousePosition.y = -1;
@@ -156,11 +144,7 @@ function onCanvasMouseUp(e) {
  */
 function onCanvasMouseLeave(e) {
   $(e.target).unbind('mousemove');
-  let canvas = canvasList.find((canvas) => {
-    if (canvas.nodeId === $(e.target).parent().attr('data-nodeId')) {
-      return canvas;
-    }
-  });
+  let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
 
   if (typeof canvas !== 'undefined') {
     canvas.mousePosition.x = -1;
@@ -197,10 +181,11 @@ function onCanvasMouseMove(e, canvas) {
  * Publish a transaction.
  * @function
  */
-function publishTransaction() {
+function publishTransaction(target) {
   socket.emit('publish transaction', {
     reward: document.getElementById('transactionReward').value,
   });
+  target.blur();
 }
 
 /**

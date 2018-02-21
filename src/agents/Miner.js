@@ -103,33 +103,49 @@ class Miner extends AbstractNode {
 
     let transactions = []; // contains the candidate transactions for mining
 
+    // sort the transactin pool
+    this.transactionPool.sort((transaction1, transaction2) => {
+      let value1 = transaction1.reward + transaction1.privilege;
+      let value2 = transaction2.reward + transaction2.privilege;
+      return value1 - value2;
+    });
+
     if (this.transactionPool.length >= this.maxPending) {
-      // TODO: maximum number of transactions
-    } else if (this.transactionPool.length >= this.mineNumber) {
-      // select candidate transactions
+      // select transactions with higher values
       for (let i = this.transactionPool.length - 1; i >= 0; i--) {
         const pendingTransaction = this.transactionPool[i];
-        const value = pendingTransaction.reward + pendingTransaction.privilege;
-        if (value >= this.minValue) {
+
+        if (transactions.length < this.mineNumber) {
           transactions.push(pendingTransaction);
           this.transactionPool.splice(i, 1);
         } else {
           pendingTransaction.privilege += 1;
         }
+      }
+    } else if (this.transactionPool.length >= this.mineNumber) {
+      // select candidate transactions
+      for (let i = this.transactionPool.length - 1; i >= 0; i--) {
+        const pendingTransaction = this.transactionPool[i];
+        const value = pendingTransaction.reward + pendingTransaction.privilege;
 
-        if (transactions.length >= this.mineNumber) {
-          this.mine(transactions);
-          break;
+        if (value >= this.minValue && transactions.length < this.mineNumber) {
+          transactions.push(pendingTransaction);
+          this.transactionPool.splice(i, 1);
+        } else {
+          pendingTransaction.privilege += 1;
         }
       }
     }
 
-    // push back the candidate transactions because the node does not mine
-    if (transactions.length < this.mineNumber) {
+    if (transactions.length >= this.mineNumber) {
+      this.mine(transactions);
+    } else {
+      // push back the candidate transactions because the node does not mine
       for (let i = 0; i < transactions.length; i++) {
         this.transactionPool.push(transactions[i]);
       }
     }
+
     Watchdog.getInstance().onDataChange('update transaction pool', {
       nodeId: this.id,
       length: this.transactionPool.length,
