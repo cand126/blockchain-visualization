@@ -15,6 +15,18 @@ block content
             div(class='d-flex align-items-center col') #{node.nodeId}
           unless node.type === 'generator'
             div(class='form-group row')
+              div(class='d-flex align-items-center col') Type
+              div(class='d-flex align-items-center col') #{node.type}
+              //- div(class='d-flex align-items-center col') Type
+              //- div(class='col')
+              //-   select(
+              //-     class='form-control',
+              //-     data-nodeid=node.nodeId,
+              //-     onchange='updateNode("update node type", this.getAttribute("data-nodeid"), this.value)',
+              //-   )
+              //-     option(selected=node.type==='miner') miner
+              //-     option(selected=node.type==='nonminer') nonminer
+            div(class='form-group row')
               div(class='d-flex align-items-center col') Name
               div(class='col')
                 input(
@@ -23,15 +35,6 @@ block content
                   value=node.name, 
                   data-nodeid=node.nodeId, 
                   oninput='updateNode("update node name", this.getAttribute("data-nodeid"), this.value)'
-                )
-            div(class='form-group row')
-              div(class='d-flex align-items-center col') Type
-              div(class='col')
-                input(
-                  class='form-control', 
-                  type='text', 
-                  value=node.type,
-                  data-nodeid=node.nodeId
                 )
             if node.type === 'miner'
               div(class='form-group row')
