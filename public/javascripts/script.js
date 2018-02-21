@@ -185,7 +185,11 @@ function publishTransaction(target) {
   socket.emit('publish transaction', {
     reward: document.getElementById('transactionReward').value,
   });
+  $('#publishAlert').show();
   target.blur();
+  setTimeout(() => {
+    $('#publishAlert').hide();
+  }, 1500);
 }
 
 /**

@@ -22,30 +22,30 @@ class Simulator {
       type: 'miner',
       color: '#e53935',
       name: 'Alice',
-      miningTime: 2,
-      minValue: 4,
-      mineNumber: 1,
-      maxPending: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
+      minValue: Math.floor(Math.random() * 10) + 1,
+      mineNumber: Math.floor(Math.random() * 3) + 1,
+      maxPending: Math.floor(Math.random() * 5) + 10,
     });
     this.addNode({
       id: Hash.generateId(),
       type: 'miner',
       color: '#03a9f4',
       name: 'Bob',
-      miningTime: 2,
-      minValue: 5,
-      mineNumber: 1,
-      maxPending: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
+      minValue: Math.floor(Math.random() * 10) + 1,
+      mineNumber: Math.floor(Math.random() * 3) + 1,
+      maxPending: Math.floor(Math.random() * 5) + 10,
     });
     this.addNode({
       id: Hash.generateId(),
       type: 'miner',
       color: '#4caf50',
       name: 'Charlie',
-      miningTime: 2,
-      minValue: 6,
-      mineNumber: 1,
-      maxPending: 10,
+      miningTime: Math.floor(Math.random() * 5) + 5,
+      minValue: Math.floor(Math.random() * 10) + 1,
+      mineNumber: Math.floor(Math.random() * 3) + 1,
+      maxPending: Math.floor(Math.random() * 5) + 10,
     });
     this.addNode({
       id: Hash.generateId(),
@@ -105,26 +105,23 @@ class Simulator {
       TransactionGenerator.getInstance().addNeighbor(
         newNode.id,
         newNode.name,
-        0
+        Math.floor(Math.random() * 5)
       );
-      // TransactionGenerator.getInstance().addNeighbor(newNode.id, newNode.name, Math.floor(Math.random() * 5));
     }
 
     // Update the neighbors of the whole nodes.
     this.nodeList.forEach((oldNode) => {
-      // let delay = Math.floor(Math.random() * 5);
+      const delay = Math.floor(Math.random() * 5);
       oldNode.addNeighbor(
         newNode.id,
         newNode.name,
-        0
+        delay
       );
-      // oldNode.addNeighbor(newNode.id, newNode.name, delay);
       newNode.addNeighbor(
         oldNode.id,
         oldNode.name,
-        0
+        delay
       );
-      // newNode.addNeighbor(oldNode.id, oldNode.name, delay);
     });
 
     newNode.initBlockchain();

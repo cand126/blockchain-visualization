@@ -9,6 +9,8 @@ Explore the blockchain technology by yourself.
 * [node.js]
 * [npm]
 * [Express]
+* [nodemon]
+* [three.js]
 
 ### Installation
 
@@ -36,3 +38,5 @@ MIT
 [node.js]: <https://nodejs.org/en/>
 [npm]: <https://www.npmjs.com/>
 [Express]: <http://expressjs.com/>
+[nodemon]: <https://nodemon.io/>
+[three.js]: <https://threejs.org/>
