@@ -8,6 +8,7 @@ block content
           h3(class='card-header text-center text-light') Transaction Generator
         else
           h3(class='card-header text-center text-light') Node #{index}
+            button(class='btn btn-outline-light', type='button') DELETE
         div(class='card-block')
           h4(class='card-title') Information
           div(class='row')
@@ -102,6 +103,10 @@ block content
                   data-nodeid=node.nodeId, 
                   oninput='updateStrategy("update max pending", this.getAttribute("data-nodeid"), this.value)'
                 )
+
+    div(class='row')
+      button(class='btn btn-outline-secondary col m-2', type='button') Add a miner
+      button(class='btn btn-outline-secondary col m-2', type='button') Add a node
   
   div(class='alert alert-secondary text-muted' id='savingSpinner' role='alert') 
     i(class='fas fa-spinner fa-spin') 

@@ -28,3 +28,7 @@ benchmarks/graphs
 
 # Visual Studio Code
 .vscode
+
+# sass
+/public/stylesheets/*.css
+/public/stylesheets/*.css.map
