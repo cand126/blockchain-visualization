@@ -187,11 +187,15 @@ function onCanvasMouseMove(e, canvas) {
 };
 
 function zoomIn(e, nodeId) {
-
+  let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
+  canvas.camera.zoom += 0.1;
+  canvas.camera.updateProjectionMatrix();
 }
 
 function zoomOut(e, nodeId) {
-
+  let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
+  canvas.camera.zoom -= 0.1;
+  canvas.camera.updateProjectionMatrix();
 }
 
 function registerEnter(event) {
