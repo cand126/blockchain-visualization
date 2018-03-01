@@ -178,6 +178,14 @@ class Simulator {
     }
   }
 
+  getCurrentBlock(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].currentBlock;
+      }
+    }
+  }
+
   /**
    * Update the information of specific node.
    * @function

@@ -76,7 +76,7 @@ function initSocket() {
 
   socket.on('update blockchain', (data) => {
     let canvas = canvasList.find((canvas) => canvas.nodeId === data.nodeId);
-    updateCanvas(canvas, data.blocks);
+    updateCanvas(canvas, data.blocks, data.currentBlock);
   });
 
   socket.on('update neighbor name', (data) => {
@@ -185,6 +185,14 @@ function onCanvasMouseMove(e, canvas) {
   canvas.mousePosition.x = x;
   canvas.mousePosition.y = y;
 };
+
+function zoomIn(e, nodeId) {
+
+}
+
+function zoomOut(e, nodeId) {
+
+}
 
 /**
  * Publish a transaction.
@@ -297,7 +305,7 @@ function animate() {
  * @param {object[]} blockchain
  * @function
  */
-function updateCanvas(canvas, blockchain) {
+function updateCanvas(canvas, blockchain, currentBlock) {
   for (let i = 0; i < blockchain.length; i++) {
     let blockObject = canvas.scene.getObjectByName(blockchain[i].id);
     let lineObject;
@@ -318,8 +326,7 @@ function updateCanvas(canvas, blockchain) {
       });
 
       if (blockchain[i].previous === 'null') {
-        blockObject.position.set(
-          -(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
+        blockObject.position.set(-(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
           (canvasHeight / 2) - (blockSize / 2) - canvasMargin,
           0,
         );
@@ -339,8 +346,9 @@ function updateCanvas(canvas, blockchain) {
           0,
         );
 
+        // set up lines
         if (previousblockObject.row === blockObject.row) {
-          // straight line
+          // straight lines
           lineGeometry.vertices.push(new THREE.Vector3(
             previousblockObject.position.x,
             previousblockObject.position.y,
@@ -352,6 +360,7 @@ function updateCanvas(canvas, blockchain) {
             0
           ));
         } else {
+          // lines with breakpoints
           lineGeometry.vertices.push(new THREE.Vector3(
             previousblockObject.position.x,
             previousblockObject.position.y,
@@ -379,9 +388,7 @@ function updateCanvas(canvas, blockchain) {
         blockObject.previousLine = lineObject.id;
         blockObject.nextLines = [];
 
-        canvas.scene.add(lineObject);
-
-        // add a new row
+        // add a new row if necessary
         if (previousblockObject.nextBlocks > 0) {
           canvas.scene.traverse((object) => {
             if (object instanceof THREE.Mesh) {
@@ -422,9 +429,54 @@ function updateCanvas(canvas, blockchain) {
         }
 
         previousblockObject.nextBlocks += 1;
+        canvas.scene.add(lineObject);
       }
 
       canvas.scene.add(blockObject);
+    }
+
+    // remove all outlines
+    for (let i = 0; i < canvas.scene.children.length; i++) {
+      const object = canvas.scene.children[i];
+      if (object instanceof THREE.Mesh && object.blockchainOutline) {
+        canvas.scene.remove(object);
+      }
+    }
+
+    let currentObjectId = currentBlock;
+    let countLayer = 0;
+
+    // mark the longest blockchain with outlines
+    while (currentObjectId !== '00000000' && currentObjectId !== null) {
+      let previousObjectId = null;
+      canvas.scene.traverse((object) => {
+        if (object instanceof THREE.Mesh && object.name === currentObjectId) {
+          let blockOutlineMaterial = new THREE.MeshBasicMaterial({
+            // color: '#000051',
+            side: THREE.BackSide,
+          });
+          let blockOutline = new THREE.Mesh(object.geometry, blockOutlineMaterial);
+          blockOutline.position.set(
+            object.position.x,
+            object.position.y,
+            0
+          );
+          blockOutline.scale.multiplyScalar(1.10);
+          blockOutline.blockchainOutline = true;
+
+          if (countLayer > 5) {
+            blockOutlineMaterial.color.set('#1b1b1b');
+          } else {
+            blockOutlineMaterial.color.set('#707070');
+          }
+
+          canvas.scene.add(blockOutline);
+          previousObjectId = object.previousBlock;
+        }
+      });
+
+      countLayer += 1;
+      currentObjectId = previousObjectId;
     }
   }
 }

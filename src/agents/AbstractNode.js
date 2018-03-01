@@ -97,6 +97,7 @@ class AbstractNode extends eve.Agent {
     Watchdog.getInstance().onDataChange('update blockchain', {
       nodeId: this.id,
       blocks: [block],
+      currentBlock: this.currentBlock.id,
     });
   }
 

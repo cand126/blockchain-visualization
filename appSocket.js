@@ -47,9 +47,11 @@ io.on('connection', (socket) => {
   socket.on('get blockchain', (data) => {
     const Simulator = require('./src/Simulator');
     const blockchain = Simulator.getInstance().getBlockchain(data.nodeId);
+    const currentBlock = Simulator.getInstance().getCurrentBlock(data.nodeId);
     socket.emit('update blockchain', {
       nodeId: data.nodeId,
       blocks: blockchain,
+      currentBlock: currentBlock.id,
     });
   });
 
