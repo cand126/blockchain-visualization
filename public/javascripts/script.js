@@ -194,17 +194,25 @@ function zoomOut(e, nodeId) {
 
 }
 
+function registerEnter(event) {
+  $(event.target).keypress((e) => {
+    if (e.which == 13) {
+      publishTransaction();
+    }
+  });
+}
+
 /**
  * Publish a transaction.
  * @function
  * @param {DOM} button
  */
-function publishTransaction(button) {
+function publishTransaction() {
   socket.emit('publish transaction', {
     reward: document.getElementById('transactionReward').value,
   });
   $('#publishAlert').show();
-  button.blur();
+  $('#publishButton').blur();
   setTimeout(() => {
     $('#publishAlert').hide();
   }, 1500);
