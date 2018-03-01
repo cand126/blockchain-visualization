@@ -37,6 +37,21 @@ block content
           div(id='canvas-container-' + node.nodeId, name='canvas-container', data-nodeid=node.nodeId)
             div(class='alert alert-secondary' role='alert') Reward: 
               span(id='reward-' + node.nodeId) 0
+            div(class='zoom-buttons')
+              button(
+                class='btn btn-secondary', 
+                type='button', 
+                data-nodeid=node.nodeId, 
+                onclick='zoomIn(event, this.getAttribute("data-nodeid"))'
+              )
+                i(class='fas fa-plus')
+              button(
+                class='btn btn-secondary', 
+                type='button', 
+                data-nodeid=node.nodeId, 
+                onclick='zoomOut(event, this.getAttribute("data-nodeid"))'
+              )
+                i(class='fas fa-minus')
 
   div(class='publish-container')
     div(class='d-flex flex-row align-items-center justify-content-center container text-light')
