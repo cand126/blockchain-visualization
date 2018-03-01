@@ -329,6 +329,14 @@ class Simulator {
       }
     }
   }
+
+  getReward(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].totalReward;
+      }
+    }
+  }
 }
 
 module.exports = Simulator;

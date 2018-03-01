@@ -20,7 +20,7 @@ class Miner extends AbstractNode {
    * @param {number} miningTime - The length of time for mining.
    * @param {number} minValue   - The minimum value of a transaction that can be mined.
    * @param {number} mineNumber - The number of transactions that are included in a block.
-   * @param {number} maxPending - The number of maximum pending transactions in the transactin pool.
+   * @param {number} maxPending - The number of maximum pending transactions in the transaction pool.
    */
   constructor(id, name, color, miningTime, minValue, mineNumber, maxPending) {
     super(id);
@@ -31,6 +31,7 @@ class Miner extends AbstractNode {
     this.minValue = minValue;
     this.mineNumber = mineNumber;
     this.maxPending = maxPending;
+    this.totalReward = 0;
   }
 
   /**
@@ -103,7 +104,7 @@ class Miner extends AbstractNode {
 
     let transactions = []; // contains the candidate transactions for mining
 
-    // sort the transactin pool
+    // sort the transaction pool
     this.transactionPool.sort((transaction1, transaction2) => {
       let value1 = transaction1.reward + transaction1.privilege;
       let value2 = transaction2.reward + transaction2.privilege;
@@ -149,6 +150,25 @@ class Miner extends AbstractNode {
     Watchdog.getInstance().onDataChange('update transaction pool', {
       nodeId: this.id,
       length: this.transactionPool.length,
+    });
+  }
+
+  calculateReward() {
+    let currentBlock = this.currentBlock;
+    this.totalReward = 0;
+
+    while (currentBlock.id !== Hash.generateNull()) {
+      if (currentBlock.miner === this.id) {
+        currentBlock.transactions.forEach((transaction) => {
+          this.totalReward += transaction.reward;
+        });
+      }
+      currentBlock = this.blockchain.find((block) => block.id === currentBlock.previous);
+    }
+
+    Watchdog.getInstance().onDataChange('update reward', {
+      nodeId: this.id,
+      reward: this.totalReward,
     });
   }
 }

@@ -64,6 +64,16 @@ io.on('connection', (socket) => {
       length: transactionPoolLength,
     });
   });
+
+  // Receive requests for getting rewards
+  socket.on('get reward', (data) => {
+    const Simulator = require('./src/Simulator');
+    const reward = Simulator.getInstance().getReward(data.nodeId);
+    socket.emit('update reward', {
+      nodeId: data.nodeId,
+      reward: reward,
+    });
+  });
 });
 
 /**

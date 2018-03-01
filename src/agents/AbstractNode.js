@@ -93,6 +93,7 @@ class AbstractNode extends eve.Agent {
 
     this.blockchain.push(block);
     this.publish(block);
+    this.calculateReward();
 
     Watchdog.getInstance().onDataChange('update blockchain', {
       nodeId: this.id,
@@ -130,6 +131,8 @@ class AbstractNode extends eve.Agent {
       delay: delay,
     });
   }
+
+  calculateReward() {}
 }
 
 module.exports = AbstractNode;

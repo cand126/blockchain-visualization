@@ -35,8 +35,9 @@ block content
                     aria-valuemax=node.miningTime
                   )
           div(id='canvas-container-' + node.nodeId, name='canvas-container', data-nodeid=node.nodeId)
-            div(class='alert alert-secondary' role='alert') Reward: 
-              span(id='reward-' + node.nodeId) 0
+            if node.type === 'miner'
+              div(class='alert alert-secondary' role='alert') Reward: 
+                span(id='reward-' + node.nodeId, name='reward', data-nodeid=node.nodeId)
             div(class='zoom-buttons')
               button(
                 class='btn btn-secondary', 

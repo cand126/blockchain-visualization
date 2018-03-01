@@ -12,6 +12,7 @@ $(document).ready(() => {
   initSocket();
   initCanvas();
   initProgress();
+  initReward();
 
   // implicit iteration
   $('div[name="canvas-container"]').mousedown((e) => {
@@ -87,6 +88,11 @@ function initSocket() {
       }
     }
   });
+
+  socket.on('update reward', (data) => {
+    let reward = document.getElementById('reward-' + data.nodeId);
+    reward.innerText = data.reward;
+  });
 }
 
 /**
@@ -116,6 +122,15 @@ function initProgress() {
   for (let i = 0; i < progressBars.length; i++) {
     socket.emit('get transaction pool', {
       nodeId: progressBars[i].getAttribute('data-nodeid'),
+    });
+  }
+}
+
+function initReward() {
+  let rewards = document.getElementsByName('reward');
+  for (let i = 0; i < rewards.length; i++) {
+    socket.emit('get reward', {
+      nodeId: rewards[i].getAttribute('data-nodeid'),
     });
   }
 }
@@ -456,7 +471,6 @@ function updateCanvas(canvas, blockchain, currentBlock) {
     }
 
     let currentObjectId = currentBlock;
-    let countLayer = 0;
 
     // mark the longest blockchain with outlines
     while (currentObjectId !== '00000000' && currentObjectId !== null) {
@@ -475,19 +489,13 @@ function updateCanvas(canvas, blockchain, currentBlock) {
           );
           blockOutline.scale.multiplyScalar(1.10);
           blockOutline.blockchainOutline = true;
-
-          if (countLayer > 5) {
-            blockOutlineMaterial.color.set('#1b1b1b');
-          } else {
-            blockOutlineMaterial.color.set('#707070');
-          }
+          blockOutlineMaterial.color.set('#1b1b1b');
 
           canvas.scene.add(blockOutline);
           previousObjectId = object.previousBlock;
         }
       });
 
-      countLayer += 1;
       currentObjectId = previousObjectId;
     }
   }
