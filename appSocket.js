@@ -79,7 +79,14 @@ io.on('connection', (socket) => {
   socket.on('add node', (data) => {
     const Simulator = require('./src/Simulator');
     Simulator.getInstance().addNodeByType(data.nodeType);
-    socket.emit('new node', {});
+    socket.emit('reload node', {});
+  });
+
+  // Receive requests for deleting nodes
+  socket.on('delete node', (data) => {
+    const Simulator = require('./src/Simulator');
+    Simulator.getInstance().deleteNode(data.nodeId);
+    socket.emit('reload node', {});
   });
 });
 

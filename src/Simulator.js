@@ -150,6 +150,21 @@ class Simulator {
     this.addNode(nodeData);
   }
 
+  deleteNode(nodeId) {
+    TransactionGenerator.getInstance().deleteNeighbor(nodeId);
+
+    this.nodeList.forEach((node) => {
+      node.deleteNeighbor(nodeId);
+    });
+
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        this.nodeList.splice(i, 1);
+        i -= 1;
+      }
+    }
+  }
+
   /**
    * Get the information of all nodes.
    * @function

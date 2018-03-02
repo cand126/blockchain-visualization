@@ -42,6 +42,9 @@ class AbstractNode extends eve.Agent {
       []
     );
 
+    this.blockchain = [];
+    this.transactionPool = [];
+    this.totalReward = 0;
     this.currentBlock = block;
     this.blockchain.push(this.currentBlock);
   }
@@ -130,6 +133,15 @@ class AbstractNode extends eve.Agent {
       name: name,
       delay: delay,
     });
+  }
+
+  deleteNeighbor(nodeId) {
+    for (let i = 0; i < this.neighbors.length; i++) {
+      if (this.neighbors[i].id === nodeId) {
+        this.neighbors.splice(i, 1);
+        i -= 1;
+      }
+    }
   }
 
   calculateReward() {}

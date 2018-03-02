@@ -94,7 +94,7 @@ function initSocket() {
     reward.innerText = data.reward;
   });
 
-  socket.on('new node', (data) => {
+  socket.on('reload node', (data) => {
     location.reload();
   });
 }
@@ -244,6 +244,12 @@ function publishTransaction() {
 function addNode(nodeType) {
   socket.emit('add node', {
     nodeType: nodeType,
+  });
+}
+
+function deleteNode(nodeId) {
+  socket.emit('delete node', {
+    nodeId: nodeId,
   });
 }
 
