@@ -93,6 +93,10 @@ function initSocket() {
     let reward = document.getElementById('reward-' + data.nodeId);
     reward.innerText = data.reward;
   });
+
+  socket.on('new node', (data) => {
+    location.reload();
+  });
 }
 
 /**
@@ -235,6 +239,12 @@ function publishTransaction() {
   setTimeout(() => {
     $('#publishAlert').hide();
   }, 1500);
+}
+
+function addNode(nodeType) {
+  socket.emit('add node', {
+    nodeType: nodeType,
+  });
 }
 
 /**

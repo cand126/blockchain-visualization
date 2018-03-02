@@ -74,6 +74,13 @@ io.on('connection', (socket) => {
       reward: reward,
     });
   });
+
+  // Receive requests for adding nodes
+  socket.on('add node', (data) => {
+    const Simulator = require('./src/Simulator');
+    Simulator.getInstance().addNodeByType(data.nodeType);
+    socket.emit('new node', {});
+  });
 });
 
 /**

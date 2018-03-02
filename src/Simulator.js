@@ -51,13 +51,11 @@ class Simulator {
       id: Hash.generateId(),
       type: 'nonminer',
       name: 'David',
-      color: '#000000',
     });
     this.addNode({
       id: Hash.generateId(),
       type: 'nonminer',
       name: 'Eric',
-      color: '#000000',
     });
   }
 
@@ -126,6 +124,30 @@ class Simulator {
 
     newNode.initBlockchain();
     this.nodeList.push(newNode);
+  }
+
+  addNodeByType(nodeType) {
+    let nodeData = {};
+    if (nodeType === 'miner') {
+      nodeData = {
+        id: Hash.generateId(),
+        type: 'miner',
+        color: '#555555',
+        name: 'New Miner',
+        miningTime: Math.floor(Math.random() * 5) + 5,
+        minValue: Math.floor(Math.random() * 10) + 1,
+        mineNumber: Math.floor(Math.random() * 3) + 1,
+        maxPending: Math.floor(Math.random() * 5) + 10,
+      };
+    } else if (nodeType === 'nonminer') {
+      nodeData = {
+        id: Hash.generateId(),
+        type: 'nonminer',
+        name: 'New Nonminer',
+      };
+    }
+
+    this.addNode(nodeData);
   }
 
   /**
