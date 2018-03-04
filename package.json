@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "test": "mocha"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -22,5 +23,8 @@
     "socket.io": "^2.0.4",
     "tether": "^1.4.3",
     "three": "^0.90.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.1"
   }
 }
