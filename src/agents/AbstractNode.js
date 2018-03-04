@@ -135,6 +135,12 @@ class AbstractNode extends eve.Agent {
     });
   }
 
+  /**
+   * Delete a neighbor.
+   * @function
+   * @param {string} nodeId
+   * @public
+   */
   deleteNeighbor(nodeId) {
     for (let i = 0; i < this.neighbors.length; i++) {
       if (this.neighbors[i].id === nodeId) {
@@ -144,6 +150,11 @@ class AbstractNode extends eve.Agent {
     }
   }
 
+  /**
+   * Calculate the total reward.
+   * @function
+   * @abstract
+   */
   calculateReward() {}
 }
 

@@ -75,7 +75,7 @@ class Simulator {
   /**
    * Instantiate a node.
    * @function
-   * @public
+   * @private
    * @param {object} nodeData - The required information for a node.
    */
   addNode(nodeData) {
@@ -126,6 +126,12 @@ class Simulator {
     this.nodeList.push(newNode);
   }
 
+  /**
+   * Instantiate a node by giving a type.
+   * @function
+   * @public
+   * @param {string} nodeType
+   */
   addNodeByType(nodeType) {
     let nodeData = {};
     if (nodeType === 'miner') {
@@ -150,6 +156,12 @@ class Simulator {
     this.addNode(nodeData);
   }
 
+  /**
+   * Delete a node.
+   * @function
+   * @public
+   * @param {string} nodeId
+   */
   deleteNode(nodeId) {
     TransactionGenerator.getInstance().deleteNeighbor(nodeId);
 
@@ -215,6 +227,13 @@ class Simulator {
     }
   }
 
+  /**
+   * Get the current block.
+   * @function
+   * @public
+   * @param {string} nodeId
+   * @return {Block}
+   */
   getCurrentBlock(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
@@ -367,6 +386,13 @@ class Simulator {
     }
   }
 
+  /**
+   * Get the total reward.
+   * @function
+   * @public
+   * @param {string} nodeId
+   * @return {number}
+   */
   getReward(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {

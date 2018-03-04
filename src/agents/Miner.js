@@ -153,6 +153,11 @@ class Miner extends AbstractNode {
     });
   }
 
+  /**
+   * Calculate the total reward.
+   * @function
+   * @private
+   */
   calculateReward() {
     let currentBlock = this.currentBlock;
     this.totalReward = 0;

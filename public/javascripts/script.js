@@ -130,6 +130,10 @@ function initProgress() {
   }
 }
 
+/**
+ * Initialize values of reward.
+ * @function
+ */
 function initReward() {
   let rewards = document.getElementsByName('reward');
   for (let i = 0; i < rewards.length; i++) {
@@ -205,18 +209,35 @@ function onCanvasMouseMove(e, canvas) {
   canvas.mousePosition.y = y;
 };
 
+/**
+ * Zoom in the canvas.
+ * @function
+ * @param {Event} e
+ * @param {string} nodeId
+ */
 function zoomIn(e, nodeId) {
   let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
   canvas.camera.zoom += 0.1;
   canvas.camera.updateProjectionMatrix();
 }
 
+/**
+ * Zoom out the canvas.
+ * @function
+ * @param {Event} e
+ * @param {string} nodeId
+ */
 function zoomOut(e, nodeId) {
   let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
   canvas.camera.zoom -= 0.1;
   canvas.camera.updateProjectionMatrix();
 }
 
+/**
+ * Register enter keypress event for publishing transactions.
+ * @function
+ * @param {Event} event
+ */
 function registerEnter(event) {
   $(event.target).keypress((e) => {
     if (e.which == 13) {
@@ -241,12 +262,22 @@ function publishTransaction() {
   }, 1500);
 }
 
+/**
+ * Add a node.
+ * @function
+ * @param {string} nodeType
+ */
 function addNode(nodeType) {
   socket.emit('add node', {
     nodeType: nodeType,
   });
 }
 
+/**
+ * Delete a node.
+ * @function
+ * @param {string} nodeId
+ */
 function deleteNode(nodeId) {
   socket.emit('delete node', {
     nodeId: nodeId,
@@ -346,6 +377,7 @@ function animate() {
  * Update the objects on the canvas.
  * @param {object} canvas
  * @param {object[]} blockchain
+ * @param {object} currentBlock
  * @function
  */
 function updateCanvas(canvas, blockchain, currentBlock) {
