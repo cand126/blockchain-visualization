@@ -79,14 +79,21 @@ io.on('connection', (socket) => {
   socket.on('add node', (data) => {
     const Simulator = require('./src/Simulator');
     Simulator.getInstance().addNodeByType(data.nodeType);
-    socket.emit('reload node', {});
+    socket.emit('reload', {});
   });
 
   // Receive requests for deleting nodes
   socket.on('delete node', (data) => {
     const Simulator = require('./src/Simulator');
     Simulator.getInstance().deleteNode(data.nodeId);
-    socket.emit('reload node', {});
+    socket.emit('reload', {});
+  });
+
+  // Receive requests for initializing the blockchain system
+  socket.on('init blockchain system', (data) => {
+    const Simulator = require('./src/Simulator');
+    Simulator.getInstance().init(data);
+    socket.emit('reload', {});
   });
 });
 

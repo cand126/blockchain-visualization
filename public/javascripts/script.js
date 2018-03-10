@@ -94,7 +94,7 @@ function initSocket() {
     reward.innerText = data.reward;
   });
 
-  socket.on('reload node', (data) => {
+  socket.on('reload', (data) => {
     location.reload();
   });
 }
@@ -316,6 +316,15 @@ function updateStrategy(action, nodeId, value) {
     action: action,
     value: Number(value),
   });
+}
+
+function upload(file) {
+  let fr = new FileReader();
+  fr.onload = function(e) {
+    let result = JSON.parse(e.target.result);
+    socket.emit('init blockchain system', result);
+  };
+  fr.readAsText(file);
 }
 
 /**
@@ -548,3 +557,4 @@ function updateCanvas(canvas, blockchain, currentBlock) {
     }
   }
 }
+

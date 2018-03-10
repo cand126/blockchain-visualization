@@ -20,19 +20,6 @@ class TransactionGenerator extends AbstractNode {
   }
 
   /**
-   * Singleton pattern.
-   * @function
-   * @static
-   * @return {object} The instance of the class.
-   */
-  static getInstance() {
-    if (!this.instance) {
-      this.instance = new TransactionGenerator(Hash.generateId());
-    }
-    return this.instance;
-  }
-
-  /**
    * Generates a transaction.
    * @function
    * @param {number} reward
