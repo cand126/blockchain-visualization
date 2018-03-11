@@ -171,8 +171,6 @@ class Simulator {
    * @param {string} nodeId
    */
   deleteNode(nodeId) {
-    // this.transactionGenerator.deleteNeighbor(nodeId);
-
     this.nodeList.forEach((node) => {
       node.deleteNeighbor(nodeId);
     });
@@ -193,16 +191,7 @@ class Simulator {
    */
   getNodesInfo() {
     let info = [];
-    // const transactionGenerator = TransactionGenerator.getInstance();
 
-    // Information of the transaction generator.
-    // info.push({
-    //   nodeId: transactionGenerator.id,
-    //   type: transactionGenerator.type,
-    //   neighbors: transactionGenerator.neighbors,
-    // });
-
-    // Information of miners and nonminers.
     this.nodeList.forEach((node) => {
       info.push({
         nodeId: node.id,
@@ -272,12 +261,6 @@ class Simulator {
             });
           }
         });
-        // update the name in the neighbors
-        // TransactionGenerator.getInstance().neighbors.forEach((neighbor) => {
-        //   if (neighbor.id === data.nodeId) {
-        //     neighbor.name = data.value;
-        //   }
-        // });
 
         let appSocket = require('../appSocket');
         appSocket.updateVisualization('update neighbor name', {
@@ -295,15 +278,6 @@ class Simulator {
         break;
 
       case 'update node neighbor':
-        // const transactionGenerator = TransactionGenerator.getInstance();
-        // if (transactionGenerator.id === data.nodeId) {
-        //   transactionGenerator.neighbors.forEach((neighbor) => {
-        //     if (neighbor.id === data.neighborId) {
-        //       neighbor.delay = Number(data.value);
-        //     }
-        //   });
-        //   break;
-        // }
         this.nodeList.forEach((node) => {
           if (node.id === data.nodeId) {
             node.neighbors.forEach((neighbor) => {
@@ -376,7 +350,8 @@ class Simulator {
    * @param {object} data - Contains the reward of the transaction.
    */
   publishTransaction(data) {
-    this.transactionGenerator.publish(data.reward);
+    let transaction = this.transactionGenerator.generate(data.reward);
+    this.transactionGenerator.publish(transaction);
   }
 
   /**
