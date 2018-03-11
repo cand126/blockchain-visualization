@@ -55,12 +55,16 @@ block content
                 )
                   i(class='fas fa-minus')
   else
-    div(class='container d-flex flex-column justify-content-center align-items-center init-container')
-      div(class='form-group')
-        label(for="blockchainInput") Upload a file to start visualization
-        input(class='form-control-file', type="file", id='blockchainInput', accept='.json', onchange='upload(this.files[0])')
-      div or
-      div Add nodes in the settings and publish transactions by hand
+    div(class='container d-flex justify-content-center align-items-center init-container')
+      div(class='flex-column', id='initText')
+        div(class='form-group')
+          label(for="blockchainInput") Upload a file to start visualization
+          input(class='form-control-file', type="file", id='blockchainInput', accept='.json', onchange='upload(this.files[0])')
+        p(class='text-center') or
+        p Add nodes in the settings and publish transactions manually
+      div(class='alert alert-secondary text-muted', id='uploadingSpinner', role='alert') 
+        i(class='fas fa-spinner fa-spin') 
+        span Uploading...
 
 
   div(class='publish-container')

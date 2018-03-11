@@ -319,6 +319,8 @@ function updateStrategy(action, nodeId, value) {
 }
 
 function upload(file) {
+  $('#initText').hide();
+  $('#uploadingSpinner').show();
   let fr = new FileReader();
   fr.onload = function(e) {
     let result = JSON.parse(e.target.result);
