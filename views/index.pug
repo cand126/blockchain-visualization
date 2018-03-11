@@ -67,12 +67,13 @@ block content
         span Uploading...
 
   if nodes.length > 0
-    div(class='publish-container')
-      div(class='d-flex flex-row align-items-center justify-content-center container text-light')
+    div(class='d-flex align-items-center justify-content-between foot')
+      div(class='d-flex flex-row align-items-center text-light publish-container')
         span(class='publish-text') Publish a new transaction:
         div(class='publish-text') reward
         input(class='form-control text-light', type='number', id='transactionReward', value='0', onfocus='registerEnter(event)')
         button(class='btn btn-outline-light', type='button', id='publishButton', onclick='publishTransaction(this)') Publish
+      button(class='btn btn-outline-light', type='button', id='resetButton', onclick='reset()') Reset
 
   div(class='alert alert-dark text-muted' id='publishAlert' role='alert') 
     span Published Successfully!

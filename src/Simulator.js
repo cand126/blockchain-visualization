@@ -31,6 +31,15 @@ class Simulator {
     return this.instance;
   }
 
+  static reset() {
+    // disconnect all the agents
+    this.instance.nodeList.forEach((agent) => {
+      agent.disconnect();
+    });
+    this.instance.nodeList = [];
+    this.instance = new Simulator();
+  }
+
   init(data) {
     data.nodes.forEach((node) => {
       this.addNode(node);

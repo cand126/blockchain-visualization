@@ -95,6 +95,13 @@ io.on('connection', (socket) => {
     Simulator.getInstance().init(data);
     socket.emit('reload', {});
   });
+
+  // Receive requests for reseting the blockchain system
+  socket.on('reset blockchain system', (data) => {
+    const Simulator = require('./src/Simulator');
+    Simulator.reset();
+    socket.emit('reload', {});
+  });
 });
 
 /**

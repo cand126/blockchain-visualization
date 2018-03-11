@@ -332,6 +332,10 @@ function upload(file) {
   fr.readAsText(file);
 }
 
+function reset() {
+  socket.emit('reset blockchain system', {});
+}
+
 /**
  * Instantiate a canvas.
  * @param {DOM} canvasContainer
