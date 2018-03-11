@@ -38,14 +38,13 @@ class Simulator {
 
     // Add each node's neighbors
     data.delays.forEach((delay) => {
-      let node1 = this.nodeList.find((n) => n.id === delay.id);
+      let node = this.nodeList.find((n) => n.id === delay.id);
       delay.neighbors.forEach((neighbor) => {
-        let node2 = this.nodeList.find((n) => n.id === neighbor.id);
-        node1.addNeighbor(
-          neighbor.id,
-          node2.name,
-          neighbor.seconds
-        );
+        for (let i = 0; i < node.neighbors.length; i++) {
+          if (node.neighbors[i].id === neighbor.id) {
+            node.neighbors[i].delay = neighbor.seconds;
+          }
+        }
       });
     });
 
@@ -88,36 +87,34 @@ class Simulator {
       );
     }
 
-    // Add the new node as a neighbor to the transaction genertor
-    // if (newNode.type === 'miner') {
-    //   TransactionGenerator.getInstance().addNeighbor(
-    //     newNode.id,
-    //     newNode.name,
-    //     Math.floor(Math.random() * 5)
-    //   );
-    // }
-
-    // Update the neighbors of the whole nodes.
-    // this.nodeList.forEach((oldNode) => {
-    //   if (oldNode.type !== 'generator') {
-    //     const delay = Math.floor(Math.random() * 5);
-    //     oldNode.addNeighbor(
-    //       newNode.id,
-    //       newNode.name,
-    //       delay
-    //     );
-    //     newNode.addNeighbor(
-    //       oldNode.id,
-    //       oldNode.name,
-    //       delay
-    //     );
-    //   }
-
-    // });
+    // Add neighbors
+    this.nodeList.forEach((oldNode) => {
+      if (oldNode.type === 'generator') {
+        if (newNode.type === 'miner') {
+          oldNode.addNeighbor(
+            newNode.id,
+            newNode.name,
+            0
+          );
+        }
+      } else {
+        oldNode.addNeighbor(
+          newNode.id,
+          newNode.name,
+          0
+        );
+        newNode.addNeighbor(
+          oldNode.id,
+          oldNode.name,
+          0
+        );
+      }
+    });
 
     if (newNode.type !== 'generator') {
       newNode.initBlockchain();
     }
+
     this.nodeList.push(newNode);
   }
 
@@ -148,6 +145,13 @@ class Simulator {
       };
     }
 
+    if (this.transactionGenerator === null) {
+      let transactionGeneratorData = {
+        id: Hash.generateId(),
+        type: 'generator',
+      };
+      this.addNode(transactionGeneratorData);
+    }
     this.addNode(nodeData);
   }
 

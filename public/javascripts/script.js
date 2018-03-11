@@ -269,6 +269,7 @@ function publishTransaction() {
  * @param {string} nodeType
  */
 function addNode(nodeType) {
+  $('#savingSpinner').show();
   socket.emit('add node', {
     nodeType: nodeType,
   });
@@ -280,6 +281,7 @@ function addNode(nodeType) {
  * @param {string} nodeId
  */
 function deleteNode(nodeId) {
+  $('#savingSpinner').show();
   socket.emit('delete node', {
     nodeId: nodeId,
   });
