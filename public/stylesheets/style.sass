@@ -34,17 +34,21 @@ body
           height: 6px
     > div[name=canvas-container]
       height: 200px
+      position: relative
       > div
         position: absolute
         right: 0
       > .zoom-buttons
         bottom: 0
+      > .branch-badge
+        position: absolute
+        top: 12px
 
 .init-container
   flex: 1
-  #initText
+  > #initText
     display: flex
-  #uploadingSpinner
+  > #uploadingSpinner
     display: none
     > span
       margin-left: 8px

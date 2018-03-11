@@ -3,7 +3,8 @@
 let canvasList = []; // contains all canvas
 let canvasWidth;
 let canvasHeight;
-let canvasMargin = 16;
+let canvasMarginTop = 40;
+let canvasMarginRight = 16;
 let blockSize = 32;
 let blockSpace = 16;
 let socket;
@@ -369,6 +370,7 @@ function addCanvas(canvasContainer) {
       x: -1,
       y: -1,
     },
+    columns: 0,
   });
 }
 
@@ -395,15 +397,15 @@ function updateCanvas(canvas, blockchain, currentBlock) {
   for (let i = 0; i < blockchain.length; i++) {
     let blockObject = canvas.scene.getObjectByName(blockchain[i].id);
     let lineObject;
+    // new block
     if (typeof blockObject === 'undefined') {
       const blockGeometry = new THREE.BoxGeometry(blockSize, blockSize, 0);
       const blockMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color(blockchain[i].color),
-        // transparent: true,
-        // opacity: 0.5
       });
       let blockObject = new THREE.Mesh(blockGeometry, blockMaterial);
       blockObject.name = blockchain[i].id;
+      blockObject.column = blockchain[i].layer;
 
       const lineGeometry = new THREE.Geometry();
       const lineMaterial = new THREE.LineBasicMaterial({
@@ -412,8 +414,9 @@ function updateCanvas(canvas, blockchain, currentBlock) {
       });
 
       if (blockchain[i].previous === 'null') {
-        blockObject.position.set(-(canvasWidth / 2) + (blockSize / 2) + canvasMargin,
-          (canvasHeight / 2) - (blockSize / 2) - canvasMargin,
+        blockObject.position.set(
+          -(canvasWidth / 2) + (blockSize / 2) + canvasMarginRight,
+          (canvasHeight / 2) - (blockSize / 2) - canvasMarginTop,
           0,
         );
         blockObject.row = 0;
@@ -516,6 +519,23 @@ function updateCanvas(canvas, blockchain, currentBlock) {
 
         previousblockObject.nextBlocks += 1;
         canvas.scene.add(lineObject);
+      }
+
+      if (blockObject.column > canvas.columns) {
+        let leftMargin = 24 + blockObject.column * 48;
+        // Add a new branch label
+        $('<span/>', {
+          class: 'badge badge-secondary branch-badge',
+          id: 'branch-' + canvas.nodeId + '-' + blockObject.column,
+          style: 'left: ' + leftMargin + 'px',
+          text: '1',
+        }).prependTo('#canvas-container-' + canvas.nodeId);
+        canvas.columns = blockObject.column;
+      } else {
+        let badge = $('#branch-' + canvas.nodeId + '-' + blockObject.column);
+        let branchNumber = parseInt(badge.text());
+        branchNumber += 1;
+        badge.text(branchNumber);
       }
 
       canvas.scene.add(blockObject);

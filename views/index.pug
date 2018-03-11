@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  if nodes.length > 1
+  if nodes.length > 0
     div(class='container-fluid nodes-container')
       each node in nodes
         unless node.type === 'generator'
@@ -66,13 +66,13 @@ block content
         i(class='fas fa-spinner fa-spin') 
         span Uploading...
 
-
-  div(class='publish-container')
-    div(class='d-flex flex-row align-items-center justify-content-center container text-light')
-      span(class='publish-text') Publish a new transaction:
-      div(class='publish-text') reward
-      input(class='form-control text-light', type='number', id='transactionReward', value='0', onfocus='registerEnter(event)')
-      button(class='btn btn-outline-light', type='button', id='publishButton', onclick='publishTransaction(this)') Publish
+  if nodes.length > 0
+    div(class='publish-container')
+      div(class='d-flex flex-row align-items-center justify-content-center container text-light')
+        span(class='publish-text') Publish a new transaction:
+        div(class='publish-text') reward
+        input(class='form-control text-light', type='number', id='transactionReward', value='0', onfocus='registerEnter(event)')
+        button(class='btn btn-outline-light', type='button', id='publishButton', onclick='publishTransaction(this)') Publish
 
   div(class='alert alert-dark text-muted' id='publishAlert' role='alert') 
     span Published Successfully!
