@@ -24,7 +24,7 @@ class TransactionGenerator extends AbstractNode {
    * @function
    * @param {number} reward
    * @return {object}
-   * @private
+   * @public
    * @see {@link Transaction}
    */
   generate(reward) {
@@ -43,11 +43,11 @@ class TransactionGenerator extends AbstractNode {
   /**
    * Publish a transaction.
    * @function
-   * @param {number} reward
+   * @param {Transaction} transaction
    * @public
    */
-  publish(reward) {
-    const transaction = this.generate(reward);
+  publish(transaction) {
+    // const transaction = this.generate(reward);
     this.neighbors.forEach((neighbor) => {
       setTimeout(() => {
         this.send(neighbor.id, transaction);

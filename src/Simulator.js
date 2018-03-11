@@ -48,6 +48,13 @@ class Simulator {
         );
       });
     });
+
+    data.transactions.forEach((transaction) => {
+      let newTransaction = this.transactionGenerator.generate(transaction.reward);
+      setTimeout(() => {
+        this.transactionGenerator.publish(newTransaction);
+      }, transaction.delay * 1000);
+    });
   }
 
   /**
