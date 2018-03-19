@@ -4,9 +4,10 @@ let canvasList = []; // contains all canvas
 let canvasWidth;
 let canvasHeight;
 let canvasMarginTop = 40;
-let canvasMarginRight = 16;
+let canvasMarginLeft = 16;
 let blockSize = 32;
 let blockSpace = 16;
+let textMarginTop = 24;
 let socket;
 
 $(document).ready(() => {
@@ -421,7 +422,7 @@ function updateCanvas(canvas, blockchain, currentBlock) {
 
       if (blockchain[i].previous === 'null') {
         blockObject.position.set(
-          -(canvasWidth / 2) + (blockSize / 2) + canvasMarginRight,
+          -(canvasWidth / 2) + (blockSize / 2) + canvasMarginLeft,
           (canvasHeight / 2) - (blockSize / 2) - canvasMarginTop,
           0,
         );
@@ -528,20 +529,21 @@ function updateCanvas(canvas, blockchain, currentBlock) {
       }
 
       if (blockObject.column > canvas.columns) {
-        let leftMargin = 24 + blockObject.column * 48;
         // Add a new branch label
-        $('<span/>', {
-          class: 'badge badge-secondary branch-badge',
-          id: 'branch-' + canvas.nodeId + '-' + blockObject.column,
-          style: 'left: ' + leftMargin + 'px',
-          text: '1',
-        }).prependTo('#canvas-container-' + canvas.nodeId);
+        createText(canvas, blockObject.column);
         canvas.columns = blockObject.column;
       } else {
-        let badge = $('#branch-' + canvas.nodeId + '-' + blockObject.column);
-        let branchNumber = parseInt(badge.text());
-        branchNumber += 1;
-        badge.text(branchNumber);
+        let textObject; 
+        canvas.scene.traverse((object) => {
+          if (object instanceof THREE.Mesh && object.name === 'layer-' + blockObject.column) {
+            textObject = object;
+          }
+        });
+        if (typeof textObject !== 'undefined') {
+          let branchNumber = parseInt(textObject.geometry.parameters.text);
+          branchNumber += 1;
+          refreshText(canvas, textObject, blockObject.column, branchNumber);
+        }
       }
 
       canvas.scene.add(blockObject);
@@ -584,5 +586,32 @@ function updateCanvas(canvas, blockchain, currentBlock) {
       currentObjectId = previousObjectId;
     }
   }
+}
+
+function refreshText(canvas, textObject, column, branchNumber) {
+  canvas.scene.remove(textObject);
+  createText(canvas, column, branchNumber);
+}
+
+function createText(canvas, column, branchNumber = 1) {
+  let leftMargin = canvasMarginLeft + (blockSize * 3) / 2 + blockSpace + (column - 1) * (blockSize + blockSpace);
+  let loader = new THREE.FontLoader();
+  let font;
+  loader.load('/fonts/helvetiker_regular.typeface.json', function (font) {
+    let textGeometry = new THREE.TextGeometry(branchNumber.toString(), {
+      font: font,
+      size: 10,
+      height: 5,
+    });
+    textMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    textMesh.position.set(
+      -(canvasWidth / 2) + leftMargin,
+      (canvasHeight / 2) - textMarginTop,
+      0,
+    );
+    textMesh.name = 'layer-' + column;
+    canvas.scene.add(textMesh);
+  });
 }
 
