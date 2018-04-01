@@ -205,6 +205,12 @@ function onCanvasMouseMove(e, canvas) {
       canvas.camera.position.z
     );
     canvas.camera.updateProjectionMatrix();
+    $(e.target).parent().children('span').each((_, badge) => {
+      let leftValue = parseInt($(badge).css('left').split('px')[0]);
+      let topValue = parseInt($(badge).css('top').split('px')[0]);
+      $(badge).css('left', (leftValue - distanceX) + 'px');
+      $(badge).css('top', (topValue + distanceY) + 'px');
+    });
   }
   canvas.mousePosition.x = x;
   canvas.mousePosition.y = y;
@@ -585,4 +591,3 @@ function updateCanvas(canvas, blockchain, currentBlock) {
     }
   }
 }
-
