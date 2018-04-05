@@ -32,7 +32,6 @@ class TransactionGenerator extends AbstractNode {
       Hash.generateId(),
       'transaction',
       new Date(),
-      '',
       Number(reward),
       0
     );

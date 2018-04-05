@@ -96,7 +96,6 @@ class Miner extends AbstractNode {
       transaction.id,
       'transaction',
       transaction.timestamp,
-      transaction.message,
       transaction.reward,
       transaction.privilege
     );
