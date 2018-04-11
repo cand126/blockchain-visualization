@@ -32,6 +32,12 @@ class Miner extends AbstractNode {
     this.mineNumber = mineNumber;
     this.maxPending = maxPending;
     this.totalReward = 0;
+    this.isMining = false;
+    this.selectionInterval = setInterval(() => {
+      if (!this.isMining && this.transactionPool.length >= this.mineNumber) {
+        this.selectTransactions();
+      }
+    }, 1000);
   }
 
   /**
@@ -65,6 +71,7 @@ class Miner extends AbstractNode {
    */
   mine(transactions) {
     let count = 0;
+    this.isMining = true;
     let timer = setInterval(() => {
       count += 1;
       Watchdog.getInstance().onDataChange('update mining progress', {
@@ -77,6 +84,7 @@ class Miner extends AbstractNode {
           nodeId: this.id,
           progress: 0,
         });
+        this.isMining = false;
         const block = this.generate(transactions);
         this.receiveBlock(block);
         clearInterval(timer);
@@ -101,14 +109,50 @@ class Miner extends AbstractNode {
     );
     this.transactionPool.push(newTransaction);
 
-    let transactions = []; // contains the candidate transactions for mining
-
     // sort the transaction pool
     this.transactionPool.sort((transaction1, transaction2) => {
       let value1 = transaction1.reward + transaction1.privilege;
       let value2 = transaction2.reward + transaction2.privilege;
       return value1 - value2;
     });
+
+    Watchdog.getInstance().onDataChange('update transaction pool', {
+      nodeId: this.id,
+      length: this.transactionPool.length,
+    });
+  }
+
+  /**
+   * Calculate the total reward.
+   * @function
+   * @private
+   */
+  calculateReward() {
+    let currentBlock = this.currentBlock;
+    this.totalReward = 0;
+
+    while (currentBlock.id !== Hash.generateNull()) {
+      if (currentBlock.miner === this.id) {
+        currentBlock.transactions.forEach((transaction) => {
+          this.totalReward += transaction.reward;
+        });
+      }
+      currentBlock = this.blockchain.find((block) => block.id === currentBlock.previous);
+    }
+
+    Watchdog.getInstance().onDataChange('update reward', {
+      nodeId: this.id,
+      reward: this.totalReward,
+    });
+  }
+
+  /**
+   * Select a set of transactions to strat mining.
+   * @function
+   * @private
+   */
+  selectTransactions() {
+    let transactions = []; // contains the candidate transactions for mining
 
     if (this.transactionPool.length >= this.maxPending) {
       // select transactions with higher values
@@ -153,26 +197,34 @@ class Miner extends AbstractNode {
   }
 
   /**
-   * Calculate the total reward.
+   * Receive a block.
+   * @function
+   * @param {object} block
+   * @private
+   */
+  receiveBlock(block) {
+    super.receiveBlock(block);
+    if (block === this.currentBlock) {
+      this.deleteTransactions(block);
+    }
+  }
+
+  /**
+   * Delete transactions that are mined by other miners.
    * @function
    * @private
    */
-  calculateReward() {
-    let currentBlock = this.currentBlock;
-    this.totalReward = 0;
-
-    while (currentBlock.id !== Hash.generateNull()) {
-      if (currentBlock.miner === this.id) {
-        currentBlock.transactions.forEach((transaction) => {
-          this.totalReward += transaction.reward;
-        });
+  deleteTransactions(block) {
+    for (let i = this.transactionPool.length - 1; i >= 0; i--) {
+      let minedTransaction = block.transactions.find((transaction) => transaction.id === this.transactionPool[i].id);
+      if (typeof minedTransaction !== 'undefined') {
+        this.transactionPool.splice(i, 1);
       }
-      currentBlock = this.blockchain.find((block) => block.id === currentBlock.previous);
     }
 
-    Watchdog.getInstance().onDataChange('update reward', {
+    Watchdog.getInstance().onDataChange('update transaction pool', {
       nodeId: this.id,
-      reward: this.totalReward,
+      length: this.transactionPool.length,
     });
   }
 }
