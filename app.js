@@ -7,7 +7,6 @@ let bodyParser = require('body-parser');
 let sassMiddleware = require('node-sass-middleware');
 
 let index = require('./routes/index');
-let settings = require('./routes/settings');
 
 let app = express();
 
@@ -32,7 +31,6 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/settings', settings);
 
 // node modules
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));

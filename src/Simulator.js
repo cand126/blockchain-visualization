@@ -31,6 +31,11 @@ class Simulator {
     return this.instance;
   }
 
+  /**
+   * Reset the blockchain system.
+   * @function
+   * @static
+   */
   static reset() {
     // disconnect all the agents
     this.instance.nodeList.forEach((agent) => {
@@ -40,9 +45,15 @@ class Simulator {
     this.instance = new Simulator();
   }
 
+  /**
+   * Initialize the blockchain system.
+   * @function
+   * @public
+   * @param {object} data - The configuration file.
+   */
   init(data) {
     data.nodes.forEach((node) => {
-      this.addNode(node);
+      this._addNode(node);
     });
 
     // Add each node's neighbors
@@ -66,12 +77,49 @@ class Simulator {
   }
 
   /**
+   * Instantiate a node by giving a type.
+   * @function
+   * @public
+   * @param {string} nodeType
+   */
+  addNodeByType(nodeType) {
+    let nodeData = {};
+    if (nodeType === 'miner') {
+      nodeData = {
+        id: Hash.generateId(),
+        type: 'miner',
+        color: '#555555',
+        name: 'New Miner',
+        miningTime: Math.floor(Math.random() * 5) + 5,
+        minValue: Math.floor(Math.random() * 10) + 1,
+        mineNumber: Math.floor(Math.random() * 3) + 1,
+        maxPending: Math.floor(Math.random() * 5) + 10,
+      };
+    } else if (nodeType === 'nonminer') {
+      nodeData = {
+        id: Hash.generateId(),
+        type: 'nonminer',
+        name: 'New Nonminer',
+      };
+    }
+
+    if (this.transactionGenerator === null) {
+      let transactionGeneratorData = {
+        id: Hash.generateId(),
+        type: 'generator',
+      };
+      this._addNode(transactionGeneratorData);
+    }
+    this._addNode(nodeData);
+  }
+
+  /**
    * Instantiate a node.
    * @function
    * @private
    * @param {object} nodeData - The required information for a node.
    */
-  addNode(nodeData) {
+  _addNode(nodeData) {
     let newNode = null;
 
     if (nodeData.type === 'generator') {
@@ -125,43 +173,6 @@ class Simulator {
     }
 
     this.nodeList.push(newNode);
-  }
-
-  /**
-   * Instantiate a node by giving a type.
-   * @function
-   * @public
-   * @param {string} nodeType
-   */
-  addNodeByType(nodeType) {
-    let nodeData = {};
-    if (nodeType === 'miner') {
-      nodeData = {
-        id: Hash.generateId(),
-        type: 'miner',
-        color: '#555555',
-        name: 'New Miner',
-        miningTime: Math.floor(Math.random() * 5) + 5,
-        minValue: Math.floor(Math.random() * 10) + 1,
-        mineNumber: Math.floor(Math.random() * 3) + 1,
-        maxPending: Math.floor(Math.random() * 5) + 10,
-      };
-    } else if (nodeType === 'nonminer') {
-      nodeData = {
-        id: Hash.generateId(),
-        type: 'nonminer',
-        name: 'New Nonminer',
-      };
-    }
-
-    if (this.transactionGenerator === null) {
-      let transactionGeneratorData = {
-        id: Hash.generateId(),
-        type: 'generator',
-      };
-      this.addNode(transactionGeneratorData);
-    }
-    this.addNode(nodeData);
   }
 
   /**
@@ -225,7 +236,7 @@ class Simulator {
   }
 
   /**
-   * Get the current block.
+   * Get the information of current block of the node.
    * @function
    * @public
    * @param {string} nodeId
@@ -235,6 +246,36 @@ class Simulator {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
         return this.nodeList[i].currentBlock;
+      }
+    }
+  }
+
+  /**
+   * Get the length of the transaction pool of the miner.
+   * @function
+   * @public
+   * @param {object} nodeId
+   * @return {number}
+   */
+  getTransactionPoolLength(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].transactionPool.length;
+      }
+    }
+  }
+
+  /**
+   * Get the total reward of the miner.
+   * @function
+   * @public
+   * @param {string} nodeId
+   * @return {number}
+   */
+  getReward(nodeId) {
+    for (let i = 0; i < this.nodeList.length; i++) {
+      if (this.nodeList[i].id === nodeId) {
+        return this.nodeList[i].totalReward;
       }
     }
   }
@@ -352,36 +393,6 @@ class Simulator {
   publishTransaction(data) {
     let transaction = this.transactionGenerator.generate(data.reward);
     this.transactionGenerator.publish(transaction);
-  }
-
-  /**
-   * Get the length of the transaction pool of specific miner.
-   * @function
-   * @public
-   * @param {object} nodeId
-   * @return {number}
-   */
-  getTransactionPoolLength(nodeId) {
-    for (let i = 0; i < this.nodeList.length; i++) {
-      if (this.nodeList[i].id === nodeId) {
-        return this.nodeList[i].transactionPool.length;
-      }
-    }
-  }
-
-  /**
-   * Get the total reward.
-   * @function
-   * @public
-   * @param {string} nodeId
-   * @return {number}
-   */
-  getReward(nodeId) {
-    for (let i = 0; i < this.nodeList.length; i++) {
-      if (this.nodeList[i].id === nodeId) {
-        return this.nodeList[i].totalReward;
-      }
-    }
   }
 }
 

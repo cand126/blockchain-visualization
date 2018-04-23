@@ -10,4 +10,12 @@ router.get('/', (req, res, next) => {
   });
 });
 
+/* GET settings page. */
+router.get('/settings', function(req, res, next) {
+  let nodes = Simulator.getInstance().getNodesInfo();
+  res.render('settings', {
+    nodes: nodes,
+  });
+});
+
 module.exports = router;

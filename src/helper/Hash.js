@@ -11,7 +11,10 @@ class Hash {
    * @return {string} A hash value with length 8.
    */
   static generateId() {
-    return Math.floor((1 + Math.random()) * 0x100000000).toString(16).substring(1);
+    return Math
+      .floor((1 + Math.random()) * 0x100000000)
+      .toString(16)
+      .substring(1);
   }
 
   /**

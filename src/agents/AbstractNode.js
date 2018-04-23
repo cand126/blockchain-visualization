@@ -13,7 +13,7 @@ const Hash = require('../helper/Hash');
 class AbstractNode extends eve.Agent {
   /**
    * @constructor
-   * @private
+   * @public
    * @param {string} nodeId
    */
   constructor(nodeId) {
@@ -58,7 +58,7 @@ class AbstractNode extends eve.Agent {
    */
   receive(from, object) {
     if (object.type === 'transaction') {
-      this.receiveTransaction(object);
+      this._receiveTransaction(object);
     } else if (object.type === 'block') {
       for (let i = 0; i < this.blockchain.length; i++) {
         // repeated blocks
@@ -66,7 +66,7 @@ class AbstractNode extends eve.Agent {
           return;
         }
       }
-      this.receiveBlock(object);
+      this._receiveBlock(object);
     }
   }
 
@@ -75,8 +75,9 @@ class AbstractNode extends eve.Agent {
    * @function
    * @param {object} transaction
    * @abstract
+   * @private
    */
-  receiveTransaction(transaction) {}
+  _receiveTransaction(transaction) {}
 
   /**
    * Receive a block.
@@ -84,7 +85,7 @@ class AbstractNode extends eve.Agent {
    * @param {object} block
    * @private
    */
-  receiveBlock(block) {
+  _receiveBlock(block) {
     if (block.previous === '') {
       // a new block
       block.previous = this.currentBlock.id;
@@ -96,7 +97,7 @@ class AbstractNode extends eve.Agent {
 
     this.blockchain.push(block);
     this.publish(block);
-    this.calculateReward();
+    this._calculateReward();
 
     Watchdog.getInstance().onDataChange('update blockchain', {
       nodeId: this.id,
@@ -118,6 +119,14 @@ class AbstractNode extends eve.Agent {
       }, neighbor.delay * 1000);
     });
   }
+
+  /**
+   * Calculate the total reward.
+   * @function
+   * @abstract
+   * @private
+   */
+  _calculateReward() {}
 
   /**
    * Add a neighbor.
@@ -149,13 +158,6 @@ class AbstractNode extends eve.Agent {
       }
     }
   }
-
-  /**
-   * Calculate the total reward.
-   * @function
-   * @abstract
-   */
-  calculateReward() {}
 }
 
 module.exports = AbstractNode;
