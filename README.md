@@ -1,8 +1,10 @@
 # Blockchain Visualization
 
-Explore the blockchain technology by yourself.
+Explore the blockchain technology with fantastic visualization.
 
 ### Introduction
+
+This is the master thesis which I completed at RWTH Aachen.
 
 ### Requirements
 
@@ -11,6 +13,8 @@ Explore the blockchain technology by yourself.
 * [Express]
 * [nodemon]
 * [three.js]
+* [socket.io]
+* [Bootstrap 4]
 
 ### Installation
 
@@ -26,13 +30,11 @@ Then simply run the application.
 $ npm run
 ```
 
-### Features
-
-### Todos
-
 ### License
 
 MIT
+
+*Shao-Chun Ma, Aachen*
 
 
 [node.js]: <https://nodejs.org/en/>
@@ -40,3 +42,5 @@ MIT
 [Express]: <http://expressjs.com/>
 [nodemon]: <https://nodemon.io/>
 [three.js]: <https://threejs.org/>
+[socket.io]: <https://socket.io/>
+[Bootstrap 4]: <https://getbootstrap.com/>
