@@ -327,17 +327,26 @@ function updateStrategy(action, nodeId, value) {
   });
 }
 
+/**
+ * Upload the configuration file.
+ * @param {object} file
+ * @function
+ */
 function upload(file) {
   $('#initText').hide();
   $('#uploadingSpinner').show();
   let fr = new FileReader();
-  fr.onload = function(e) {
+  fr.onload = (e) => {
     let result = JSON.parse(e.target.result);
     socket.emit('init blockchain system', result);
   };
   fr.readAsText(file);
 }
 
+/**
+ * Reset the system.
+ * @function
+ */
 function reset() {
   socket.emit('reset blockchain system', {});
 }
