@@ -19,7 +19,6 @@ class AbstractNode extends eve.Agent {
   constructor(nodeId) {
     super(nodeId);
     this.connect(eve.system.transports.getAll()); // connect to all transports configured by the system
-    this.transactionPool = [];
     this.blockchain = [];
     this.currentBlock = null;
     this.neighbors = [];
@@ -43,8 +42,6 @@ class AbstractNode extends eve.Agent {
     );
 
     this.blockchain = [];
-    this.transactionPool = [];
-    this.totalReward = 0;
     this.currentBlock = block;
     this.blockchain.push(this.currentBlock);
   }

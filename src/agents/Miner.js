@@ -27,6 +27,7 @@ class Miner extends AbstractNode {
     this.type = 'miner';
     this.name = name;
     this.color = color;
+    this.transactionPool = [];
     this.miningTime = miningTime;
     this.minValue = minValue;
     this.mineNumber = mineNumber;
