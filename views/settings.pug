@@ -39,7 +39,7 @@ block content
                     data-nodeid=node.nodeId, 
                     oninput='updateNode("update node color", this.getAttribute("data-nodeid"), this.value)'
                   )
-          h4(class='card-title') Delay of Network (seconds)
+          h4(class='card-title') Delays of Network (seconds)
           each neighbor in node.neighbors
             div(class='form-group row')
               div(class='d-flex align-items-center col', name='neighborName', data-nodeid=neighbor.id) #{neighbor.name}
