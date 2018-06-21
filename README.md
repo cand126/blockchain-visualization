@@ -30,6 +30,10 @@ Then simply run the application.
 $ npm run
 ```
 
+### Document
+
+The detail of this project can be viewed in my [thesis document](https://github.com/cand126/blockchain-visualization/blob/master/thesis.pdf)
+
 ### License
 
 MIT
