@@ -4,24 +4,7 @@ const Transaction = require('../types/Transaction');
 const Hash = require('../helper/Hash');
 const Watchdog = require('../Watchdog');
 
-/**
- * Represents a miner.
- * @class
- * @public
- * @extends AbstractNode
- */
 class Miner extends AbstractNode {
-  /**
-   * @constructor
-   * @public
-   * @param {string} id
-   * @param {string} name
-   * @param {string} color
-   * @param {number} miningTime - The length of time for mining.
-   * @param {number} minValue   - The minimum value of a transaction that can be mined.
-   * @param {number} mineNumber - The number of transactions that are included in a block.
-   * @param {number} maxPending - The number of maximum pending transactions in the transaction pool.
-   */
   constructor(id, name, color, miningTime, minValue, mineNumber, maxPending) {
     super(id);
     this.type = 'miner';
@@ -41,11 +24,6 @@ class Miner extends AbstractNode {
     }, 1000);
   }
 
-  /**
-   * Select a set of transactions to strat mining.
-   * @function
-   * @private
-   */
   _selectTransactions() {
     let transactions = []; // contains the candidate transactions for mining
 
@@ -91,12 +69,6 @@ class Miner extends AbstractNode {
     });
   }
 
-  /**
-   * Mines a block.
-   * @function
-   * @param {object} transactions - An array of transactions
-   * @private
-   */
   _mine(transactions) {
     let count = 0;
     this.isMining = true;
@@ -120,14 +92,6 @@ class Miner extends AbstractNode {
     }, 1000);
   }
 
-  /**
-   * Generates a block.
-   * @function
-   * @param {object} transactions - An array of transactions
-   * @return {object}
-   * @private
-   * @see {@link Block}
-   */
   _generate(transactions) {
     const block = new Block(
       Hash.generateId(),
@@ -143,12 +107,6 @@ class Miner extends AbstractNode {
     return block;
   }
 
-  /**
-   * Receive a block.
-   * @function
-   * @param {object} block
-   * @private
-   */
   _receiveBlock(block) {
     super._receiveBlock(block);
     if (block === this.currentBlock) {
@@ -156,12 +114,6 @@ class Miner extends AbstractNode {
     }
   }
 
-  /**
-   * Delete transactions that are mined by other miners.
-   * @function
-   * @private
-   * @param {object} block
-   */
   _deleteTransactions(block) {
     for (let i = this.transactionPool.length - 1; i >= 0; i--) {
       let minedTransaction = block.transactions.find((transaction) => {
@@ -178,12 +130,6 @@ class Miner extends AbstractNode {
     });
   }
 
-  /**
-   * Receive a transaction.
-   * @function
-   * @param {object} transaction
-   * @private
-   */
   _receiveTransaction(transaction) {
     // copy transaction
     const newTransaction = new Transaction(
@@ -208,11 +154,6 @@ class Miner extends AbstractNode {
     });
   }
 
-  /**
-   * Calculate the total reward.
-   * @function
-   * @private
-   */
   _calculateReward() {
     let currentBlock = this.currentBlock;
     this.totalReward = 0;

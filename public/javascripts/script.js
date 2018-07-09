@@ -42,10 +42,6 @@ $(window).resize(() => {
   });
 });
 
-/**
- * Initialize websockets.
- * @function
- */
 function initSocket() {
   socket = io.connect();
 
@@ -100,10 +96,6 @@ function initSocket() {
   });
 }
 
-/**
- * Initialize canvas.
- * @function
- */
 function initCanvas() {
   let canvasContainers = document.getElementsByName('canvas-container');
   for (let i = 0; i < canvasContainers.length; i++) {
@@ -118,10 +110,6 @@ function initCanvas() {
   });
 }
 
-/**
- * Initialize progress bars.
- * @function
- */
 function initProgress() {
   let progressBars = document.getElementsByName('transactionPool');
   for (let i = 0; i < progressBars.length; i++) {
@@ -131,10 +119,6 @@ function initProgress() {
   }
 }
 
-/**
- * Initialize values of reward.
- * @function
- */
 function initReward() {
   let rewards = document.getElementsByName('reward');
   for (let i = 0; i < rewards.length; i++) {
@@ -144,11 +128,6 @@ function initReward() {
   }
 }
 
-/**
- * Mousedown event.
- * @param {Event} e
- * @function
- */
 function onCanvasMouseDown(e) {
   let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
   $(e.target).mousemove((e) => {
@@ -156,11 +135,6 @@ function onCanvasMouseDown(e) {
   });
 };
 
-/**
- * Mouseup event.
- * @param {Event} e
- * @function
- */
 function onCanvasMouseUp(e) {
   $(e.target).unbind('mousemove');
   let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
@@ -170,11 +144,6 @@ function onCanvasMouseUp(e) {
   }
 };
 
-/**
- * Mouseleave event.
- * @param {Event} e
- * @function
- */
 function onCanvasMouseLeave(e) {
   $(e.target).unbind('mousemove');
   let canvas = canvasList.find((canvas) => canvas.nodeId === $(e.target).parent().attr('data-nodeId'));
@@ -185,12 +154,6 @@ function onCanvasMouseLeave(e) {
   }
 };
 
-/**
- * Mousemove event.
- * @param {Event} e
- * @param {object} canvas
- * @function
- */
 function onCanvasMouseMove(e, canvas) {
   e.preventDefault();
   const rect = canvas.renderer.domElement.getBoundingClientRect();
@@ -216,35 +179,18 @@ function onCanvasMouseMove(e, canvas) {
   canvas.mousePosition.y = y;
 };
 
-/**
- * Zoom in the canvas.
- * @function
- * @param {Event} e
- * @param {string} nodeId
- */
 function zoomIn(e, nodeId) {
   let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
   canvas.camera.zoom += 0.1;
   canvas.camera.updateProjectionMatrix();
 }
 
-/**
- * Zoom out the canvas.
- * @function
- * @param {Event} e
- * @param {string} nodeId
- */
 function zoomOut(e, nodeId) {
   let canvas = canvasList.find((canvas) => canvas.nodeId === nodeId);
   canvas.camera.zoom -= 0.1;
   canvas.camera.updateProjectionMatrix();
 }
 
-/**
- * Register enter keypress event for publishing transactions.
- * @function
- * @param {Event} event
- */
 function registerEnter(event) {
   $(event.target).keypress((e) => {
     if (e.which == 13) {
@@ -253,11 +199,6 @@ function registerEnter(event) {
   });
 }
 
-/**
- * Publish a transaction.
- * @function
- * @param {DOM} button
- */
 function publishTransaction() {
   socket.emit('publish transaction', {
     reward: document.getElementById('transactionReward').value,
@@ -269,11 +210,6 @@ function publishTransaction() {
   }, 1500);
 }
 
-/**
- * Add a node.
- * @function
- * @param {string} nodeType
- */
 function addNode(nodeType) {
   $('#savingSpinner').show();
   socket.emit('add node', {
@@ -281,11 +217,6 @@ function addNode(nodeType) {
   });
 }
 
-/**
- * Delete a node.
- * @function
- * @param {string} nodeId
- */
 function deleteNode(nodeId) {
   $('#savingSpinner').show();
   socket.emit('delete node', {
@@ -293,14 +224,6 @@ function deleteNode(nodeId) {
   });
 }
 
-/**
- * Update nodes.
- * @param {string} action
- * @param {string} nodeId
- * @param {string} value
- * @param {string} [neighborId=null]
- * @function
- */
 function updateNode(action, nodeId, value, neighborId = null) {
   $('#savingSpinner').show();
   socket.emit('update node', {
@@ -311,13 +234,6 @@ function updateNode(action, nodeId, value, neighborId = null) {
   });
 }
 
-/**
- * Update strategies.
- * @param {string} action
- * @param {string} nodeId
- * @param {string} value
- * @function
- */
 function updateStrategy(action, nodeId, value) {
   $('#savingSpinner').show();
   socket.emit('update strategy', {
@@ -327,11 +243,6 @@ function updateStrategy(action, nodeId, value) {
   });
 }
 
-/**
- * Upload the configuration file.
- * @param {object} file
- * @function
- */
 function upload(file) {
   $('#initText').hide();
   $('#uploadingSpinner').show();
@@ -343,19 +254,10 @@ function upload(file) {
   fr.readAsText(file);
 }
 
-/**
- * Reset the system.
- * @function
- */
 function reset() {
   socket.emit('reset blockchain system', {});
 }
 
-/**
- * Instantiate a canvas.
- * @param {DOM} canvasContainer
- * @function
- */
 function addCanvas(canvasContainer) {
   if (!canvasWidth || !canvasHeight) {
     canvasWidth = canvasContainer.clientWidth;
@@ -395,10 +297,6 @@ function addCanvas(canvasContainer) {
   });
 }
 
-/**
- * Update the frame.
- * @function
- */
 function animate() {
   // loop
   requestAnimationFrame(animate);
@@ -407,13 +305,6 @@ function animate() {
   });
 }
 
-/**
- * Update the objects on the canvas.
- * @param {object} canvas
- * @param {object[]} blockchain
- * @param {object} currentBlock
- * @function
- */
 function updateCanvas(canvas, blockchain, currentBlock) {
   for (let i = 0; i < blockchain.length; i++) {
     let blockObject = canvas.scene.getObjectByName(blockchain[i].id);

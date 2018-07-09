@@ -3,27 +3,12 @@ const Miner = require('./agents/Miner');
 const Nonminer = require('./agents/Nonminer');
 const Hash = require('./helper/Hash');
 
-/**
- * Responible for managing the blockchain system.
- * @class
- * @public
- */
 class Simulator {
-  /**
-   * @constructor
-   * @private
-   */
   constructor() {
     this.nodeList = []; // contains all the instances of nodes
     this.transactionGenerator = null;
   }
 
-  /**
-   * Singleton pattern.
-   * @function
-   * @static
-   * @return {object} The instance of the class.
-   */
   static getInstance() {
     if (!this.instance) {
       this.instance = new Simulator();
@@ -31,11 +16,6 @@ class Simulator {
     return this.instance;
   }
 
-  /**
-   * Reset the blockchain system.
-   * @function
-   * @static
-   */
   static reset() {
     // disconnect all the agents
     this.instance.nodeList.forEach((agent) => {
@@ -45,12 +25,6 @@ class Simulator {
     this.instance = new Simulator();
   }
 
-  /**
-   * Initialize the blockchain system.
-   * @function
-   * @public
-   * @param {object} data - The configuration file.
-   */
   init(data) {
     data.nodes.forEach((node) => {
       this._addNode(node);
@@ -76,12 +50,6 @@ class Simulator {
     });
   }
 
-  /**
-   * Instantiate a node by giving a type.
-   * @function
-   * @public
-   * @param {string} nodeType
-   */
   addNodeByType(nodeType) {
     let nodeData = {};
     if (nodeType === 'miner') {
@@ -113,12 +81,6 @@ class Simulator {
     this._addNode(nodeData);
   }
 
-  /**
-   * Instantiate a node.
-   * @function
-   * @private
-   * @param {object} nodeData - The required information for a node.
-   */
   _addNode(nodeData) {
     let newNode = null;
 
@@ -175,12 +137,6 @@ class Simulator {
     this.nodeList.push(newNode);
   }
 
-  /**
-   * Delete a node.
-   * @function
-   * @public
-   * @param {string} nodeId
-   */
   deleteNode(nodeId) {
     this.nodeList.forEach((node) => {
       node.deleteNeighbor(nodeId);
@@ -194,12 +150,6 @@ class Simulator {
     }
   }
 
-  /**
-   * Get the information of all nodes.
-   * @function
-   * @public
-   * @return {object}
-   */
   getNodesInfo() {
     let info = [];
 
@@ -220,13 +170,6 @@ class Simulator {
     return info;
   }
 
-  /**
-   * Get the information of the blockchain of specific node.
-   * @function
-   * @public
-   * @param {string} nodeId
-   * @return {bool} True for successes, false for errors.
-   */
   getBlockchain(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
@@ -235,13 +178,6 @@ class Simulator {
     }
   }
 
-  /**
-   * Get the information of current block of the node.
-   * @function
-   * @public
-   * @param {string} nodeId
-   * @return {Block}
-   */
   getCurrentBlock(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
@@ -250,13 +186,6 @@ class Simulator {
     }
   }
 
-  /**
-   * Get the length of the transaction pool of the miner.
-   * @function
-   * @public
-   * @param {object} nodeId
-   * @return {number}
-   */
   getTransactionPoolLength(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
@@ -265,13 +194,6 @@ class Simulator {
     }
   }
 
-  /**
-   * Get the total reward of the miner.
-   * @function
-   * @public
-   * @param {string} nodeId
-   * @return {number}
-   */
   getReward(nodeId) {
     for (let i = 0; i < this.nodeList.length; i++) {
       if (this.nodeList[i].id === nodeId) {
@@ -280,13 +202,6 @@ class Simulator {
     }
   }
 
-  /**
-   * Update the information of specific node.
-   * @function
-   * @public
-   * @param {object} data - Contains the action and the required data.
-   * @return {bool} True for successes, false for errors.
-   */
   updateNode(data) {
     switch (data.action) {
       case 'update node name':
@@ -336,13 +251,6 @@ class Simulator {
     return true;
   }
 
-  /**
-   * Update the strategies of specific miner.
-   * @function
-   * @public
-   * @param {object} data - Contains the action and the required data.
-   * @return {bool} True for successes, false for errors.
-   */
   updateStrategy(data) {
     switch (data.action) {
       case 'update mining time':
@@ -384,12 +292,6 @@ class Simulator {
     return true;
   }
 
-  /**
-   * Publish transactions through the transaction generator.
-   * @function
-   * @public
-   * @param {object} data - Contains the reward of the transaction.
-   */
   publishTransaction(data) {
     let transaction = this.transactionGenerator.generate(data.reward);
     this.transactionGenerator.publish(transaction);

@@ -25,12 +25,8 @@
         "no-unused-vars": "warn",
         "constructor-super": "warn",
         "valid-typeof": "warn",
-        "require-jsdoc": "warn",
-        "max-len": ["warn", {
-            "ignoreComments": true,
-            "ignoreTrailingComments": true,
-            "ignoreStrings": true
-        }],
+        "require-jsdoc": "off",
+        "max-len": "off",
         "valid-jsdoc": "warn",
         "react/jsx-uses-react": 2,
         "react/jsx-uses-vars": 2,
